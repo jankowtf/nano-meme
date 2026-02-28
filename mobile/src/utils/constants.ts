@@ -27,6 +27,6 @@ export const DEFAULT_RESOLUTION: Resolution = "1K";
 export const DEFAULT_ASPECT_RATIO: AspectRatio = "1:1";
 
 export const DEFAULT_YODA_PROMPT =
-  "A photorealistic portrait of a small, ancient humanoid alien elder, approximately 66 centimeters tall, with bright green deeply wrinkled skin. Large pointed ears extending sideways from the head. Large brown wise and contemplative eyes with heavy eyelids. Sparse white wispy hair tufts on top of a mostly bald head. Wearing simple earthy brown monk robes with rough-woven texture and a rope belt. Holding a gnarled wooden walking cane with three-fingered hands visible. The figure has a serene, knowing expression. Sitting on a mossy stone in a mystical misty swamp forest with bioluminescent plants. Cinematic lighting, shallow depth of field, 85mm f/1.4 portrait lens, National Geographic cover photo quality.";
+  "A photorealistic portrait of a small, ancient humanoid alien elder with bright green deeply wrinkled skin, wearing a neon pink beanie hat. Large pointed ears extending sideways from the head. Large brown wise and contemplative eyes with heavy eyelids. Sparse white wispy hair peeking from under the beanie. Simple earthy brown monk robes with rough-woven texture. Holding a gnarled wooden walking cane with three-fingered hands. Serene, knowing expression. Sitting on a mossy stone in a mystical misty swamp forest with bioluminescent plants. Cinematic lighting, 85mm f/1.4 portrait lens.";
 
-export const DEFAULT_OVERLAY_TEXT = "Make or make not. There is no buy";
+export const DEFAULT_OVERLAY_TEXT = "Make or make not. There is no buy.";

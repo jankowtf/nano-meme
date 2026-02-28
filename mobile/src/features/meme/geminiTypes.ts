@@ -35,6 +35,7 @@ export interface GenerateContentRequest {
 
 export interface Candidate {
   content: Content;
+  finishReason?: string;
 }
 
 export interface GenerateContentResponse {
@@ -71,8 +72,10 @@ export function buildGenerateRequest(
 export function parseImageFromResponse(
   response: GenerateContentResponse,
 ): ImageResult | null {
+  if (!response?.candidates || response.candidates.length === 0) return null;
+
   const candidate = response.candidates[0];
-  if (!candidate) return null;
+  if (!candidate?.content?.parts) return null;
 
   for (const part of candidate.content.parts) {
     if ("inlineData" in part) {

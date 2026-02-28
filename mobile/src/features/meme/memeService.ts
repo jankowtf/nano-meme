@@ -21,7 +21,15 @@ export async function generateAndSaveMeme(
 
   const result = await client.generateImage(fullPrompt, resolution);
 
+  if (!result?.imageData) {
+    throw new Error("API returned no image data");
+  }
+
   // Save the base64 image to local filesystem using new File API
+  if (!File || !Paths?.document) {
+    throw new Error("expo-file-system File/Paths API not available");
+  }
+
   const filename = `meme_${Date.now()}.png`;
   const file = new File(Paths.document, filename);
 

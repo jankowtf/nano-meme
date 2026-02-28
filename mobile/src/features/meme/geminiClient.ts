@@ -79,14 +79,23 @@ export class GeminiClient {
     const image = parseImageFromResponse(data);
 
     if (!image) {
+      const finishReason = data?.candidates?.[0]?.finishReason;
+      if (finishReason === "OTHER" || finishReason === "SAFETY") {
+        throw new Error(
+          "Content filtered by API. Try rephrasing your prompt (avoid copyrighted characters).",
+        );
+      }
       throw new Error("No image data in response");
     }
 
     // Extract text response if present
-    const textResponse = data.candidates[0]?.content.parts
-      .filter((p): p is { text: string } => "text" in p)
-      .map((p) => p.text)
-      .join("");
+    const parts = data?.candidates?.[0]?.content?.parts;
+    const textResponse = parts
+      ? parts
+          .filter((p): p is { text: string } => "text" in p)
+          .map((p) => p.text)
+          .join("")
+      : undefined;
 
     return {
       imageData: image.data,
