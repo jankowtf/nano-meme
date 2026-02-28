@@ -49,19 +49,30 @@ export class GeminiClient {
       ...(resolution && { imageConfig: { imageSize: resolution } }),
     });
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request),
-    });
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request),
+      });
+    } catch (networkError) {
+      throw new Error(
+        `Network error: ${networkError instanceof Error ? networkError.message : "Failed to connect to Gemini API"}`,
+      );
+    }
 
     if (!response.ok) {
-      const errorBody = (await response.json()) as GeminiErrorResponse;
-      throw new GeminiAPIError(
-        errorBody.error.message,
-        errorBody.error.status,
-        response.status,
-      );
+      let message = `HTTP ${response.status}`;
+      let status = "UNKNOWN";
+      try {
+        const errorBody = (await response.json()) as GeminiErrorResponse;
+        message = errorBody?.error?.message ?? message;
+        status = errorBody?.error?.status ?? status;
+      } catch {
+        // Response body wasn't valid JSON
+      }
+      throw new GeminiAPIError(message, status, response.status);
     }
 
     const data = (await response.json()) as GenerateContentResponse;
