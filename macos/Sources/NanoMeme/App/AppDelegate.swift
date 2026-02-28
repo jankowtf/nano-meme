@@ -73,8 +73,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        // Toggle dock icon off (menu bar app)
-        NSApp.setActivationPolicy(.accessory)
+        // LSUIElement=true in Info.plist already hides dock icon.
+        // Do NOT call NSApp.setActivationPolicy(.accessory) here — it can
+        // disrupt the NSStatusItem when called after setup().
 
         Log.app.info("NanoMeme ready")
     }
