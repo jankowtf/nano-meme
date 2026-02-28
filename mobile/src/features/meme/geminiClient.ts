@@ -45,7 +45,6 @@ export class GeminiClient {
   ): Promise<GenerateImageResult> {
     const url = GeminiClient.buildApiUrl(this.apiKey);
     const request = buildGenerateRequest(prompt, {
-      responseMimeType: "image/png",
       responseModalities: ["Text", "Image"],
       ...(resolution && { imageConfig: { imageSize: resolution } }),
     });
