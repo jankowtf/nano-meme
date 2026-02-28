@@ -2,6 +2,7 @@ import { View, Text, Image, Pressable, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
+import * as MediaLibrary from "expo-media-library";
 import { Share2, Download, ArrowLeft, Heart } from "lucide-react-native";
 import { useMemeStore } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
@@ -32,8 +33,19 @@ export default function ResultScreen() {
     }
   };
 
-  const handleSave = () => {
-    Alert.alert("Saved", "Meme saved to app gallery.");
+  const handleSave = async () => {
+    if (!currentImageUri) return;
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission required", "Allow photo library access to save memes.");
+      return;
+    }
+    try {
+      await MediaLibrary.saveToLibraryAsync(currentImageUri);
+      Alert.alert("Saved", "Meme saved to your photo library.");
+    } catch {
+      Alert.alert("Error", "Failed to save meme to photo library.");
+    }
   };
 
   return (

@@ -1,0 +1,74 @@
+---
+title: "NanoMeme Compendium"
+subtitle: "How we built a meme generator with Nano Banana 2"
+---
+
+## Welcome
+
+NanoMeme is a meme generator experiment using Google's **Nano Banana 2** model (`gemini-3.1-flash-image-preview`, released February 26, 2026). It produces two deliverables:
+
+1. **macOS Swift menu bar app** --- a hyper-composable SPM monorepo
+2. **React Native + Expo smartphone app** --- iOS + Android with NativeWind
+
+Both apps call the Gemini REST API directly, render text overlays in-app, and share the KaosMaps brand design language.
+
+::: {.callout-note}
+## Acceptance Criteria
+A high-fidelity image of a Yoda-like character with the text **"Make or make not. There is no buy"** --- generated, rendered, and displayed in both apps.
+:::
+
+## Architecture at a Glance
+
+```{mermaid}
+graph TB
+    subgraph "Shared"
+        B[Brand Tokens]
+        P[Yoda Prompt]
+    end
+
+    subgraph "macOS App"
+        MC[NanoCore] --> MI[NanoImageKit]
+        MD[NanoDesignKit] --> MU[PopoverView]
+        MI --> MG[ImageGenerator]
+        MS[NanoStorageKit] --> MU
+        MG --> MU
+    end
+
+    subgraph "Mobile App"
+        GC[geminiClient.ts] --> MS2[memeService.ts]
+        ZS[Zustand Stores] --> SC[Screens]
+        MS2 --> SC
+    end
+
+    B --> MD
+    B --> SC
+    P --> MG
+    P --> MS2
+```
+
+## Project Stats
+
+| Metric | macOS | Mobile |
+|--------|-------|--------|
+| Language | Swift 6 | TypeScript |
+| Framework | SPM / AppKit / SwiftUI | Expo 55 / RN 0.83 |
+| Files | 52 | 26 |
+| Lines of code | ~5,000 | ~1,100 |
+| Tests | 14 | 49 |
+| API client | URLSession (Sendable) | fetch API |
+| Key storage | Keychain Services | expo-secure-store |
+| UI toolkit | NSPanel + SwiftUI | Expo Router + NativeWind |
+| State | @Observable | Zustand |
+
+## Navigation
+
+Use the **sidebar** to explore each platform's implementation in detail, or jump directly:
+
+- [macOS Architecture](macos/architecture.qmd) --- SPM monorepo design
+- [Mobile Architecture](mobile/architecture.qmd) --- Expo Router + NativeWind
+- [KaosMaps Brand + Interactive Palette](shared/brand-design.qmd) --- color system with live tweaking
+- [Gemini API Reference](shared/gemini-api.qmd) --- request/response format
+
+## Repository
+
+<https://github.com/jankowtf/nano-meme>

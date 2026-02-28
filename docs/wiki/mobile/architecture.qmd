@@ -1,0 +1,74 @@
+---
+title: "Mobile Architecture"
+---
+
+## Directory Structure
+
+```
+mobile/
+├── app/                              # Expo Router screens
+│   ├── _layout.tsx                   # Root layout (Tabs + QueryProvider)
+│   ├── index.tsx                     # Home: generate meme
+│   ├── result.tsx                    # Result: view + share
+│   ├── gallery.tsx                   # History of generated memes
+│   └── settings.tsx                  # API key, resolution, about
+├── src/
+│   ├── features/meme/               # Domain logic
+│   │   ├── geminiTypes.ts            # API request/response types
+│   │   ├── geminiClient.ts           # REST API client
+│   │   └── memeService.ts            # Generate + save orchestrator
+│   ├── hooks/
+│   │   └── useSecureStorage.ts       # API key in expo-secure-store
+│   ├── stores/
+│   │   ├── memeStore.ts              # Zustand: generation state + history
+│   │   └── settingsStore.ts          # Zustand: user preferences
+│   └── utils/
+│       ├── colors.ts                 # KaosMaps brand tokens
+│       └── constants.ts              # App config, API URLs, defaults
+├── global.css                        # Tailwind imports
+├── tailwind.config.js                # KaosMaps theme
+├── app.json                          # Expo config
+├── eas.json                          # EAS Build profiles
+└── jest.config.js                    # Multi-project Jest config
+```
+
+## Root Layout
+
+The root `_layout.tsx` provides:
+
+1. **TanStack Query** client with 5-minute stale time and 2 retries
+2. **Tab navigation** with 4 screens and Lucide icons
+3. **KaosMaps dark theme** tab bar (dark background, cyan active tint)
+
+```tsx
+export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <StatusBar style="light" />
+      <Tabs screenOptions={{
+        tabBarActiveTintColor: colors.brand.cyan,
+        tabBarStyle: {
+          backgroundColor: colors.surface.secondary,
+        },
+      }}>
+        <Tabs.Screen name="index" options={{
+          title: "Generate",
+          tabBarIcon: ({ color, size }) => <Sparkles color={color} size={size} />,
+        }} />
+        {/* ... result, gallery, settings */}
+      </Tabs>
+    </QueryClientProvider>
+  );
+}
+```
+
+## Testing Architecture
+
+Two Jest projects handle different test needs:
+
+| Project | Runner | Scope |
+|---------|--------|-------|
+| `unit` | ts-jest | Pure TS: utils, stores, services, API types |
+| `components` | jest-expo | React Native components (TSX) |
+
+This separation avoids jest-expo's heavyweight setup for pure logic tests, keeping the test suite fast (~2 seconds for 49 tests).

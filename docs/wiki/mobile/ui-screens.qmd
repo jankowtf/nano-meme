@@ -1,0 +1,178 @@
+---
+title: "UI Screens"
+---
+
+## Screen Overview
+
+Four tab screens compose the mobile experience:
+
+```{mermaid}
+graph LR
+    G[Generate] -->|success| R[Result]
+    G -->|no API key| S[Settings]
+    R -->|back| G
+    GL[Gallery] --> R
+```
+
+## Home Screen (Generate)
+
+The primary screen with prompt input, overlay text, resolution picker, and generate button.
+
+### Layout Structure
+
+```
+SafeAreaView
+└── ScrollView (keyboardShouldPersistTaps)
+    ├── Header (Sparkles icon + "NanoMeme")
+    ├── Subtitle
+    ├── Prompt Section
+    │   ├── TextInput (multiline, 4 lines)
+    │   └── "Load Yoda Preset" button
+    ├── Overlay Text Section
+    │   └── TextInput (single line)
+    ├── Resolution Picker
+    │   └── Row of 4 buttons (0.5K | 1K | 2K | 4K)
+    ├── Error Card (conditional)
+    └── Generate Button (with ActivityIndicator)
+```
+
+### Generation Flow
+
+```typescript
+const handleGenerate = useCallback(async () => {
+  const apiKey = await getApiKey();
+  if (!apiKey) {
+    failGeneration("No API key configured...");
+    router.navigate("/settings");
+    return;
+  }
+
+  startGeneration();
+  try {
+    const result = await generateAndSaveMeme(
+      apiKey,
+      currentPrompt || DEFAULT_YODA_PROMPT,
+      overlayText || DEFAULT_OVERLAY_TEXT,
+    );
+    completeGeneration(result.imageUri);
+    router.navigate("/result");
+  } catch (error) {
+    failGeneration(
+      error instanceof Error ? error.message : "Generation failed",
+    );
+  }
+}, [currentPrompt, overlayText, ...]);
+```
+
+Key behaviors:
+
+1. **No API key** → Redirects to Settings tab
+2. **Empty prompt** → Falls back to Yoda preset prompt
+3. **Success** → Navigates to Result screen
+4. **Error** → Shows error card with red border
+
+### KaosMaps Styling
+
+All input fields use the dark theme with cyan-tinted borders:
+
+```typescript
+textArea: {
+  backgroundColor: colors.surface.card,  // #1a1a24
+  borderRadius: 12,
+  padding: 14,
+  color: colors.text.primary,            // #e2e8f0
+  borderWidth: 1,
+  borderColor: "rgba(6,182,212,0.15)",   // Cyan subtle border
+},
+```
+
+## Result Screen
+
+Displays the generated meme with share/save/favorite actions.
+
+### KaosMaps Glow Effect
+
+The image container features the signature KaosMaps glow:
+
+```typescript
+glowOuter: {
+  position: "absolute",
+  top: -2, left: -2, right: -2, bottom: -2,
+  borderRadius: 18,
+  shadowColor: colors.brand.cyan,
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.15,
+  shadowRadius: 30,
+},
+glowInner: {
+  position: "absolute",
+  top: -1, left: -1, right: -1, bottom: -1,
+  borderRadius: 17,
+  borderWidth: 1,
+  borderColor: "rgba(6,182,212,0.3)",
+},
+```
+
+### Actions
+
+| Action | Icon | Library |
+|--------|------|---------|
+| Share | `Share2` | `expo-sharing` |
+| Save | `Download` | Alert confirmation |
+| Favorite | `Heart` | Zustand `toggleFavorite` |
+
+## Gallery Screen
+
+FlatList of generated memes with the `MemeCard` component.
+
+### MemeCard Component
+
+```
+Card (row layout)
+├── Image (80x80 thumbnail)
+├── Content
+│   ├── Overlay text (1 line, truncated)
+│   └── Date
+└── Actions
+    ├── Heart (toggle favorite)
+    └── Trash2 (delete)
+```
+
+The gallery uses `keyExtractor` on `item.id` and renders with `gap: 12` spacing between cards.
+
+### Empty State
+
+When no memes exist, a centered message encourages the user to start generating.
+
+## Settings Screen
+
+Three sections: API Key, Generation defaults, and About.
+
+### API Key Section
+
+The API key input features a secure text field with eye toggle:
+
+```
+apiKeyRow
+├── TextInput (secureTextEntry toggled)
+└── Eye/EyeOff toggle button
+
+apiKeyActions
+├── "Save to Keychain" button (cyan)
+└── "Remove" button (red, conditional)
+```
+
+::: {.callout-note}
+## SecureField Pattern
+The `secureTextEntry` prop is toggled via the eye icon, allowing users to verify their API key before saving. The key is stored in `expo-secure-store` which uses iOS Keychain / Android Keystore.
+:::
+
+### Generation Defaults
+
+- **Resolution picker**: 4 options (0.5K, 1K, 2K, 4K) — horizontally laid out
+- **Aspect ratio picker**: 3 options (1:1, 16:9, 9:16) — horizontally laid out
+- **Auto overlay text**: Switch toggle with cyan track color
+
+### About Section
+
+Simple key-value rows showing app name, version, model (Nano Banana 2), and author (KaosMaps). Separated by subtle cyan-tinted dividers.

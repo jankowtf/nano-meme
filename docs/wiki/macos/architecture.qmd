@@ -1,0 +1,91 @@
+---
+title: "SPM Monorepo Architecture"
+---
+
+## Directory Structure
+
+```
+macos/
+├── Package.swift                          # Root manifest
+├── Packages/
+│   ├── NanoCore/                          # Logging, config
+│   ├── NanoDesignKit/                     # Brand colors
+│   ├── NanoImageKit/                      # Gemini API + image processing
+│   └── NanoStorageKit/                    # SwiftData persistence
+├── Sources/
+│   ├── NanoMeme/                          # Library target (all app logic)
+│   │   ├── App/                           # AppDelegate, AppState, Coordinator
+│   │   └── UI/                            # MenuBar, Settings views
+│   └── NanoMemeApp/                       # Executable (@main)
+├── Tests/NanoMemeTests/                   # App-layer tests
+├── Resources/                             # Info.plist, entitlements
+└── justfile                               # Build pipeline
+```
+
+## Package.swift
+
+The root manifest uses Swift tools version 6.0 with language mode v5 (for compatibility with libraries that aren't fully Swift 6 ready):
+
+```swift
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "NanoMeme",
+    platforms: [.macOS(.v14)],
+    products: [
+        .library(name: "NanoMemeLib", targets: ["NanoMeme"]),
+        .executable(name: "NanoMeme", targets: ["NanoMemeApp"]),
+    ],
+    dependencies: [
+        .package(path: "Packages/NanoCore"),
+        .package(path: "Packages/NanoDesignKit"),
+        .package(path: "Packages/NanoImageKit"),
+        .package(path: "Packages/NanoStorageKit"),
+        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.0.0"),
+    ],
+    targets: [
+        .target(
+            name: "NanoMeme",
+            dependencies: ["NanoCore", "NanoDesignKit", "NanoImageKit",
+                          "NanoStorageKit", "KeyboardShortcuts"],
+            swiftSettings: [.swiftLanguageMode(.v5)]
+        ),
+        .executableTarget(name: "NanoMemeApp", dependencies: ["NanoMeme"]),
+        .testTarget(name: "NanoMemeTests", dependencies: ["NanoMeme"]),
+    ]
+)
+```
+
+::: {.callout-note}
+## Why `.swiftLanguageMode(.v5)`?
+Swift 6's strict concurrency checking conflicts with KeyboardShortcuts' static lazy initialization pattern. Using v5 language mode gives us the SPM 6.0 features while keeping concurrency warnings non-fatal.
+:::
+
+## Dependency Graph
+
+Each package has a single responsibility:
+
+| Package | Responsibility | Dependencies |
+|---------|---------------|--------------|
+| **NanoCore** | Logging, config, UserDefaults wrapper | None (Foundation only) |
+| **NanoDesignKit** | Brand colors, design tokens | None |
+| **NanoImageKit** | Gemini API, text overlay, Keychain | NanoCore |
+| **NanoStorageKit** | SwiftData models, export, settings | NanoCore |
+
+## Testing Strategy
+
+All packages have co-located test targets using Swift Testing framework (`@Suite`, `@Test`, `#expect`):
+
+```swift
+@Suite("GeminiConfig")
+struct GeminiConfigTests {
+    @Test("default resolution is 1K")
+    func defaultResolution() {
+        let config = GeminiConfig()
+        #expect(config.resolution == .one)
+    }
+}
+```
+
+The test suite uses `MockURLProtocol` for HTTP testing and `.serialized` trait to prevent race conditions between suites sharing mock state.

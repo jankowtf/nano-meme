@@ -1,0 +1,77 @@
+---
+title: "macOS Menu Bar App"
+subtitle: "Swift 6 / SPM monorepo with NSPanel popover"
+---
+
+## Overview
+
+The macOS app is a **menu bar application** (no Dock icon) that lives in the system tray. Click the `photo.artframe` icon to open an NSPanel popover with the KaosMaps glow design.
+
+The architecture follows the **nano-speak** pattern: a two-target SPM project with local packages for maximum testability and composability.
+
+## Package Map
+
+```{mermaid}
+graph LR
+    subgraph "Root Package.swift"
+        NanoMemeLib["NanoMemeLib<br/>(library target)"]
+        NanoMeme["NanoMeme<br/>(@main executable)"]
+        Tests["NanoMemeTests"]
+    end
+
+    subgraph "Local Packages"
+        NC[NanoCore]
+        NDK[NanoDesignKit]
+        NIK[NanoImageKit]
+        NSK[NanoStorageKit]
+    end
+
+    NanoMeme --> NanoMemeLib
+    Tests --> NanoMemeLib
+    NanoMemeLib --> NC
+    NanoMemeLib --> NDK
+    NanoMemeLib --> NIK
+    NanoMemeLib --> NSK
+    NIK --> NC
+    NSK --> NC
+```
+
+## Key Design Decisions
+
+### Two-Target Pattern
+
+The `NanoMemeLib` library target contains all logic, while `NanoMeme` is a thin `@main` entry point. This allows the test target to import the library without importing AppKit lifecycle code.
+
+```swift
+// NanoMemeApp.swift — the entire executable target
+import AppKit
+import NanoMemeLib
+
+@main
+struct NanoMemeApp {
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = AppDelegate()
+        app.delegate = delegate
+        app.run()
+    }
+}
+```
+
+### LSUIElement
+
+The app sets `LSUIElement = true` in Info.plist, which means:
+
+- No Dock icon
+- No main menu bar
+- Lives entirely in the system tray
+- Uses `NSApp.setActivationPolicy(.accessory)` at runtime
+
+### Actor-Based Concurrency
+
+All network and image operations use Swift's structured concurrency. `GeminiClient` and `ImageGenerator` are `Sendable` final classes with async methods, not actors, to avoid executor deadlocks with URLSession.
+
+::: {.callout-tip}
+## Lesson Learned
+Using `actor` + `DispatchSemaphore.wait()` causes a deadlock because the semaphore blocks the actor's executor, preventing the URLSession completion handler from running. Solution: use `async/await` with `URLSession.data(for:)`.
+:::

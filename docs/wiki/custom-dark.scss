@@ -1,0 +1,149 @@
+/*-- scss:defaults --*/
+
+// KaosMaps Dark Mode — native brand colors
+$body-bg: #0a0a0f !default;
+$body-color: #e2e8f0 !default;
+$link-color: #06b6d4 !default;
+$font-family-sans-serif: "Inter", system-ui, -apple-system, sans-serif !default;
+
+// KaosMaps brand colors — dark mode (original palette)
+$primary: #06b6d4 !default;
+$success: #22c55e !default;
+$info: #14b8a6 !default;
+$warning: #f97316 !default;
+$danger: #ec4899 !default;
+
+// Sidebar
+$sidebar-bg: #12121a !default;
+$sidebar-fg: #e2e8f0 !default;
+
+// Code blocks
+$code-block-bg: #1a1a24 !default;
+$code-bg: #12121a !default;
+$code-color: #06b6d4 !default;
+
+// Navbar
+$navbar-bg: #0a0a0f !default;
+$navbar-fg: #e2e8f0 !default;
+
+// Cards
+$card-bg: #1a1a24 !default;
+$card-border-color: rgba(6, 182, 212, 0.15) !default;
+
+/*-- scss:rules --*/
+
+// KaosMaps signature glow on active nav
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #06b6d4 !important;
+  text-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+}
+
+// Sidebar
+.sidebar {
+  border-right: 1px solid rgba(6, 182, 212, 0.1);
+}
+
+.sidebar .sidebar-item-text.active {
+  color: #06b6d4;
+  font-weight: 600;
+}
+
+// Callouts with brand colors
+.callout-note {
+  border-left-color: #06b6d4;
+  background-color: rgba(6, 182, 212, 0.05);
+}
+
+.callout-tip {
+  border-left-color: #14b8a6;
+  background-color: rgba(20, 184, 166, 0.05);
+}
+
+.callout-warning {
+  border-left-color: #f97316;
+  background-color: rgba(249, 115, 22, 0.05);
+}
+
+.callout-important {
+  border-left-color: #ec4899;
+  background-color: rgba(236, 72, 153, 0.05);
+}
+
+// Code
+.sourceCode {
+  border: 1px solid rgba(6, 182, 212, 0.1);
+  border-radius: 8px;
+}
+
+// Footer
+.nav-footer {
+  background-color: #0a0a0f;
+  border-top: 1px solid rgba(6, 182, 212, 0.1);
+  color: rgba(204, 251, 241, 0.55);
+}
+
+.nav-footer a {
+  color: #06b6d4;
+}
+
+// Interactive palette container
+.palette-container {
+  background: #1a1a24;
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+// Mermaid diagram — high-contrast dark mode (KaosMaps brand)
+// Same selector pattern as light mode — Quarto uses svg.mermaid-js
+svg.mermaid-js {
+  // Node backgrounds
+  rect.basic.label-container {
+    fill: #1e293b !important;        // slate-800
+    stroke: #06b6d4 !important;      // brand cyan
+    stroke-width: 2px !important;
+  }
+
+  // Node text — bright for contrast on dark node bg
+  span.nodeLabel {
+    color: #e2e8f0 !important;       // text-primary
+  }
+
+  // Cluster/subgraph backgrounds
+  g.cluster > rect {
+    fill: rgba(6, 182, 212, 0.06) !important;
+    stroke: rgba(6, 182, 212, 0.4) !important;
+    stroke-width: 2px !important;
+  }
+
+  // Cluster/subgraph labels
+  g.cluster span.nodeLabel {
+    color: #67e8f9 !important;       // cyan-300
+    font-weight: 700 !important;
+    font-size: 14px !important;
+  }
+
+  // Edge lines
+  .edge-pattern-solid {
+    stroke: #94a3b8 !important;      // slate-400
+    stroke-width: 2px !important;
+  }
+
+  // Arrowheads
+  marker path {
+    fill: #94a3b8 !important;
+  }
+
+  // Edge labels
+  .edgeLabel span {
+    color: #cbd5e1 !important;
+    background: #0a0a0f !important;
+  }
+
+  // State diagram
+  g.statediagram-state rect {
+    fill: #1e293b !important;
+    stroke: #06b6d4 !important;
+  }
+}

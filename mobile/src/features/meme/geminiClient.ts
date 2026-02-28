@@ -39,11 +39,15 @@ export class GeminiClient {
     return `${GEMINI_BASE_URL}/${GEMINI_MODEL_ID}:generateContent?key=${apiKey}`;
   }
 
-  async generateImage(prompt: string): Promise<GenerateImageResult> {
+  async generateImage(
+    prompt: string,
+    resolution?: string,
+  ): Promise<GenerateImageResult> {
     const url = GeminiClient.buildApiUrl(this.apiKey);
     const request = buildGenerateRequest(prompt, {
       responseMimeType: "image/png",
       responseModalities: ["Text", "Image"],
+      ...(resolution && { imageConfig: { imageSize: resolution } }),
     });
 
     const response = await fetch(url, {

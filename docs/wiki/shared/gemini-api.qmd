@@ -1,0 +1,178 @@
+---
+title: "Gemini API Reference"
+---
+
+## Model
+
+NanoMeme uses **Nano Banana 2** (`gemini-2.0-flash-exp`) for image generation via the Gemini REST API.
+
+| Property | Value |
+|----------|-------|
+| Model ID | `gemini-2.0-flash-exp` |
+| Capability | Text-to-image generation |
+| Text rendering | Near-zero error rate |
+| Response format | Base64 PNG in JSON |
+
+## API Endpoint
+
+```
+POST https://generativelanguage.googleapis.com/v1beta/models/{modelId}:generateContent?key={apiKey}
+```
+
+## Request Structure
+
+Both platforms send identical JSON payloads:
+
+```json
+{
+  "contents": [
+    {
+      "parts": [
+        { "text": "A photorealistic portrait of..." }
+      ],
+      "role": "user"
+    }
+  ],
+  "generationConfig": {
+    "responseMimeType": "image/png",
+    "responseModalities": ["Text", "Image"]
+  }
+}
+```
+
+### Platform Implementation
+
+::: {.panel-tabset}
+
+## Swift (macOS)
+
+```swift
+struct GenerateContentRequest: Encodable {
+    let contents: [Content]
+    let generationConfig: GenerationConfig?
+}
+
+let request = GenerateContentRequest(
+    contents: [Content(parts: [.text(prompt)], role: "user")],
+    generationConfig: GenerationConfig(
+        responseMimeType: "image/png",
+        responseModalities: ["Text", "Image"]
+    )
+)
+```
+
+## TypeScript (Mobile)
+
+```typescript
+interface GenerateContentRequest {
+  contents: Content[];
+  generationConfig?: GenerationConfig;
+}
+
+function buildGenerateRequest(
+  prompt: string,
+  config?: Partial<GenerationConfig>,
+): GenerateContentRequest {
+  return {
+    contents: [{ parts: [{ text: prompt }], role: "user" }],
+    generationConfig: {
+      responseMimeType: "image/png",
+      responseModalities: ["Text", "Image"],
+      ...config,
+    },
+  };
+}
+```
+
+:::
+
+## Response Structure
+
+```json
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "<base64-encoded-image>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+The image is extracted by finding the first `InlineDataPart` in the response candidates.
+
+## Error Handling
+
+### PROHIBITED_CONTENT
+
+The Gemini API rejects prompts referencing copyrighted characters. The error response includes:
+
+```json
+{
+  "error": {
+    "message": "Content generation blocked due to safety filters",
+    "status": "PROHIBITED_CONTENT",
+    "code": 400
+  }
+}
+```
+
+::: {.panel-tabset}
+
+## Swift
+
+```swift
+struct GeminiAPIError: LocalizedError {
+    let message: String
+    let status: String
+    let httpStatusCode: Int
+
+    var isProhibitedContent: Bool {
+        status == "PROHIBITED_CONTENT"
+    }
+}
+```
+
+## TypeScript
+
+```typescript
+class GeminiAPIError extends Error {
+  constructor(
+    message: string,
+    public readonly status: string,
+    public readonly httpStatusCode: number,
+  ) { super(message); }
+
+  get isProhibitedContent(): boolean {
+    return this.status === "PROHIBITED_CONTENT";
+  }
+}
+```
+
+:::
+
+### Copyright-Safe Yoda Prompt
+
+To avoid PROHIBITED_CONTENT rejections, the Yoda prompt uses only physical traits without IP-specific names:
+
+> A photorealistic portrait of a small, ancient humanoid alien elder, approximately 66 centimeters tall, with bright green deeply wrinkled skin. Large pointed ears extending sideways from the head...
+
+The overlay text "Make or make not. There is no buy" is a play on the original quote, used for parody/commentary purposes.
+
+## API Key Security
+
+| Platform | Storage | Mechanism |
+|----------|---------|-----------|
+| macOS | Keychain | `Security.framework` with service ID |
+| Mobile | SecureStore | `expo-secure-store` (iOS Keychain / Android Keystore) |
+| Fallback | Environment | `GEMINI_API_KEY` env var (macOS only) |
+
+Both platforms encrypt API keys at rest using hardware-backed security. Neither stores keys in plain text (no UserDefaults, no AsyncStorage).

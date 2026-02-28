@@ -1,0 +1,139 @@
+/*-- scss:defaults --*/
+
+// KaosMaps Light Mode — optimized green tones for contrast
+$body-bg: #fafbfc !default;
+$body-color: #1a1a2e !default;
+$link-color: #0891b2 !default;  // cyan-600 for better contrast on light bg
+$font-family-sans-serif: "Inter", system-ui, -apple-system, sans-serif !default;
+
+// KaosMaps brand colors — light mode optimized
+$primary: #0891b2 !default;      // cyan-600 (darker than brand cyan for contrast)
+$success: #15803d !default;      // green-700 (much better contrast than #22c55e)
+$info: #0d9488 !default;         // teal-600 (darker than brand teal)
+$warning: #ea580c !default;      // orange-600
+$danger: #be185d !default;       // pink-700 (darker magenta)
+
+// Sidebar
+$sidebar-bg: #f1f5f9 !default;
+$sidebar-fg: #1e293b !default;
+
+// Code blocks
+$code-block-bg: #f8fafc !default;
+$code-bg: #f1f5f9 !default;
+$code-color: #0891b2 !default;
+
+// Navbar — dark brand header
+$navbar-bg: #0a0a0f !default;
+$navbar-fg: #e2e8f0 !default;
+
+/*-- scss:rules --*/
+
+// KaosMaps glow accent on active nav items
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #06b6d4 !important;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+// Sidebar active item
+.sidebar .sidebar-item-text.active {
+  color: #0891b2;
+  font-weight: 600;
+}
+
+// Callout styling
+.callout-note {
+  border-left-color: #0891b2;
+}
+
+.callout-tip {
+  border-left-color: #15803d;
+}
+
+.callout-warning {
+  border-left-color: #ea580c;
+}
+
+.callout-important {
+  border-left-color: #be185d;
+}
+
+// Code annotation dots
+.code-annotation-anchor {
+  background-color: #0891b2;
+}
+
+// Footer
+.nav-footer {
+  background-color: #0a0a0f;
+  color: #94a3b8;
+}
+
+.nav-footer a {
+  color: #06b6d4;
+}
+
+// Interactive palette container styling
+.palette-container {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+// Mermaid diagram — high-contrast light mode
+// Quarto renders Mermaid as svg.mermaid-js with classes:
+//   - rect.basic.label-container (node backgrounds)
+//   - span.nodeLabel (node text)
+//   - direct child rects without class (cluster/subgraph backgrounds)
+//   - .edgePaths path (edge lines)
+svg.mermaid-js {
+  // Node backgrounds
+  rect.basic.label-container {
+    fill: #e0f2fe !important;        // sky-100
+    stroke: #0891b2 !important;      // cyan-600
+    stroke-width: 2px !important;
+  }
+
+  // Node text — must be dark for contrast on light node bg
+  span.nodeLabel {
+    color: #0f172a !important;       // slate-900
+  }
+
+  // Cluster/subgraph backgrounds (rects without class, direct children of cluster groups)
+  g.cluster > rect {
+    fill: #f0f9ff !important;        // sky-50
+    stroke: #0e7490 !important;      // cyan-700
+    stroke-width: 2px !important;
+  }
+
+  // Cluster/subgraph labels
+  g.cluster span.nodeLabel {
+    color: #0c4a6e !important;       // sky-900
+    font-weight: 700 !important;
+    font-size: 14px !important;
+  }
+
+  // Edge lines
+  .edge-pattern-solid {
+    stroke: #334155 !important;      // slate-700
+    stroke-width: 2px !important;
+  }
+
+  // Arrowheads
+  marker path {
+    fill: #334155 !important;
+  }
+
+  // Edge labels
+  .edgeLabel span {
+    color: #334155 !important;
+    background: #fafbfc !important;
+  }
+
+  // State diagram
+  g.statediagram-state rect {
+    fill: #e0f2fe !important;
+    stroke: #0891b2 !important;
+  }
+}

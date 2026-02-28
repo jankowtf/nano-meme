@@ -1,0 +1,173 @@
+---
+title: "Claude Code Remote Control"
+subtitle: "Control your terminal Claude Code session from any browser"
+---
+
+## What is Remote Control?
+
+Claude Code's **Remote Control** feature lets you control a Claude Code CLI session running in a terminal from a web browser. This means you can:
+
+- Start a Claude session on a powerful machine (or a remote server)
+- Connect to it from your phone, tablet, or any browser
+- Approve tool calls, provide input, and monitor progress remotely
+
+## Prerequisites
+
+| Requirement | Details |
+|-------------|---------|
+| Claude Code CLI | Latest version installed (`claude` command available) |
+| Anthropic Plan | Max plan (Pro being rolled out) |
+| Network | Outbound HTTPS only — no port forwarding needed |
+| Browser | Any modern browser on any device |
+
+## Quick Start
+
+### Option 1: Start a New Remote Session
+
+```bash
+claude --remote-control
+```
+
+This starts Claude Code and immediately displays:
+
+1. A **URL** you can open in any browser
+2. A **QR code** you can scan with your phone
+
+### Option 2: Convert Existing Session
+
+If you already have a Claude Code session running:
+
+1. Type `/remote-control` (or `/rc` for short) in the Claude Code prompt
+2. The URL and QR code appear in your terminal
+3. Open the URL in your browser
+
+### Option 3: Enable for All Sessions
+
+```bash
+claude config set --global remote_control true
+```
+
+This makes every future Claude Code session start with remote control enabled automatically.
+
+## Step-by-Step Setup
+
+### Step 1: Start Claude Code with Remote Control
+
+```bash
+# Navigate to your project
+cd ~/Code/nano/nano-meme
+
+# Start with remote control
+claude --remote-control
+```
+
+You'll see output like:
+
+```
+Remote control URL: https://claude.ai/rc/abc123...
+Scan the QR code or open the URL above in your browser.
+
+█████████████████████████
+█████████████████████████
+████ ▄▄▄▄▄ █ ...  ████
+...
+```
+
+### Step 2: Connect from Browser
+
+Open the URL on any device. You'll see a web interface that mirrors your terminal session, allowing you to:
+
+- Read Claude's responses
+- Approve or deny tool calls (file edits, bash commands)
+- Type messages to Claude
+- Monitor progress
+
+### Step 3: Work Remotely
+
+Once connected, the browser interface provides full control. The terminal continues running — you can close the browser tab and reconnect anytime using the same URL (as long as the terminal session is still alive).
+
+## Persistent Sessions with tmux
+
+For long-running or headless sessions (e.g., on a VPS), combine remote control with `tmux`:
+
+```bash
+# SSH into your server
+ssh user@your-server.com
+
+# Start a tmux session
+tmux new -s claude-work
+
+# Start Claude with remote control
+cd ~/projects/my-app
+claude --remote-control
+
+# Detach from tmux: Ctrl+B, then D
+# The session keeps running!
+```
+
+Later, reconnect:
+
+```bash
+ssh user@your-server.com
+tmux attach -t claude-work
+```
+
+The remote control URL remains valid as long as the tmux session is alive.
+
+## SSH from Desktop App
+
+If you use the Claude Desktop app, you can SSH into a remote machine:
+
+1. Open Claude Desktop
+2. Start a new conversation
+3. Use the terminal integration to SSH into your server
+4. Run `claude --remote-control` on the remote machine
+
+## Important Limitations
+
+| Limitation | Details |
+|------------|---------|
+| Terminal must stay open | If the terminal process exits, the remote session ends |
+| Network timeout | ~10 minutes of network inactivity may disconnect (reconnect via same URL) |
+| One browser at a time | Only one browser can be connected to a session |
+| No file upload | You can't upload files through the remote interface |
+| Approval still needed | Tool calls still require your approval unless auto-approved |
+
+## What Can Be Automated
+
+From the setup steps above, here's what Claude Code can do itself vs. what requires manual action:
+
+| Step | Automated? | Notes |
+|------|-----------|-------|
+| Install Claude Code CLI | Manual | Requires `npm install -g @anthropic-ai/claude-code` |
+| Navigate to project | Automated | Claude can `cd` to the project |
+| Start `claude --remote-control` | **Requires session restart** | Current session must end and restart with the flag |
+| Enable global config | Automated | `claude config set --global remote_control true` |
+| Generate QR code | Automatic | Displayed by Claude Code on startup |
+| Open browser URL | Manual | User must scan QR or click URL |
+| Approve tool calls | Manual | User approves via browser interface |
+
+::: {.callout-important}
+## Session Restart Required
+To enable remote control for the current session, the Claude Code process must be restarted with the `--remote-control` flag. This cannot be enabled mid-session unless using the `/rc` slash command.
+:::
+
+## Recommended Workflow
+
+For NanoMeme development, the ideal remote control setup is:
+
+```bash
+# Terminal 1: Start persistent session
+tmux new -s nanomeme
+cd ~/Code/nano/nano-meme
+claude --remote-control
+
+# Scan QR code with phone
+# Now you can monitor and approve from your phone
+# while Claude works on the codebase
+
+# Detach: Ctrl+B, D
+# Reattach later: tmux attach -t nanomeme
+```
+
+This lets you walk away from your desk while Claude continues working — approving tool calls from your phone when needed.

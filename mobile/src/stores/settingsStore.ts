@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { mmkvStorage } from "./mmkvStorage";
 import type { Resolution, AspectRatio } from "../utils/constants";
 
 interface SettingsState {
@@ -18,11 +20,19 @@ const initialState = {
   autoOverlayText: true,
 };
 
-export const useSettingsStore = create<SettingsState>()((set) => ({
-  ...initialState,
+export const useSettingsStore = create<SettingsState>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
-  setDefaultResolution: (resolution) => set({ defaultResolution: resolution }),
-  setDefaultAspectRatio: (ratio) => set({ defaultAspectRatio: ratio }),
-  setAutoOverlayText: (value) => set({ autoOverlayText: value }),
-  reset: () => set(initialState),
-}));
+      setDefaultResolution: (resolution) => set({ defaultResolution: resolution }),
+      setDefaultAspectRatio: (ratio) => set({ defaultAspectRatio: ratio }),
+      setAutoOverlayText: (value) => set({ autoOverlayText: value }),
+      reset: () => set(initialState),
+    }),
+    {
+      name: "settings-store",
+      storage: createJSONStorage(() => mmkvStorage),
+    },
+  ),
+);

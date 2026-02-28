@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>State Management – NanoMeme Compendium</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../mobile/ui-screens.html" rel="next">
+<link href="../mobile/gemini-client.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a17e18fdf56099d4f6da1e105f33a53.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-aa645de928bfe52d1c8f0187957e6c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ff62c383d98b93d6d6d8f1682febd9a5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-aa645de928bfe52d1c8f0187957e6c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<meta name="mermaid-theme" content="neutral">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">NanoMeme Compendium</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../macos/index.html"> 
+<span class="menu-text">macOS App</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../mobile/index.html"> 
+<span class="menu-text">Mobile App</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../shared/index.html"> 
+<span class="menu-text">Shared</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../tutorials/remote-control.html"> 
+<span class="menu-text">Tutorials</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jankowtf/nano-meme"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../mobile/state-management.html">Implementation</a></li><li class="breadcrumb-item"><a href="../mobile/state-management.html">State Management</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mobile/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mobile App (Expo + React Native)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Architecture</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mobile/architecture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mobile Architecture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mobile/gemini-client.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gemini API Client</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Implementation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mobile/state-management.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">State Management</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mobile/ui-screens.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">UI Screens</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#store-architecture" id="toc-store-architecture" class="nav-link active" data-scroll-target="#store-architecture">Store Architecture</a></li>
+  <li><a href="#meme-store" id="toc-meme-store" class="nav-link" data-scroll-target="#meme-store">Meme Store</a>
+  <ul class="collapse">
+  <li><a href="#generation-lifecycle" id="toc-generation-lifecycle" class="nav-link" data-scroll-target="#generation-lifecycle">Generation Lifecycle</a></li>
+  <li><a href="#history-item" id="toc-history-item" class="nav-link" data-scroll-target="#history-item">History Item</a></li>
+  </ul></li>
+  <li><a href="#settings-store" id="toc-settings-store" class="nav-link" data-scroll-target="#settings-store">Settings Store</a></li>
+  <li><a href="#secure-storage" id="toc-secure-storage" class="nav-link" data-scroll-target="#secure-storage">Secure Storage</a></li>
+  <li><a href="#design-decisions" id="toc-design-decisions" class="nav-link" data-scroll-target="#design-decisions">Design Decisions</a>
+  <ul class="collapse">
+  <li><a href="#zustand-v5-not-redux-not-context" id="toc-zustand-v5-not-redux-not-context" class="nav-link" data-scroll-target="#zustand-v5-not-redux-not-context">Zustand v5 (not Redux, not Context)</a></li>
+  <li><a href="#two-stores-not-one" id="toc-two-stores-not-one" class="nav-link" data-scroll-target="#two-stores-not-one">Two Stores (not one)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../mobile/state-management.html">Implementation</a></li><li class="breadcrumb-item"><a href="../mobile/state-management.html">State Management</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">State Management</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="store-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="store-architecture">Store Architecture</h2>
+<p>NanoMeme uses <strong>Zustand v5</strong> for state management — two focused stores with clear boundaries:</p>
+<div class="cell" data-layout-align="default">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1"></a>graph TD</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    MS[memeStore] --&gt; G[Generation State]</span>
+<span id="cb1-3"><a href="#cb1-3"></a>    MS --&gt; H[History]</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    SS[settingsStore] --&gt; R[Resolution]</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    SS --&gt; A[Aspect Ratio]</span>
+<span id="cb1-6"><a href="#cb1-6"></a>    SS --&gt; O[Auto Overlay]</span>
+<span id="cb1-7"><a href="#cb1-7"></a>    SK[useSecureStorage] --&gt; K[API Key in SecureStore]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    MS[memeStore] --&gt; G[Generation State]
+    MS --&gt; H[History]
+    SS[settingsStore] --&gt; R[Resolution]
+    SS --&gt; A[Aspect Ratio]
+    SS --&gt; O[Auto Overlay]
+    SK[useSecureStorage] --&gt; K[API Key in SecureStore]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Store</th>
+<th>Scope</th>
+<th>Persistence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>memeStore</code></td>
+<td>Generation workflow + history</td>
+<td>In-memory</td>
+</tr>
+<tr class="even">
+<td><code>settingsStore</code></td>
+<td>User preferences</td>
+<td>In-memory</td>
+</tr>
+<tr class="odd">
+<td><code>useSecureStorage</code></td>
+<td>API key</td>
+<td><code>expo-secure-store</code> (encrypted)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="meme-store" class="level2">
+<h2 class="anchored" data-anchor-id="meme-store">Meme Store</h2>
+<p>The primary store manages the generation lifecycle and meme history:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource typescript number-lines code-with-copy"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">interface</span> MemeState {</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  isGenerating<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  currentPrompt<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>  overlayText<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  currentImageUri<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span><span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  lastError<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span><span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  history<span class="op">:</span> MemeHistoryItem[]<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  setPrompt<span class="op">:</span> (prompt<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>  setOverlayText<span class="op">:</span> (text<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  startGeneration<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>  completeGeneration<span class="op">:</span> (imageUri<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  failGeneration<span class="op">:</span> (error<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>  toggleFavorite<span class="op">:</span> (id<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>  deleteFromHistory<span class="op">:</span> (id<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>  reset<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="generation-lifecycle" class="level3">
+<h3 class="anchored" data-anchor-id="generation-lifecycle">Generation Lifecycle</h3>
+<div class="cell" data-layout-align="default">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1"></a>stateDiagram-v2</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    [*] --&gt; Idle</span>
+<span id="cb3-3"><a href="#cb3-3"></a>    Idle --&gt; Generating : startGeneration()</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    Generating --&gt; Result : completeGeneration(uri)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    Generating --&gt; Idle : failGeneration(error)</span>
+<span id="cb3-6"><a href="#cb3-6"></a>    Result --&gt; Idle : reset()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+    [*] --&gt; Idle
+    Idle --&gt; Generating : startGeneration()
+    Generating --&gt; Result : completeGeneration(uri)
+    Generating --&gt; Idle : failGeneration(error)
+    Result --&gt; Idle : reset()
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>On successful generation, a <code>MemeHistoryItem</code> is prepended to the history array:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource typescript number-lines code-with-copy"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1"></a>completeGeneration<span class="op">:</span> (imageUri) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="kw">const</span> { currentPrompt<span class="op">,</span> overlayText<span class="op">,</span> history } <span class="op">=</span> <span class="kw">get</span>()<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="kw">const</span> item<span class="op">:</span> MemeHistoryItem <span class="op">=</span> {</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    id<span class="op">:</span> <span class="bu">String</span>(nextId<span class="op">++</span>)<span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>    prompt<span class="op">:</span> currentPrompt<span class="op">,</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>    overlayText<span class="op">,</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>    imageUri<span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    createdAt<span class="op">:</span> <span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toISOString</span>()<span class="op">,</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>    isFavorite<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>  }<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>  <span class="kw">set</span>({</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    isGenerating<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>    currentImageUri<span class="op">:</span> imageUri<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>    history<span class="op">:</span> [item<span class="op">,</span> <span class="op">...</span>history]<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>  })<span class="op">;</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>}<span class="op">,</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="history-item" class="level3">
+<h3 class="anchored" data-anchor-id="history-item">History Item</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource typescript number-lines code-with-copy"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">interface</span> MemeHistoryItem {</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>  prompt<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  overlayText<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>  imageUri<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  createdAt<span class="op">:</span> <span class="dt">string</span><span class="op">;</span>     <span class="co">// ISO 8601</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  isFavorite<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="settings-store" class="level2">
+<h2 class="anchored" data-anchor-id="settings-store">Settings Store</h2>
+<p>Simple preference store with sensible defaults:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource typescript number-lines code-with-copy"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">const</span> initialState <span class="op">=</span> {</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  defaultResolution<span class="op">:</span> <span class="st">"1K"</span> <span class="im">as</span> Resolution<span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  defaultAspectRatio<span class="op">:</span> <span class="st">"1:1"</span> <span class="im">as</span> AspectRatio<span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  autoOverlayText<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>}<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="im">export</span> <span class="kw">const</span> useSettingsStore <span class="op">=</span> <span class="fu">create</span><span class="op">&lt;</span>SettingsState<span class="op">&gt;</span>()((<span class="kw">set</span>) <span class="kw">=&gt;</span> ({</span>
+<span id="cb6-8"><a href="#cb6-8"></a>  <span class="op">...</span>initialState<span class="op">,</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>  setDefaultResolution<span class="op">:</span> (resolution) <span class="kw">=&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="kw">set</span>({ defaultResolution<span class="op">:</span> resolution })<span class="op">,</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>  setDefaultAspectRatio<span class="op">:</span> (ratio) <span class="kw">=&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>    <span class="kw">set</span>({ defaultAspectRatio<span class="op">:</span> ratio })<span class="op">,</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>  setAutoOverlayText<span class="op">:</span> (value) <span class="kw">=&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>    <span class="kw">set</span>({ autoOverlayText<span class="op">:</span> value })<span class="op">,</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a>  reset<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="kw">set</span>(initialState)<span class="op">,</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>}))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="secure-storage" class="level2">
+<h2 class="anchored" data-anchor-id="secure-storage">Secure Storage</h2>
+<p>API key handling uses <code>expo-secure-store</code> for hardware-backed encryption:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource typescript number-lines code-with-copy"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> SecureStore <span class="im">from</span> <span class="st">"expo-secure-store"</span><span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">const</span> API_KEY_STORAGE_KEY <span class="op">=</span> <span class="st">"gemini-api-key"</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">getApiKey</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span><span class="op">&gt;</span> {</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="cf">return</span> SecureStore<span class="op">.</span><span class="fu">getItemAsync</span>(API_KEY_STORAGE_KEY)<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>}</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">setApiKey</span>(key<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> {</span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="cf">await</span> SecureStore<span class="op">.</span><span class="fu">setItemAsync</span>(API_KEY_STORAGE_KEY<span class="op">,</span> key)<span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>}</span>
+<span id="cb7-12"><a href="#cb7-12"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">deleteApiKey</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> {</span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="cf">await</span> SecureStore<span class="op">.</span><span class="fu">deleteItemAsync</span>(API_KEY_STORAGE_KEY)<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Why not AsyncStorage?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>expo-secure-store</code> encrypts data using the device’s hardware security module (Keychain on iOS, Keystore on Android). API keys should never be stored in plain text via AsyncStorage or MMKV.</p>
+</div>
+</div>
+</section>
+<section id="design-decisions" class="level2">
+<h2 class="anchored" data-anchor-id="design-decisions">Design Decisions</h2>
+<section id="zustand-v5-not-redux-not-context" class="level3">
+<h3 class="anchored" data-anchor-id="zustand-v5-not-redux-not-context">Zustand v5 (not Redux, not Context)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 18%">
+<col style="width: 30%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Criterion</th>
+<th>Zustand</th>
+<th>Redux Toolkit</th>
+<th>React Context</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Boilerplate</td>
+<td>Minimal</td>
+<td>Moderate</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Performance</td>
+<td>Selective re-renders</td>
+<td>Needs <code>useSelector</code></td>
+<td>Re-renders entire tree</td>
+</tr>
+<tr class="odd">
+<td>Bundle size</td>
+<td>~2KB</td>
+<td>~30KB</td>
+<td>0 (built-in)</td>
+</tr>
+<tr class="even">
+<td>DevTools</td>
+<td>Optional middleware</td>
+<td>Built-in</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>Persistence</td>
+<td>Middleware</td>
+<td>Middleware</td>
+<td>Manual</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="two-stores-not-one" class="level3">
+<h3 class="anchored" data-anchor-id="two-stores-not-one">Two Stores (not one)</h3>
+<p>Separation prevents unnecessary re-renders. Changing resolution doesn’t cause the home screen’s generation UI to re-render, because they subscribe to different stores.</p>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../mobile/gemini-client.html" class="pagination-link" aria-label="Gemini API Client">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Gemini API Client</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../mobile/ui-screens.html" class="pagination-link" aria-label="UI Screens">
+        <span class="nav-page-text">UI Screens</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "State Management"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co">---</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="fu">## Store Architecture</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a>NanoMeme uses **Zustand v5** for state management — two focused stores with clear boundaries:</span>
+<span id="cb8-8"><a href="#cb8-8"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="in">```{mermaid}</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>graph TD</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    MS[memeStore] --&gt; G[Generation State]</span>
+<span id="cb8-14"><a href="#cb8-14"></a>    MS --&gt; H[History]</span>
+<span id="cb8-15"><a href="#cb8-15"></a>    SS[settingsStore] --&gt; R[Resolution]</span>
+<span id="cb8-16"><a href="#cb8-16"></a>    SS --&gt; A[Aspect Ratio]</span>
+<span id="cb8-17"><a href="#cb8-17"></a>    SS --&gt; O[Auto Overlay]</span>
+<span id="cb8-18"><a href="#cb8-18"></a>    SK[useSecureStorage] --&gt; K[API Key in SecureStore]</span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="in">```</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="pp">|</span> Store <span class="pp">|</span> Scope <span class="pp">|</span> Persistence <span class="pp">|</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="pp">|-------|-------|-------------|</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="pp">|</span> <span class="in">`memeStore`</span> <span class="pp">|</span> Generation workflow + history <span class="pp">|</span> In-memory <span class="pp">|</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="pp">|</span> <span class="in">`settingsStore`</span> <span class="pp">|</span> User preferences <span class="pp">|</span> In-memory <span class="pp">|</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="pp">|</span> <span class="in">`useSecureStorage`</span> <span class="pp">|</span> API key <span class="pp">|</span> <span class="in">`expo-secure-store`</span> (encrypted) <span class="pp">|</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="fu">## Meme Store</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a></span>
+<span id="cb8-29"><a href="#cb8-29"></a>The primary store manages the generation lifecycle and meme history:</span>
+<span id="cb8-30"><a href="#cb8-30"></a></span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="in">```typescript</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="kw">interface</span> MemeState {</span>
+<span id="cb8-33"><a href="#cb8-33"></a>  isGenerating<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb8-34"><a href="#cb8-34"></a>  currentPrompt<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb8-35"><a href="#cb8-35"></a>  overlayText<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb8-36"><a href="#cb8-36"></a>  currentImageUri<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span><span class="op">;</span></span>
+<span id="cb8-37"><a href="#cb8-37"></a>  lastError<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span><span class="op">;</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a>  history<span class="op">:</span> MemeHistoryItem[]<span class="op">;</span></span>
+<span id="cb8-39"><a href="#cb8-39"></a></span>
+<span id="cb8-40"><a href="#cb8-40"></a>  setPrompt<span class="op">:</span> (prompt<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-41"><a href="#cb8-41"></a>  setOverlayText<span class="op">:</span> (text<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>  startGeneration<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a>  completeGeneration<span class="op">:</span> (imageUri<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-44"><a href="#cb8-44"></a>  failGeneration<span class="op">:</span> (error<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a>  toggleFavorite<span class="op">:</span> (id<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-46"><a href="#cb8-46"></a>  deleteFromHistory<span class="op">:</span> (id<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-47"><a href="#cb8-47"></a>  reset<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb8-48"><a href="#cb8-48"></a>}</span>
+<span id="cb8-49"><a href="#cb8-49"></a><span class="in">```</span></span>
+<span id="cb8-50"><a href="#cb8-50"></a></span>
+<span id="cb8-51"><a href="#cb8-51"></a><span class="fu">### Generation Lifecycle</span></span>
+<span id="cb8-52"><a href="#cb8-52"></a></span>
+<span id="cb8-55"><a href="#cb8-55"></a><span class="in">```{mermaid}</span></span>
+<span id="cb8-56"><a href="#cb8-56"></a>stateDiagram-v2</span>
+<span id="cb8-57"><a href="#cb8-57"></a>    [<span class="ot">*</span>] --&gt; Idle</span>
+<span id="cb8-58"><a href="#cb8-58"></a>    Idle --&gt; Generating : startGeneration()</span>
+<span id="cb8-59"><a href="#cb8-59"></a>    Generating --&gt; Result : completeGeneration(uri)</span>
+<span id="cb8-60"><a href="#cb8-60"></a>    Generating --&gt; Idle : failGeneration(error)</span>
+<span id="cb8-61"><a href="#cb8-61"></a>    Result --&gt; Idle : <span class="fu">reset</span>()</span>
+<span id="cb8-62"><a href="#cb8-62"></a><span class="in">```</span></span>
+<span id="cb8-63"><a href="#cb8-63"></a></span>
+<span id="cb8-64"><a href="#cb8-64"></a>On successful generation, a <span class="in">`MemeHistoryItem`</span> is prepended to the history array:</span>
+<span id="cb8-65"><a href="#cb8-65"></a></span>
+<span id="cb8-66"><a href="#cb8-66"></a><span class="in">```typescript</span></span>
+<span id="cb8-67"><a href="#cb8-67"></a>completeGeneration<span class="op">:</span> (imageUri) <span class="kw">=&gt;</span> {</span>
+<span id="cb8-68"><a href="#cb8-68"></a>  <span class="kw">const</span> { currentPrompt<span class="op">,</span> overlayText<span class="op">,</span> history } <span class="op">=</span> <span class="kw">get</span>()<span class="op">;</span></span>
+<span id="cb8-69"><a href="#cb8-69"></a>  <span class="kw">const</span> item<span class="op">:</span> MemeHistoryItem <span class="op">=</span> {</span>
+<span id="cb8-70"><a href="#cb8-70"></a>    id<span class="op">:</span> <span class="bu">String</span>(nextId<span class="op">++</span>)<span class="op">,</span></span>
+<span id="cb8-71"><a href="#cb8-71"></a>    prompt<span class="op">:</span> currentPrompt<span class="op">,</span></span>
+<span id="cb8-72"><a href="#cb8-72"></a>    overlayText<span class="op">,</span></span>
+<span id="cb8-73"><a href="#cb8-73"></a>    imageUri<span class="op">,</span></span>
+<span id="cb8-74"><a href="#cb8-74"></a>    createdAt<span class="op">:</span> <span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toISOString</span>()<span class="op">,</span></span>
+<span id="cb8-75"><a href="#cb8-75"></a>    isFavorite<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb8-76"><a href="#cb8-76"></a>  }<span class="op">;</span></span>
+<span id="cb8-77"><a href="#cb8-77"></a>  <span class="kw">set</span>({</span>
+<span id="cb8-78"><a href="#cb8-78"></a>    isGenerating<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb8-79"><a href="#cb8-79"></a>    currentImageUri<span class="op">:</span> imageUri<span class="op">,</span></span>
+<span id="cb8-80"><a href="#cb8-80"></a>    history<span class="op">:</span> [item<span class="op">,</span> <span class="op">...</span>history]<span class="op">,</span></span>
+<span id="cb8-81"><a href="#cb8-81"></a>  })<span class="op">;</span></span>
+<span id="cb8-82"><a href="#cb8-82"></a>}<span class="op">,</span></span>
+<span id="cb8-83"><a href="#cb8-83"></a><span class="in">```</span></span>
+<span id="cb8-84"><a href="#cb8-84"></a></span>
+<span id="cb8-85"><a href="#cb8-85"></a><span class="fu">### History Item</span></span>
+<span id="cb8-86"><a href="#cb8-86"></a></span>
+<span id="cb8-87"><a href="#cb8-87"></a><span class="in">```typescript</span></span>
+<span id="cb8-88"><a href="#cb8-88"></a><span class="kw">interface</span> MemeHistoryItem {</span>
+<span id="cb8-89"><a href="#cb8-89"></a>  id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb8-90"><a href="#cb8-90"></a>  prompt<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb8-91"><a href="#cb8-91"></a>  overlayText<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb8-92"><a href="#cb8-92"></a>  imageUri<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb8-93"><a href="#cb8-93"></a>  createdAt<span class="op">:</span> <span class="dt">string</span><span class="op">;</span>     <span class="co">// ISO 8601</span></span>
+<span id="cb8-94"><a href="#cb8-94"></a>  isFavorite<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a>}</span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="in">```</span></span>
+<span id="cb8-97"><a href="#cb8-97"></a></span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="fu">## Settings Store</span></span>
+<span id="cb8-99"><a href="#cb8-99"></a></span>
+<span id="cb8-100"><a href="#cb8-100"></a>Simple preference store with sensible defaults:</span>
+<span id="cb8-101"><a href="#cb8-101"></a></span>
+<span id="cb8-102"><a href="#cb8-102"></a><span class="in">```typescript</span></span>
+<span id="cb8-103"><a href="#cb8-103"></a><span class="kw">const</span> initialState <span class="op">=</span> {</span>
+<span id="cb8-104"><a href="#cb8-104"></a>  defaultResolution<span class="op">:</span> <span class="st">"1K"</span> <span class="im">as</span> Resolution<span class="op">,</span></span>
+<span id="cb8-105"><a href="#cb8-105"></a>  defaultAspectRatio<span class="op">:</span> <span class="st">"1:1"</span> <span class="im">as</span> AspectRatio<span class="op">,</span></span>
+<span id="cb8-106"><a href="#cb8-106"></a>  autoOverlayText<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a>}<span class="op">;</span></span>
+<span id="cb8-108"><a href="#cb8-108"></a></span>
+<span id="cb8-109"><a href="#cb8-109"></a><span class="im">export</span> <span class="kw">const</span> useSettingsStore <span class="op">=</span> <span class="fu">create</span><span class="op">&lt;</span>SettingsState<span class="op">&gt;</span>()((<span class="kw">set</span>) <span class="kw">=&gt;</span> ({</span>
+<span id="cb8-110"><a href="#cb8-110"></a>  <span class="op">...</span>initialState<span class="op">,</span></span>
+<span id="cb8-111"><a href="#cb8-111"></a>  setDefaultResolution<span class="op">:</span> (resolution) <span class="kw">=&gt;</span></span>
+<span id="cb8-112"><a href="#cb8-112"></a>    <span class="kw">set</span>({ defaultResolution<span class="op">:</span> resolution })<span class="op">,</span></span>
+<span id="cb8-113"><a href="#cb8-113"></a>  setDefaultAspectRatio<span class="op">:</span> (ratio) <span class="kw">=&gt;</span></span>
+<span id="cb8-114"><a href="#cb8-114"></a>    <span class="kw">set</span>({ defaultAspectRatio<span class="op">:</span> ratio })<span class="op">,</span></span>
+<span id="cb8-115"><a href="#cb8-115"></a>  setAutoOverlayText<span class="op">:</span> (value) <span class="kw">=&gt;</span></span>
+<span id="cb8-116"><a href="#cb8-116"></a>    <span class="kw">set</span>({ autoOverlayText<span class="op">:</span> value })<span class="op">,</span></span>
+<span id="cb8-117"><a href="#cb8-117"></a>  reset<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="kw">set</span>(initialState)<span class="op">,</span></span>
+<span id="cb8-118"><a href="#cb8-118"></a>}))<span class="op">;</span></span>
+<span id="cb8-119"><a href="#cb8-119"></a><span class="in">```</span></span>
+<span id="cb8-120"><a href="#cb8-120"></a></span>
+<span id="cb8-121"><a href="#cb8-121"></a><span class="fu">## Secure Storage</span></span>
+<span id="cb8-122"><a href="#cb8-122"></a></span>
+<span id="cb8-123"><a href="#cb8-123"></a>API key handling uses <span class="in">`expo-secure-store`</span> for hardware-backed encryption:</span>
+<span id="cb8-124"><a href="#cb8-124"></a></span>
+<span id="cb8-125"><a href="#cb8-125"></a><span class="in">```typescript</span></span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> SecureStore <span class="im">from</span> <span class="st">"expo-secure-store"</span><span class="op">;</span></span>
+<span id="cb8-127"><a href="#cb8-127"></a></span>
+<span id="cb8-128"><a href="#cb8-128"></a><span class="kw">const</span> API_KEY_STORAGE_KEY <span class="op">=</span> <span class="st">"gemini-api-key"</span><span class="op">;</span></span>
+<span id="cb8-129"><a href="#cb8-129"></a></span>
+<span id="cb8-130"><a href="#cb8-130"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">getApiKey</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span><span class="op">&gt;</span> {</span>
+<span id="cb8-131"><a href="#cb8-131"></a>  <span class="cf">return</span> SecureStore<span class="op">.</span><span class="fu">getItemAsync</span>(API_KEY_STORAGE_KEY)<span class="op">;</span></span>
+<span id="cb8-132"><a href="#cb8-132"></a>}</span>
+<span id="cb8-133"><a href="#cb8-133"></a></span>
+<span id="cb8-134"><a href="#cb8-134"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">setApiKey</span>(key<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> {</span>
+<span id="cb8-135"><a href="#cb8-135"></a>  <span class="cf">await</span> SecureStore<span class="op">.</span><span class="fu">setItemAsync</span>(API_KEY_STORAGE_KEY<span class="op">,</span> key)<span class="op">;</span></span>
+<span id="cb8-136"><a href="#cb8-136"></a>}</span>
+<span id="cb8-137"><a href="#cb8-137"></a></span>
+<span id="cb8-138"><a href="#cb8-138"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">deleteApiKey</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> {</span>
+<span id="cb8-139"><a href="#cb8-139"></a>  <span class="cf">await</span> SecureStore<span class="op">.</span><span class="fu">deleteItemAsync</span>(API_KEY_STORAGE_KEY)<span class="op">;</span></span>
+<span id="cb8-140"><a href="#cb8-140"></a>}</span>
+<span id="cb8-141"><a href="#cb8-141"></a><span class="in">```</span></span>
+<span id="cb8-142"><a href="#cb8-142"></a></span>
+<span id="cb8-143"><a href="#cb8-143"></a>::: {.callout-tip}</span>
+<span id="cb8-144"><a href="#cb8-144"></a><span class="fu">## Why not AsyncStorage?</span></span>
+<span id="cb8-145"><a href="#cb8-145"></a><span class="in">`expo-secure-store`</span> encrypts data using the device's hardware security module (Keychain on iOS, Keystore on Android). API keys should never be stored in plain text via AsyncStorage or MMKV.</span>
+<span id="cb8-146"><a href="#cb8-146"></a>:::</span>
+<span id="cb8-147"><a href="#cb8-147"></a></span>
+<span id="cb8-148"><a href="#cb8-148"></a><span class="fu">## Design Decisions</span></span>
+<span id="cb8-149"><a href="#cb8-149"></a></span>
+<span id="cb8-150"><a href="#cb8-150"></a><span class="fu">### Zustand v5 (not Redux, not Context)</span></span>
+<span id="cb8-151"><a href="#cb8-151"></a></span>
+<span id="cb8-152"><a href="#cb8-152"></a><span class="pp">|</span> Criterion <span class="pp">|</span> Zustand <span class="pp">|</span> Redux Toolkit <span class="pp">|</span> React Context <span class="pp">|</span></span>
+<span id="cb8-153"><a href="#cb8-153"></a><span class="pp">|-----------|---------|---------------|---------------|</span></span>
+<span id="cb8-154"><a href="#cb8-154"></a><span class="pp">|</span> Boilerplate <span class="pp">|</span> Minimal <span class="pp">|</span> Moderate <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb8-155"><a href="#cb8-155"></a><span class="pp">|</span> Performance <span class="pp">|</span> Selective re-renders <span class="pp">|</span> Needs <span class="in">`useSelector`</span> <span class="pp">|</span> Re-renders entire tree <span class="pp">|</span></span>
+<span id="cb8-156"><a href="#cb8-156"></a><span class="pp">|</span> Bundle size <span class="pp">|</span> ~2KB <span class="pp">|</span> ~30KB <span class="pp">|</span> 0 (built-in) <span class="pp">|</span></span>
+<span id="cb8-157"><a href="#cb8-157"></a><span class="pp">|</span> DevTools <span class="pp">|</span> Optional middleware <span class="pp">|</span> Built-in <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb8-158"><a href="#cb8-158"></a><span class="pp">|</span> Persistence <span class="pp">|</span> Middleware <span class="pp">|</span> Middleware <span class="pp">|</span> Manual <span class="pp">|</span></span>
+<span id="cb8-159"><a href="#cb8-159"></a></span>
+<span id="cb8-160"><a href="#cb8-160"></a><span class="fu">### Two Stores (not one)</span></span>
+<span id="cb8-161"><a href="#cb8-161"></a></span>
+<span id="cb8-162"><a href="#cb8-162"></a>Separation prevents unnecessary re-renders. Changing resolution doesn't cause the home screen's generation UI to re-render, because they subscribe to different stores.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>NanoMeme Compendium</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a> by KaosMaps</p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jankowtf/nano-meme">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

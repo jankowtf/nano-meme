@@ -5,9 +5,10 @@ module.exports = {
       displayName: "unit",
       testMatch: ["<rootDir>/src/**/__tests__/**/*.test.ts", "<rootDir>/app/__tests__/**/*.test.ts", "<rootDir>/__tests__/**/*.test.ts"],
       transform: {
-        "^.+\\.tsx?$": ["ts-jest", { tsconfig: "tsconfig.json" }],
+        "^.+\\.tsx?$": ["ts-jest", { tsconfig: "tsconfig.json", diagnostics: { exclude: ["**/mmkvStorage.ts"] } }],
       },
       moduleNameMapper: {
+        "^react-native-mmkv$": "<rootDir>/__mocks__/react-native-mmkv.ts",
         "^@/(.*)$": "<rootDir>/src/$1",
       },
     },

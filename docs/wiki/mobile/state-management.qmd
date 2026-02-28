@@ -1,0 +1,158 @@
+---
+title: "State Management"
+---
+
+## Store Architecture
+
+NanoMeme uses **Zustand v5** for state management — two focused stores with clear boundaries:
+
+```{mermaid}
+graph TD
+    MS[memeStore] --> G[Generation State]
+    MS --> H[History]
+    SS[settingsStore] --> R[Resolution]
+    SS --> A[Aspect Ratio]
+    SS --> O[Auto Overlay]
+    SK[useSecureStorage] --> K[API Key in SecureStore]
+```
+
+| Store | Scope | Persistence |
+|-------|-------|-------------|
+| `memeStore` | Generation workflow + history | In-memory |
+| `settingsStore` | User preferences | In-memory |
+| `useSecureStorage` | API key | `expo-secure-store` (encrypted) |
+
+## Meme Store
+
+The primary store manages the generation lifecycle and meme history:
+
+```typescript
+interface MemeState {
+  isGenerating: boolean;
+  currentPrompt: string;
+  overlayText: string;
+  currentImageUri: string | null;
+  lastError: string | null;
+  history: MemeHistoryItem[];
+
+  setPrompt: (prompt: string) => void;
+  setOverlayText: (text: string) => void;
+  startGeneration: () => void;
+  completeGeneration: (imageUri: string) => void;
+  failGeneration: (error: string) => void;
+  toggleFavorite: (id: string) => void;
+  deleteFromHistory: (id: string) => void;
+  reset: () => void;
+}
+```
+
+### Generation Lifecycle
+
+```{mermaid}
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Generating : startGeneration()
+    Generating --> Result : completeGeneration(uri)
+    Generating --> Idle : failGeneration(error)
+    Result --> Idle : reset()
+```
+
+On successful generation, a `MemeHistoryItem` is prepended to the history array:
+
+```typescript
+completeGeneration: (imageUri) => {
+  const { currentPrompt, overlayText, history } = get();
+  const item: MemeHistoryItem = {
+    id: String(nextId++),
+    prompt: currentPrompt,
+    overlayText,
+    imageUri,
+    createdAt: new Date().toISOString(),
+    isFavorite: false,
+  };
+  set({
+    isGenerating: false,
+    currentImageUri: imageUri,
+    history: [item, ...history],
+  });
+},
+```
+
+### History Item
+
+```typescript
+interface MemeHistoryItem {
+  id: string;
+  prompt: string;
+  overlayText: string;
+  imageUri: string;
+  createdAt: string;     // ISO 8601
+  isFavorite: boolean;
+}
+```
+
+## Settings Store
+
+Simple preference store with sensible defaults:
+
+```typescript
+const initialState = {
+  defaultResolution: "1K" as Resolution,
+  defaultAspectRatio: "1:1" as AspectRatio,
+  autoOverlayText: true,
+};
+
+export const useSettingsStore = create<SettingsState>()((set) => ({
+  ...initialState,
+  setDefaultResolution: (resolution) =>
+    set({ defaultResolution: resolution }),
+  setDefaultAspectRatio: (ratio) =>
+    set({ defaultAspectRatio: ratio }),
+  setAutoOverlayText: (value) =>
+    set({ autoOverlayText: value }),
+  reset: () => set(initialState),
+}));
+```
+
+## Secure Storage
+
+API key handling uses `expo-secure-store` for hardware-backed encryption:
+
+```typescript
+import * as SecureStore from "expo-secure-store";
+
+const API_KEY_STORAGE_KEY = "gemini-api-key";
+
+export async function getApiKey(): Promise<string | null> {
+  return SecureStore.getItemAsync(API_KEY_STORAGE_KEY);
+}
+
+export async function setApiKey(key: string): Promise<void> {
+  await SecureStore.setItemAsync(API_KEY_STORAGE_KEY, key);
+}
+
+export async function deleteApiKey(): Promise<void> {
+  await SecureStore.deleteItemAsync(API_KEY_STORAGE_KEY);
+}
+```
+
+::: {.callout-tip}
+## Why not AsyncStorage?
+`expo-secure-store` encrypts data using the device's hardware security module (Keychain on iOS, Keystore on Android). API keys should never be stored in plain text via AsyncStorage or MMKV.
+:::
+
+## Design Decisions
+
+### Zustand v5 (not Redux, not Context)
+
+| Criterion | Zustand | Redux Toolkit | React Context |
+|-----------|---------|---------------|---------------|
+| Boilerplate | Minimal | Moderate | None |
+| Performance | Selective re-renders | Needs `useSelector` | Re-renders entire tree |
+| Bundle size | ~2KB | ~30KB | 0 (built-in) |
+| DevTools | Optional middleware | Built-in | None |
+| Persistence | Middleware | Middleware | Manual |
+
+### Two Stores (not one)
+
+Separation prevents unnecessary re-renders. Changing resolution doesn't cause the home screen's generation UI to re-render, because they subscribe to different stores.

@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import NanoDesignKit
+import NanoStorageKit
 
 @MainActor
 public final class SettingsWindowController {
@@ -51,6 +52,7 @@ struct SettingsView: View {
 
     @State private var apiKeyInput = ""
     @State private var showKey = false
+    @State private var showInDock: Bool = SettingsStore.shared.showInDock
 
     var body: some View {
         TabView {
@@ -69,8 +71,11 @@ struct SettingsView: View {
 
     private var generalTab: some View {
         Form {
-            Toggle("Launch at Login", isOn: .constant(false))
-            Toggle("Show in Dock", isOn: .constant(false))
+            Toggle("Show in Dock", isOn: $showInDock)
+                .onChange(of: showInDock) { _, newValue in
+                    SettingsStore.shared.showInDock = newValue
+                    NSApp.setActivationPolicy(newValue ? .regular : .accessory)
+                }
         }
         .formStyle(.grouped)
     }
@@ -122,7 +127,13 @@ struct SettingsView: View {
                 Text("2K").tag("2K")
                 Text("4K").tag("4K")
             }
+            .onChange(of: state.selectedResolution) { _, newValue in
+                SettingsStore.shared.defaultResolution = newValue
+            }
         }
         .formStyle(.grouped)
+        .onAppear {
+            state.selectedResolution = SettingsStore.shared.defaultResolution
+        }
     }
 }

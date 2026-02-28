@@ -1,0 +1,111 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "NanoMeme Compendium"
+  description: "How we built NanoMeme — a meme generator with Nano Banana 2"
+  search:
+    location: navbar
+    type: overlay
+  reader-mode: true
+  page-navigation: true
+
+  navbar:
+    background: "#0a0a0f"
+    foreground: "#e2e8f0"
+    search: true
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "macOS App"
+        href: macos/index.qmd
+      - text: "Mobile App"
+        href: mobile/index.qmd
+      - text: "Shared"
+        href: shared/index.qmd
+      - text: "Tutorials"
+        href: tutorials/remote-control.qmd
+    right:
+      - icon: github
+        href: https://github.com/jankowtf/nano-meme
+
+  sidebar:
+    - title: "macOS App"
+      style: "docked"
+      collapse-level: 2
+      contents:
+        - macos/index.qmd
+        - section: "Architecture"
+          contents:
+            - macos/architecture.qmd
+            - macos/nanocore.qmd
+        - section: "Domain"
+          contents:
+            - macos/nanoimagekit.qmd
+            - macos/nanostoragekit.qmd
+        - section: "App Layer"
+          contents:
+            - macos/app-layer.qmd
+            - macos/build-pipeline.qmd
+
+    - title: "Mobile App"
+      style: "docked"
+      collapse-level: 2
+      contents:
+        - mobile/index.qmd
+        - section: "Architecture"
+          contents:
+            - mobile/architecture.qmd
+            - mobile/gemini-client.qmd
+        - section: "Implementation"
+          contents:
+            - mobile/state-management.qmd
+            - mobile/ui-screens.qmd
+
+    - title: "Shared"
+      style: "docked"
+      contents:
+        - shared/index.qmd
+        - shared/brand-design.qmd
+        - shared/gemini-api.qmd
+
+    - title: "Tutorials"
+      style: "docked"
+      contents:
+        - tutorials/remote-control.qmd
+
+  page-footer:
+    left: "NanoMeme Compendium"
+    center: "Built with [Quarto](https://quarto.org) by KaosMaps"
+    right:
+      - icon: github
+        href: https://github.com/jankowtf/nano-meme
+
+format:
+  html:
+    theme:
+      light:
+        - cosmo
+        - custom-light.scss
+      dark:
+        - slate
+        - custom-dark.scss
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    code-fold: true
+    code-summary: "Show code"
+    code-tools: true
+    code-copy: true
+    code-line-numbers: true
+    code-annotations: hover
+    highlight-style: github
+    anchor-sections: true
+    smooth-scroll: true
+    mermaid:
+      theme: neutral
+
+execute:
+  freeze: auto
+  echo: true

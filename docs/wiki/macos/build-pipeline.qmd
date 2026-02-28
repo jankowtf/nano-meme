@@ -1,0 +1,87 @@
+---
+title: "Build Pipeline"
+---
+
+## justfile
+
+The entire build lifecycle is managed by a `justfile` with these recipes:
+
+```makefile
+# Debug build
+build:
+    swift build
+
+# Build and run debug binary
+run: build
+    .build/debug/NanoMeme
+
+# Run all tests
+test:
+    swift test
+
+# Release build (arm64)
+build-release:
+    swift build -c release
+
+# Create .app bundle from release binary
+bundle: build-release
+    # Copy binary to .app/Contents/MacOS/
+    # Copy Info.plist, set version and git SHA
+    # Copy AppIcon.icns if available
+
+# Ad-hoc codesign the .app bundle
+sign: bundle
+    codesign --force --deep --sign - \
+        --entitlements Resources/entitlements.plist \
+        --options runtime \
+        "build/NanoMeme.app"
+
+# Install to /Applications
+install: sign
+    cp -R build/NanoMeme.app /Applications/
+
+# Full dev cycle: kill + rebuild + install + launch
+reinstall:
+    pkill -f NanoMeme || true
+    just install
+    open /Applications/NanoMeme.app
+```
+
+## Entitlements
+
+Minimal entitlements --- only network access:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.network.client</key>
+    <true/>
+</dict>
+</plist>
+```
+
+## Info.plist
+
+Key settings:
+
+| Key | Value | Purpose |
+|-----|-------|---------|
+| `LSUIElement` | `true` | No Dock icon |
+| `LSMinimumSystemVersion` | `14.0` | macOS Sonoma+ |
+| `LSApplicationCategoryType` | `public.app-category.graphics-design` | App Store category |
+| `CFBundleIdentifier` | `com.kaosmaps.nanomeme` | Bundle ID |
+
+## Build Flow
+
+```{mermaid}
+graph LR
+    B[swift build] --> T[swift test]
+    T --> BR[build-release]
+    BR --> BU[bundle .app]
+    BU --> S[codesign]
+    S --> I[install to /Applications]
+    I --> O[open app]
+```
+
+The entire flow from source to running app takes ~15 seconds on Apple Silicon.

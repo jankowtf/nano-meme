@@ -1,0 +1,117 @@
+---
+title: "Gemini API Client"
+---
+
+## Type System
+
+The TypeScript types mirror the macOS Swift `Codable` types exactly:
+
+```typescript
+interface TextPart { text: string; }
+interface InlineDataPart {
+  inlineData: { mimeType: string; data: string; };
+}
+type Part = TextPart | InlineDataPart;
+
+interface Content { parts: Part[]; role?: string; }
+interface GenerateContentRequest {
+  contents: Content[];
+  generationConfig?: GenerationConfig;
+}
+interface GenerateContentResponse {
+  candidates: Candidate[];
+}
+```
+
+## GeminiClient Class
+
+A simple class wrapping the `fetch` API:
+
+```typescript
+export class GeminiClient {
+  private readonly apiKey: string;
+
+  static buildApiUrl(apiKey: string): string {
+    return `${GEMINI_BASE_URL}/${GEMINI_MODEL_ID}:generateContent?key=${apiKey}`;
+  }
+
+  async generateImage(prompt: string): Promise<GenerateImageResult> {
+    const url = GeminiClient.buildApiUrl(this.apiKey);
+    const request = buildGenerateRequest(prompt, {
+      responseMimeType: "image/png",
+      responseModalities: ["Text", "Image"],
+    });
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      throw new GeminiAPIError(
+        errorBody.error.message,
+        errorBody.error.status,
+        response.status,
+      );
+    }
+
+    const data = await response.json();
+    const image = parseImageFromResponse(data);
+    if (!image) throw new Error("No image data in response");
+
+    return { imageData: image.data, mimeType: image.mimeType };
+  }
+}
+```
+
+## Error Handling
+
+The `GeminiAPIError` class includes a `isProhibitedContent` getter for handling content policy violations:
+
+```typescript
+export class GeminiAPIError extends Error {
+  get isProhibitedContent(): boolean {
+    return this.status === "PROHIBITED_CONTENT";
+  }
+}
+```
+
+::: {.callout-warning}
+## PROHIBITED_CONTENT
+The Gemini API may reject prompts that reference copyrighted characters. Our Yoda prompt uses only physical traits (green skin, pointed ears, brown robes) without any IP-specific names.
+:::
+
+## MemeService
+
+The orchestrator that ties API calls to file storage:
+
+```typescript
+export async function generateAndSaveMeme(
+  apiKey: string,
+  prompt: string,
+  overlayText: string,
+): Promise<MemeResult> {
+  const client = new GeminiClient(apiKey);
+
+  // Include overlay text in AI prompt
+  const fullPrompt = overlayText
+    ? `${prompt}\n\nRender the following text prominently...`
+    : prompt;
+
+  const result = await client.generateImage(fullPrompt);
+
+  // Save base64 image to local filesystem
+  const file = new File(Paths.document, `meme_${Date.now()}.png`);
+  const bytes = new Uint8Array(/* base64 decode */);
+  file.write(bytes);
+
+  return { imageUri: file.uri, mimeType: result.mimeType };
+}
+```
+
+::: {.callout-note}
+## Expo SDK 55 File API
+Expo SDK 55 replaced `documentDirectory` and `writeAsStringAsync` with the new `File` / `Directory` / `Paths` class-based API. We use `new File(Paths.document, filename)` and `file.write(bytes)` for the modern pattern.
+:::

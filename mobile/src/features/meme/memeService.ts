@@ -10,6 +10,7 @@ export async function generateAndSaveMeme(
   apiKey: string,
   prompt: string,
   overlayText: string,
+  resolution?: string,
 ): Promise<MemeResult> {
   const client = new GeminiClient(apiKey);
 
@@ -18,7 +19,7 @@ export async function generateAndSaveMeme(
     ? `${prompt}\n\nRender the following text prominently in the image using a bold, white font with black outline, positioned at the bottom: "${overlayText}"`
     : prompt;
 
-  const result = await client.generateImage(fullPrompt);
+  const result = await client.generateImage(fullPrompt, resolution);
 
   // Save the base64 image to local filesystem using new File API
   const filename = `meme_${Date.now()}.png`;

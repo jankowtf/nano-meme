@@ -1,0 +1,45 @@
+---
+title: "Shared Resources"
+subtitle: "Brand design, prompts, and API patterns used by both platforms"
+---
+
+## Overview
+
+Both the macOS Swift app and the Expo mobile app share common design language, prompts, and API integration patterns. This section documents the shared foundations.
+
+## What's Shared
+
+| Resource | macOS | Mobile | Purpose |
+|----------|-------|--------|---------|
+| Brand colors | `Brand.swift` (NanoDesignKit) | `colors.ts` | KaosMaps palette |
+| Yoda prompt | `Constants.swift` | `constants.ts` | Copyright-safe prompt |
+| Gemini API | `GeminiClient.swift` (URLSession) | `geminiClient.ts` (fetch) | REST API client |
+| Error handling | `GeminiAPIError.swift` | `GeminiAPIError` class | PROHIBITED_CONTENT |
+| Text overlay | CoreGraphics renderer | AI prompt-based | Meme text |
+
+## Architecture Parallel
+
+```{mermaid}
+graph TB
+    subgraph macOS [macOS Swift]
+        SC[GeminiClient.swift] --> SM[GeminiModels.swift]
+        IG[ImageGenerator.swift] --> SC
+        IG --> TO[TextOverlayRenderer]
+    end
+
+    subgraph Mobile [Expo React Native]
+        TC[geminiClient.ts] --> TT[geminiTypes.ts]
+        MS[memeService.ts] --> TC
+        MS --> AI[AI Prompt Text]
+    end
+
+    API[Gemini REST API] --> SC
+    API --> TC
+```
+
+Both platforms call the same Gemini REST endpoint, use the same Codable/TypeScript types, and handle the same error codes. The key difference is text overlay: macOS renders text via Core Graphics post-generation, while mobile includes text in the AI prompt.
+
+## Pages
+
+- [Brand Design & Color Palette](brand-design.qmd) — KaosMaps colors with interactive palette explorer
+- [Gemini API Reference](gemini-api.qmd) — Shared API patterns across platforms

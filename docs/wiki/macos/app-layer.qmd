@@ -1,0 +1,111 @@
+---
+title: "App Layer — UI + Composition"
+---
+
+## AppState
+
+The central observable state object using Swift's `@Observable` macro:
+
+```swift
+@Observable
+public final class AppState {
+    public var isGenerating = false
+    public var generationProgress: Double = 0
+    public var currentMeme: NSImage?
+    public var currentPrompt = ""
+    public var currentOverlayText = ""
+    public var selectedResolution: Resolution = .one
+    public var isAPIKeyConfigured = false
+    public var lastError: String?
+}
+```
+
+SwiftUI views automatically react to changes in these properties without explicit bindings.
+
+## MemeCoordinator
+
+The `@MainActor` coordinator manages generation lifecycle with cancellation:
+
+```swift
+@MainActor
+public final class MemeCoordinator {
+    private let state: AppState
+    private var currentTask: Task<Void, Never>?
+
+    public func generateMeme(apiKey: String) {
+        cancelGeneration()
+        state.isGenerating = true
+        state.lastError = nil
+
+        currentTask = Task {
+            do {
+                let result = try await generator.generate(
+                    prompt: state.currentPrompt,
+                    overlayText: state.currentOverlayText,
+                    apiKey: apiKey
+                )
+                state.currentMeme = result.image
+            } catch {
+                state.lastError = error.localizedDescription
+            }
+            state.isGenerating = false
+        }
+    }
+
+    public func cancelGeneration() {
+        currentTask?.cancel()
+        currentTask = nil
+        state.isGenerating = false
+    }
+}
+```
+
+## MenuBarManager
+
+The NSPanel-based popover attached to an `NSStatusItem`:
+
+```swift
+public final class MenuBarManager {
+    private var statusItem: NSStatusItem?
+    private var panel: NSPanel?
+
+    public func setup() {
+        statusItem = NSStatusBar.system.statusItem(
+            withLength: NSStatusItem.squareLength
+        )
+        // Configure with photo.artframe SF Symbol
+        // Create NSPanel with .nonactivatingPanel style
+    }
+}
+```
+
+The panel uses `.nonactivatingPanel` behavior mask so it doesn't steal focus from other applications.
+
+## PopoverView
+
+A SwiftUI view with three states:
+
+```{mermaid}
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Generating : tap Generate
+    Generating --> Result : success
+    Generating --> Idle : error / cancel
+    Result --> Idle : Generate Another
+```
+
+The view features KaosMaps dark theme styling with cyan glow accents:
+
+- Dark surface background (`#0a0a0f`)
+- Cyan-bordered input fields with subtle glow
+- Pulsing generate button during generation
+- Image preview with copy/save/share actions
+
+## Keyboard Shortcuts
+
+Two global shortcuts registered via the `KeyboardShortcuts` library:
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Opt+M` | Toggle popover visibility |
+| `Ctrl+Opt+G` | Generate meme |

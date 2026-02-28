@@ -1,7 +1,6 @@
 import AppKit
 import SwiftUI
 import NanoCore
-import NanoDesignKit
 
 @MainActor
 public final class MenuBarManager {
@@ -22,8 +21,12 @@ public final class MenuBarManager {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "photo.artframe", accessibilityDescription: "NanoMeme")
-            button.image?.isTemplate = true
+            if let image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: "NanoMeme") {
+                image.isTemplate = true
+                button.image = image
+            } else {
+                button.title = "M"
+            }
             button.action = #selector(togglePopover)
             button.target = self
         }
@@ -86,12 +89,11 @@ public final class MenuBarManager {
 
     public func updateIcon(isGenerating: Bool) {
         guard let button = statusItem?.button else { return }
-        if isGenerating {
-            button.image = NSImage(systemSymbolName: "sparkle", accessibilityDescription: "Generating")
-            button.contentTintColor = Brand.activeNS
-        } else {
-            button.image = NSImage(systemSymbolName: "photo.artframe", accessibilityDescription: "NanoMeme")
-            button.contentTintColor = Brand.idleNS
+        let symbolName = isGenerating ? "sparkle" : "sparkles"
+        let description = isGenerating ? "Generating" : "NanoMeme"
+        if let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: description) {
+            image.isTemplate = true
+            button.image = image
         }
     }
 }

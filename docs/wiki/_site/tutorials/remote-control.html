@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Claude Code Remote Control – NanoMeme Compendium</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4a17e18fdf56099d4f6da1e105f33a53.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-aa645de928bfe52d1c8f0187957e6c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ff62c383d98b93d6d6d8f1682febd9a5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-aa645de928bfe52d1c8f0187957e6c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">NanoMeme Compendium</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../macos/index.html"> 
+<span class="menu-text">macOS App</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../mobile/index.html"> 
+<span class="menu-text">Mobile App</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../shared/index.html"> 
+<span class="menu-text">Shared</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../tutorials/remote-control.html"> 
+<span class="menu-text">Tutorials</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jankowtf/nano-meme"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../tutorials/remote-control.html">Claude Code Remote Control</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorials/remote-control.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Claude Code Remote Control</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-is-remote-control" id="toc-what-is-remote-control" class="nav-link active" data-scroll-target="#what-is-remote-control">What is Remote Control?</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#quick-start" id="toc-quick-start" class="nav-link" data-scroll-target="#quick-start">Quick Start</a>
+  <ul class="collapse">
+  <li><a href="#option-1-start-a-new-remote-session" id="toc-option-1-start-a-new-remote-session" class="nav-link" data-scroll-target="#option-1-start-a-new-remote-session">Option 1: Start a New Remote Session</a></li>
+  <li><a href="#option-2-convert-existing-session" id="toc-option-2-convert-existing-session" class="nav-link" data-scroll-target="#option-2-convert-existing-session">Option 2: Convert Existing Session</a></li>
+  <li><a href="#option-3-enable-for-all-sessions" id="toc-option-3-enable-for-all-sessions" class="nav-link" data-scroll-target="#option-3-enable-for-all-sessions">Option 3: Enable for All Sessions</a></li>
+  </ul></li>
+  <li><a href="#step-by-step-setup" id="toc-step-by-step-setup" class="nav-link" data-scroll-target="#step-by-step-setup">Step-by-Step Setup</a>
+  <ul class="collapse">
+  <li><a href="#step-1-start-claude-code-with-remote-control" id="toc-step-1-start-claude-code-with-remote-control" class="nav-link" data-scroll-target="#step-1-start-claude-code-with-remote-control">Step 1: Start Claude Code with Remote Control</a></li>
+  <li><a href="#step-2-connect-from-browser" id="toc-step-2-connect-from-browser" class="nav-link" data-scroll-target="#step-2-connect-from-browser">Step 2: Connect from Browser</a></li>
+  <li><a href="#step-3-work-remotely" id="toc-step-3-work-remotely" class="nav-link" data-scroll-target="#step-3-work-remotely">Step 3: Work Remotely</a></li>
+  </ul></li>
+  <li><a href="#persistent-sessions-with-tmux" id="toc-persistent-sessions-with-tmux" class="nav-link" data-scroll-target="#persistent-sessions-with-tmux">Persistent Sessions with tmux</a></li>
+  <li><a href="#ssh-from-desktop-app" id="toc-ssh-from-desktop-app" class="nav-link" data-scroll-target="#ssh-from-desktop-app">SSH from Desktop App</a></li>
+  <li><a href="#important-limitations" id="toc-important-limitations" class="nav-link" data-scroll-target="#important-limitations">Important Limitations</a></li>
+  <li><a href="#what-can-be-automated" id="toc-what-can-be-automated" class="nav-link" data-scroll-target="#what-can-be-automated">What Can Be Automated</a></li>
+  <li><a href="#recommended-workflow" id="toc-recommended-workflow" class="nav-link" data-scroll-target="#recommended-workflow">Recommended Workflow</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Claude Code Remote Control</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Control your terminal Claude Code session from any browser</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="what-is-remote-control" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-remote-control">What is Remote Control?</h2>
+<p>Claude Code’s <strong>Remote Control</strong> feature lets you control a Claude Code CLI session running in a terminal from a web browser. This means you can:</p>
+<ul>
+<li>Start a Claude session on a powerful machine (or a remote server)</li>
+<li>Connect to it from your phone, tablet, or any browser</li>
+<li>Approve tool calls, provide input, and monitor progress remotely</li>
+</ul>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 59%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Claude Code CLI</td>
+<td>Latest version installed (<code>claude</code> command available)</td>
+</tr>
+<tr class="even">
+<td>Anthropic Plan</td>
+<td>Max plan (Pro being rolled out)</td>
+</tr>
+<tr class="odd">
+<td>Network</td>
+<td>Outbound HTTPS only — no port forwarding needed</td>
+</tr>
+<tr class="even">
+<td>Browser</td>
+<td>Any modern browser on any device</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="quick-start" class="level2">
+<h2 class="anchored" data-anchor-id="quick-start">Quick Start</h2>
+<section id="option-1-start-a-new-remote-session" class="level3">
+<h3 class="anchored" data-anchor-id="option-1-start-a-new-remote-session">Option 1: Start a New Remote Session</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This starts Claude Code and immediately displays:</p>
+<ol type="1">
+<li>A <strong>URL</strong> you can open in any browser</li>
+<li>A <strong>QR code</strong> you can scan with your phone</li>
+</ol>
+</section>
+<section id="option-2-convert-existing-session" class="level3">
+<h3 class="anchored" data-anchor-id="option-2-convert-existing-session">Option 2: Convert Existing Session</h3>
+<p>If you already have a Claude Code session running:</p>
+<ol type="1">
+<li>Type <code>/remote-control</code> (or <code>/rc</code> for short) in the Claude Code prompt</li>
+<li>The URL and QR code appear in your terminal</li>
+<li>Open the URL in your browser</li>
+</ol>
+</section>
+<section id="option-3-enable-for-all-sessions" class="level3">
+<h3 class="anchored" data-anchor-id="option-3-enable-for-all-sessions">Option 3: Enable for All Sessions</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">claude</span> config set <span class="at">--global</span> remote_control true</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This makes every future Claude Code session start with remote control enabled automatically.</p>
+</section>
+</section>
+<section id="step-by-step-setup" class="level2">
+<h2 class="anchored" data-anchor-id="step-by-step-setup">Step-by-Step Setup</h2>
+<section id="step-1-start-claude-code-with-remote-control" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-start-claude-code-with-remote-control">Step 1: Start Claude Code with Remote Control</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Navigate to your project</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="bu">cd</span> ~/Code/nano/nano-meme</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># Start with remote control</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You’ll see output like:</p>
+<pre><code>Remote control URL: https://claude.ai/rc/abc123...
+Scan the QR code or open the URL above in your browser.
+
+█████████████████████████
+█████████████████████████
+████ ▄▄▄▄▄ █ ...  ████
+...</code></pre>
+</section>
+<section id="step-2-connect-from-browser" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-connect-from-browser">Step 2: Connect from Browser</h3>
+<p>Open the URL on any device. You’ll see a web interface that mirrors your terminal session, allowing you to:</p>
+<ul>
+<li>Read Claude’s responses</li>
+<li>Approve or deny tool calls (file edits, bash commands)</li>
+<li>Type messages to Claude</li>
+<li>Monitor progress</li>
+</ul>
+</section>
+<section id="step-3-work-remotely" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-work-remotely">Step 3: Work Remotely</h3>
+<p>Once connected, the browser interface provides full control. The terminal continues running — you can close the browser tab and reconnect anytime using the same URL (as long as the terminal session is still alive).</p>
+</section>
+</section>
+<section id="persistent-sessions-with-tmux" class="level2">
+<h2 class="anchored" data-anchor-id="persistent-sessions-with-tmux">Persistent Sessions with tmux</h2>
+<p>For long-running or headless sessions (e.g., on a VPS), combine remote control with <code>tmux</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># SSH into your server</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">ssh</span> user@your-server.com</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Start a tmux session</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="ex">tmux</span> new <span class="at">-s</span> claude-work</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># Start Claude with remote control</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="bu">cd</span> ~/projects/my-app</span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co"># Detach from tmux: Ctrl+B, then D</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co"># The session keeps running!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Later, reconnect:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ssh</span> user@your-server.com</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="ex">tmux</span> attach <span class="at">-t</span> claude-work</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The remote control URL remains valid as long as the tmux session is alive.</p>
+</section>
+<section id="ssh-from-desktop-app" class="level2">
+<h2 class="anchored" data-anchor-id="ssh-from-desktop-app">SSH from Desktop App</h2>
+<p>If you use the Claude Desktop app, you can SSH into a remote machine:</p>
+<ol type="1">
+<li>Open Claude Desktop</li>
+<li>Start a new conversation</li>
+<li>Use the terminal integration to SSH into your server</li>
+<li>Run <code>claude --remote-control</code> on the remote machine</li>
+</ol>
+</section>
+<section id="important-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="important-limitations">Important Limitations</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 57%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Limitation</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Terminal must stay open</td>
+<td>If the terminal process exits, the remote session ends</td>
+</tr>
+<tr class="even">
+<td>Network timeout</td>
+<td>~10 minutes of network inactivity may disconnect (reconnect via same URL)</td>
+</tr>
+<tr class="odd">
+<td>One browser at a time</td>
+<td>Only one browser can be connected to a session</td>
+</tr>
+<tr class="even">
+<td>No file upload</td>
+<td>You can’t upload files through the remote interface</td>
+</tr>
+<tr class="odd">
+<td>Approval still needed</td>
+<td>Tool calls still require your approval unless auto-approved</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-can-be-automated" class="level2">
+<h2 class="anchored" data-anchor-id="what-can-be-automated">What Can Be Automated</h2>
+<p>From the setup steps above, here’s what Claude Code can do itself vs.&nbsp;what requires manual action:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 45%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Automated?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Install Claude Code CLI</td>
+<td>Manual</td>
+<td>Requires <code>npm install -g @anthropic-ai/claude-code</code></td>
+</tr>
+<tr class="even">
+<td>Navigate to project</td>
+<td>Automated</td>
+<td>Claude can <code>cd</code> to the project</td>
+</tr>
+<tr class="odd">
+<td>Start <code>claude --remote-control</code></td>
+<td><strong>Requires session restart</strong></td>
+<td>Current session must end and restart with the flag</td>
+</tr>
+<tr class="even">
+<td>Enable global config</td>
+<td>Automated</td>
+<td><code>claude config set --global remote_control true</code></td>
+</tr>
+<tr class="odd">
+<td>Generate QR code</td>
+<td>Automatic</td>
+<td>Displayed by Claude Code on startup</td>
+</tr>
+<tr class="even">
+<td>Open browser URL</td>
+<td>Manual</td>
+<td>User must scan QR or click URL</td>
+</tr>
+<tr class="odd">
+<td>Approve tool calls</td>
+<td>Manual</td>
+<td>User approves via browser interface</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Session Restart Required
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To enable remote control for the current session, the Claude Code process must be restarted with the <code>--remote-control</code> flag. This cannot be enabled mid-session unless using the <code>/rc</code> slash command.</p>
+</div>
+</div>
+</section>
+<section id="recommended-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-workflow">Recommended Workflow</h2>
+<p>For NanoMeme development, the ideal remote control setup is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Terminal 1: Start persistent session</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="ex">tmux</span> new <span class="at">-s</span> nanomeme</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="bu">cd</span> ~/Code/nano/nano-meme</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co"># Scan QR code with phone</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co"># Now you can monitor and approve from your phone</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co"># while Claude works on the codebase</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co"># Detach: Ctrl+B, D</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co"># Reattach later: tmux attach -t nanomeme</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This lets you walk away from your desk while Claude continues working — approving tool calls from your phone when needed.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Claude Code Remote Control"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="an">subtitle:</span><span class="co"> "Control your terminal Claude Code session from any browser"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">---</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">## What is Remote Control?</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a>Claude Code's **Remote Control** feature lets you control a Claude Code CLI session running in a terminal from a web browser. This means you can:</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="ss">- </span>Start a Claude session on a powerful machine (or a remote server)</span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="ss">- </span>Connect to it from your phone, tablet, or any browser</span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="ss">- </span>Approve tool calls, provide input, and monitor progress remotely</span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="fu">## Prerequisites</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="pp">|</span> Requirement <span class="pp">|</span> Details <span class="pp">|</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="pp">|-------------|---------|</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="pp">|</span> Claude Code CLI <span class="pp">|</span> Latest version installed (<span class="in">`claude`</span> command available) <span class="pp">|</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="pp">|</span> Anthropic Plan <span class="pp">|</span> Max plan (Pro being rolled out) <span class="pp">|</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="pp">|</span> Network <span class="pp">|</span> Outbound HTTPS only — no port forwarding needed <span class="pp">|</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="pp">|</span> Browser <span class="pp">|</span> Any modern browser on any device <span class="pp">|</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="fu">## Quick Start</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="fu">### Option 1: Start a New Remote Session</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="in">```bash</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a><span class="in">```</span></span>
+<span id="cb8-30"><a href="#cb8-30"></a></span>
+<span id="cb8-31"><a href="#cb8-31"></a>This starts Claude Code and immediately displays:</span>
+<span id="cb8-32"><a href="#cb8-32"></a></span>
+<span id="cb8-33"><a href="#cb8-33"></a><span class="ss">1. </span>A **URL** you can open in any browser</span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="ss">2. </span>A **QR code** you can scan with your phone</span>
+<span id="cb8-35"><a href="#cb8-35"></a></span>
+<span id="cb8-36"><a href="#cb8-36"></a><span class="fu">### Option 2: Convert Existing Session</span></span>
+<span id="cb8-37"><a href="#cb8-37"></a></span>
+<span id="cb8-38"><a href="#cb8-38"></a>If you already have a Claude Code session running:</span>
+<span id="cb8-39"><a href="#cb8-39"></a></span>
+<span id="cb8-40"><a href="#cb8-40"></a><span class="ss">1. </span>Type <span class="in">`/remote-control`</span> (or <span class="in">`/rc`</span> for short) in the Claude Code prompt</span>
+<span id="cb8-41"><a href="#cb8-41"></a><span class="ss">2. </span>The URL and QR code appear in your terminal</span>
+<span id="cb8-42"><a href="#cb8-42"></a><span class="ss">3. </span>Open the URL in your browser</span>
+<span id="cb8-43"><a href="#cb8-43"></a></span>
+<span id="cb8-44"><a href="#cb8-44"></a><span class="fu">### Option 3: Enable for All Sessions</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a></span>
+<span id="cb8-46"><a href="#cb8-46"></a><span class="in">```bash</span></span>
+<span id="cb8-47"><a href="#cb8-47"></a><span class="ex">claude</span> config set <span class="at">--global</span> remote_control true</span>
+<span id="cb8-48"><a href="#cb8-48"></a><span class="in">```</span></span>
+<span id="cb8-49"><a href="#cb8-49"></a></span>
+<span id="cb8-50"><a href="#cb8-50"></a>This makes every future Claude Code session start with remote control enabled automatically.</span>
+<span id="cb8-51"><a href="#cb8-51"></a></span>
+<span id="cb8-52"><a href="#cb8-52"></a><span class="fu">## Step-by-Step Setup</span></span>
+<span id="cb8-53"><a href="#cb8-53"></a></span>
+<span id="cb8-54"><a href="#cb8-54"></a><span class="fu">### Step 1: Start Claude Code with Remote Control</span></span>
+<span id="cb8-55"><a href="#cb8-55"></a></span>
+<span id="cb8-56"><a href="#cb8-56"></a><span class="in">```bash</span></span>
+<span id="cb8-57"><a href="#cb8-57"></a><span class="co"># Navigate to your project</span></span>
+<span id="cb8-58"><a href="#cb8-58"></a><span class="bu">cd</span> ~/Code/nano/nano-meme</span>
+<span id="cb8-59"><a href="#cb8-59"></a></span>
+<span id="cb8-60"><a href="#cb8-60"></a><span class="co"># Start with remote control</span></span>
+<span id="cb8-61"><a href="#cb8-61"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span>
+<span id="cb8-62"><a href="#cb8-62"></a><span class="in">```</span></span>
+<span id="cb8-63"><a href="#cb8-63"></a></span>
+<span id="cb8-64"><a href="#cb8-64"></a>You'll see output like:</span>
+<span id="cb8-65"><a href="#cb8-65"></a></span>
+<span id="cb8-66"><a href="#cb8-66"></a><span class="in">```</span></span>
+<span id="cb8-67"><a href="#cb8-67"></a><span class="in">Remote control URL: https://claude.ai/rc/abc123...</span></span>
+<span id="cb8-68"><a href="#cb8-68"></a><span class="in">Scan the QR code or open the URL above in your browser.</span></span>
+<span id="cb8-69"><a href="#cb8-69"></a></span>
+<span id="cb8-70"><a href="#cb8-70"></a><span class="in">█████████████████████████</span></span>
+<span id="cb8-71"><a href="#cb8-71"></a><span class="in">█████████████████████████</span></span>
+<span id="cb8-72"><a href="#cb8-72"></a><span class="in">████ ▄▄▄▄▄ █ ...  ████</span></span>
+<span id="cb8-73"><a href="#cb8-73"></a><span class="in">...</span></span>
+<span id="cb8-74"><a href="#cb8-74"></a><span class="in">```</span></span>
+<span id="cb8-75"><a href="#cb8-75"></a></span>
+<span id="cb8-76"><a href="#cb8-76"></a><span class="fu">### Step 2: Connect from Browser</span></span>
+<span id="cb8-77"><a href="#cb8-77"></a></span>
+<span id="cb8-78"><a href="#cb8-78"></a>Open the URL on any device. You'll see a web interface that mirrors your terminal session, allowing you to:</span>
+<span id="cb8-79"><a href="#cb8-79"></a></span>
+<span id="cb8-80"><a href="#cb8-80"></a><span class="ss">- </span>Read Claude's responses</span>
+<span id="cb8-81"><a href="#cb8-81"></a><span class="ss">- </span>Approve or deny tool calls (file edits, bash commands)</span>
+<span id="cb8-82"><a href="#cb8-82"></a><span class="ss">- </span>Type messages to Claude</span>
+<span id="cb8-83"><a href="#cb8-83"></a><span class="ss">- </span>Monitor progress</span>
+<span id="cb8-84"><a href="#cb8-84"></a></span>
+<span id="cb8-85"><a href="#cb8-85"></a><span class="fu">### Step 3: Work Remotely</span></span>
+<span id="cb8-86"><a href="#cb8-86"></a></span>
+<span id="cb8-87"><a href="#cb8-87"></a>Once connected, the browser interface provides full control. The terminal continues running — you can close the browser tab and reconnect anytime using the same URL (as long as the terminal session is still alive).</span>
+<span id="cb8-88"><a href="#cb8-88"></a></span>
+<span id="cb8-89"><a href="#cb8-89"></a><span class="fu">## Persistent Sessions with tmux</span></span>
+<span id="cb8-90"><a href="#cb8-90"></a></span>
+<span id="cb8-91"><a href="#cb8-91"></a>For long-running or headless sessions (e.g., on a VPS), combine remote control with <span class="in">`tmux`</span>:</span>
+<span id="cb8-92"><a href="#cb8-92"></a></span>
+<span id="cb8-93"><a href="#cb8-93"></a><span class="in">```bash</span></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="co"># SSH into your server</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a><span class="fu">ssh</span> user@your-server.com</span>
+<span id="cb8-96"><a href="#cb8-96"></a></span>
+<span id="cb8-97"><a href="#cb8-97"></a><span class="co"># Start a tmux session</span></span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="ex">tmux</span> new <span class="at">-s</span> claude-work</span>
+<span id="cb8-99"><a href="#cb8-99"></a></span>
+<span id="cb8-100"><a href="#cb8-100"></a><span class="co"># Start Claude with remote control</span></span>
+<span id="cb8-101"><a href="#cb8-101"></a><span class="bu">cd</span> ~/projects/my-app</span>
+<span id="cb8-102"><a href="#cb8-102"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span>
+<span id="cb8-103"><a href="#cb8-103"></a></span>
+<span id="cb8-104"><a href="#cb8-104"></a><span class="co"># Detach from tmux: Ctrl+B, then D</span></span>
+<span id="cb8-105"><a href="#cb8-105"></a><span class="co"># The session keeps running!</span></span>
+<span id="cb8-106"><a href="#cb8-106"></a><span class="in">```</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a></span>
+<span id="cb8-108"><a href="#cb8-108"></a>Later, reconnect:</span>
+<span id="cb8-109"><a href="#cb8-109"></a></span>
+<span id="cb8-110"><a href="#cb8-110"></a><span class="in">```bash</span></span>
+<span id="cb8-111"><a href="#cb8-111"></a><span class="fu">ssh</span> user@your-server.com</span>
+<span id="cb8-112"><a href="#cb8-112"></a><span class="ex">tmux</span> attach <span class="at">-t</span> claude-work</span>
+<span id="cb8-113"><a href="#cb8-113"></a><span class="in">```</span></span>
+<span id="cb8-114"><a href="#cb8-114"></a></span>
+<span id="cb8-115"><a href="#cb8-115"></a>The remote control URL remains valid as long as the tmux session is alive.</span>
+<span id="cb8-116"><a href="#cb8-116"></a></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="fu">## SSH from Desktop App</span></span>
+<span id="cb8-118"><a href="#cb8-118"></a></span>
+<span id="cb8-119"><a href="#cb8-119"></a>If you use the Claude Desktop app, you can SSH into a remote machine:</span>
+<span id="cb8-120"><a href="#cb8-120"></a></span>
+<span id="cb8-121"><a href="#cb8-121"></a><span class="ss">1. </span>Open Claude Desktop</span>
+<span id="cb8-122"><a href="#cb8-122"></a><span class="ss">2. </span>Start a new conversation</span>
+<span id="cb8-123"><a href="#cb8-123"></a><span class="ss">3. </span>Use the terminal integration to SSH into your server</span>
+<span id="cb8-124"><a href="#cb8-124"></a><span class="ss">4. </span>Run <span class="in">`claude --remote-control`</span> on the remote machine</span>
+<span id="cb8-125"><a href="#cb8-125"></a></span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="fu">## Important Limitations</span></span>
+<span id="cb8-127"><a href="#cb8-127"></a></span>
+<span id="cb8-128"><a href="#cb8-128"></a><span class="pp">|</span> Limitation <span class="pp">|</span> Details <span class="pp">|</span></span>
+<span id="cb8-129"><a href="#cb8-129"></a><span class="pp">|------------|---------|</span></span>
+<span id="cb8-130"><a href="#cb8-130"></a><span class="pp">|</span> Terminal must stay open <span class="pp">|</span> If the terminal process exits, the remote session ends <span class="pp">|</span></span>
+<span id="cb8-131"><a href="#cb8-131"></a><span class="pp">|</span> Network timeout <span class="pp">|</span> ~10 minutes of network inactivity may disconnect (reconnect via same URL) <span class="pp">|</span></span>
+<span id="cb8-132"><a href="#cb8-132"></a><span class="pp">|</span> One browser at a time <span class="pp">|</span> Only one browser can be connected to a session <span class="pp">|</span></span>
+<span id="cb8-133"><a href="#cb8-133"></a><span class="pp">|</span> No file upload <span class="pp">|</span> You can't upload files through the remote interface <span class="pp">|</span></span>
+<span id="cb8-134"><a href="#cb8-134"></a><span class="pp">|</span> Approval still needed <span class="pp">|</span> Tool calls still require your approval unless auto-approved <span class="pp">|</span></span>
+<span id="cb8-135"><a href="#cb8-135"></a></span>
+<span id="cb8-136"><a href="#cb8-136"></a><span class="fu">## What Can Be Automated</span></span>
+<span id="cb8-137"><a href="#cb8-137"></a></span>
+<span id="cb8-138"><a href="#cb8-138"></a>From the setup steps above, here's what Claude Code can do itself vs. what requires manual action:</span>
+<span id="cb8-139"><a href="#cb8-139"></a></span>
+<span id="cb8-140"><a href="#cb8-140"></a><span class="pp">|</span> Step <span class="pp">|</span> Automated? <span class="pp">|</span> Notes <span class="pp">|</span></span>
+<span id="cb8-141"><a href="#cb8-141"></a><span class="pp">|------|-----------|-------|</span></span>
+<span id="cb8-142"><a href="#cb8-142"></a><span class="pp">|</span> Install Claude Code CLI <span class="pp">|</span> Manual <span class="pp">|</span> Requires <span class="in">`npm install -g @anthropic-ai/claude-code`</span> <span class="pp">|</span></span>
+<span id="cb8-143"><a href="#cb8-143"></a><span class="pp">|</span> Navigate to project <span class="pp">|</span> Automated <span class="pp">|</span> Claude can <span class="in">`cd`</span> to the project <span class="pp">|</span></span>
+<span id="cb8-144"><a href="#cb8-144"></a><span class="pp">|</span> Start <span class="in">`claude --remote-control`</span> <span class="pp">|</span> **Requires session restart** <span class="pp">|</span> Current session must end and restart with the flag <span class="pp">|</span></span>
+<span id="cb8-145"><a href="#cb8-145"></a><span class="pp">|</span> Enable global config <span class="pp">|</span> Automated <span class="pp">|</span> <span class="in">`claude config set --global remote_control true`</span> <span class="pp">|</span></span>
+<span id="cb8-146"><a href="#cb8-146"></a><span class="pp">|</span> Generate QR code <span class="pp">|</span> Automatic <span class="pp">|</span> Displayed by Claude Code on startup <span class="pp">|</span></span>
+<span id="cb8-147"><a href="#cb8-147"></a><span class="pp">|</span> Open browser URL <span class="pp">|</span> Manual <span class="pp">|</span> User must scan QR or click URL <span class="pp">|</span></span>
+<span id="cb8-148"><a href="#cb8-148"></a><span class="pp">|</span> Approve tool calls <span class="pp">|</span> Manual <span class="pp">|</span> User approves via browser interface <span class="pp">|</span></span>
+<span id="cb8-149"><a href="#cb8-149"></a></span>
+<span id="cb8-150"><a href="#cb8-150"></a>::: {.callout-important}</span>
+<span id="cb8-151"><a href="#cb8-151"></a><span class="fu">## Session Restart Required</span></span>
+<span id="cb8-152"><a href="#cb8-152"></a>To enable remote control for the current session, the Claude Code process must be restarted with the <span class="in">`--remote-control`</span> flag. This cannot be enabled mid-session unless using the <span class="in">`/rc`</span> slash command.</span>
+<span id="cb8-153"><a href="#cb8-153"></a>:::</span>
+<span id="cb8-154"><a href="#cb8-154"></a></span>
+<span id="cb8-155"><a href="#cb8-155"></a><span class="fu">## Recommended Workflow</span></span>
+<span id="cb8-156"><a href="#cb8-156"></a></span>
+<span id="cb8-157"><a href="#cb8-157"></a>For NanoMeme development, the ideal remote control setup is:</span>
+<span id="cb8-158"><a href="#cb8-158"></a></span>
+<span id="cb8-159"><a href="#cb8-159"></a><span class="in">```bash</span></span>
+<span id="cb8-160"><a href="#cb8-160"></a><span class="co"># Terminal 1: Start persistent session</span></span>
+<span id="cb8-161"><a href="#cb8-161"></a><span class="ex">tmux</span> new <span class="at">-s</span> nanomeme</span>
+<span id="cb8-162"><a href="#cb8-162"></a><span class="bu">cd</span> ~/Code/nano/nano-meme</span>
+<span id="cb8-163"><a href="#cb8-163"></a><span class="ex">claude</span> <span class="at">--remote-control</span></span>
+<span id="cb8-164"><a href="#cb8-164"></a></span>
+<span id="cb8-165"><a href="#cb8-165"></a><span class="co"># Scan QR code with phone</span></span>
+<span id="cb8-166"><a href="#cb8-166"></a><span class="co"># Now you can monitor and approve from your phone</span></span>
+<span id="cb8-167"><a href="#cb8-167"></a><span class="co"># while Claude works on the codebase</span></span>
+<span id="cb8-168"><a href="#cb8-168"></a></span>
+<span id="cb8-169"><a href="#cb8-169"></a><span class="co"># Detach: Ctrl+B, D</span></span>
+<span id="cb8-170"><a href="#cb8-170"></a><span class="co"># Reattach later: tmux attach -t nanomeme</span></span>
+<span id="cb8-171"><a href="#cb8-171"></a><span class="in">```</span></span>
+<span id="cb8-172"><a href="#cb8-172"></a></span>
+<span id="cb8-173"><a href="#cb8-173"></a>This lets you walk away from your desk while Claude continues working — approving tool calls from your phone when needed.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>NanoMeme Compendium</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Built with <a href="https://quarto.org">Quarto</a> by KaosMaps</p>
+</div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jankowtf/nano-meme">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

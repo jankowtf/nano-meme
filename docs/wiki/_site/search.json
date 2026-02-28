@@ -1,0 +1,1076 @@
+[
+  {
+    "objectID": "tutorials/remote-control.html",
+    "href": "tutorials/remote-control.html",
+    "title": "Claude Code Remote Control",
+    "section": "",
+    "text": "Claude Code’s Remote Control feature lets you control a Claude Code CLI session running in a terminal from a web browser. This means you can:\n\nStart a Claude session on a powerful machine (or a remote server)\nConnect to it from your phone, tablet, or any browser\nApprove tool calls, provide input, and monitor progress remotely",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#what-is-remote-control",
+    "href": "tutorials/remote-control.html#what-is-remote-control",
+    "title": "Claude Code Remote Control",
+    "section": "",
+    "text": "Claude Code’s Remote Control feature lets you control a Claude Code CLI session running in a terminal from a web browser. This means you can:\n\nStart a Claude session on a powerful machine (or a remote server)\nConnect to it from your phone, tablet, or any browser\nApprove tool calls, provide input, and monitor progress remotely",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#prerequisites",
+    "href": "tutorials/remote-control.html#prerequisites",
+    "title": "Claude Code Remote Control",
+    "section": "Prerequisites",
+    "text": "Prerequisites\n\n\n\n\n\n\n\nRequirement\nDetails\n\n\n\n\nClaude Code CLI\nLatest version installed (claude command available)\n\n\nAnthropic Plan\nMax plan (Pro being rolled out)\n\n\nNetwork\nOutbound HTTPS only — no port forwarding needed\n\n\nBrowser\nAny modern browser on any device",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#quick-start",
+    "href": "tutorials/remote-control.html#quick-start",
+    "title": "Claude Code Remote Control",
+    "section": "Quick Start",
+    "text": "Quick Start\n\nOption 1: Start a New Remote Session\nclaude --remote-control\nThis starts Claude Code and immediately displays:\n\nA URL you can open in any browser\nA QR code you can scan with your phone\n\n\n\nOption 2: Convert Existing Session\nIf you already have a Claude Code session running:\n\nType /remote-control (or /rc for short) in the Claude Code prompt\nThe URL and QR code appear in your terminal\nOpen the URL in your browser\n\n\n\nOption 3: Enable for All Sessions\nclaude config set --global remote_control true\nThis makes every future Claude Code session start with remote control enabled automatically.",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#step-by-step-setup",
+    "href": "tutorials/remote-control.html#step-by-step-setup",
+    "title": "Claude Code Remote Control",
+    "section": "Step-by-Step Setup",
+    "text": "Step-by-Step Setup\n\nStep 1: Start Claude Code with Remote Control\n# Navigate to your project\ncd ~/Code/nano/nano-meme\n\n# Start with remote control\nclaude --remote-control\nYou’ll see output like:\nRemote control URL: https://claude.ai/rc/abc123...\nScan the QR code or open the URL above in your browser.\n\n█████████████████████████\n█████████████████████████\n████ ▄▄▄▄▄ █ ...  ████\n...\n\n\nStep 2: Connect from Browser\nOpen the URL on any device. You’ll see a web interface that mirrors your terminal session, allowing you to:\n\nRead Claude’s responses\nApprove or deny tool calls (file edits, bash commands)\nType messages to Claude\nMonitor progress\n\n\n\nStep 3: Work Remotely\nOnce connected, the browser interface provides full control. The terminal continues running — you can close the browser tab and reconnect anytime using the same URL (as long as the terminal session is still alive).",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#persistent-sessions-with-tmux",
+    "href": "tutorials/remote-control.html#persistent-sessions-with-tmux",
+    "title": "Claude Code Remote Control",
+    "section": "Persistent Sessions with tmux",
+    "text": "Persistent Sessions with tmux\nFor long-running or headless sessions (e.g., on a VPS), combine remote control with tmux:\n# SSH into your server\nssh user@your-server.com\n\n# Start a tmux session\ntmux new -s claude-work\n\n# Start Claude with remote control\ncd ~/projects/my-app\nclaude --remote-control\n\n# Detach from tmux: Ctrl+B, then D\n# The session keeps running!\nLater, reconnect:\nssh user@your-server.com\ntmux attach -t claude-work\nThe remote control URL remains valid as long as the tmux session is alive.",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#ssh-from-desktop-app",
+    "href": "tutorials/remote-control.html#ssh-from-desktop-app",
+    "title": "Claude Code Remote Control",
+    "section": "SSH from Desktop App",
+    "text": "SSH from Desktop App\nIf you use the Claude Desktop app, you can SSH into a remote machine:\n\nOpen Claude Desktop\nStart a new conversation\nUse the terminal integration to SSH into your server\nRun claude --remote-control on the remote machine",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#important-limitations",
+    "href": "tutorials/remote-control.html#important-limitations",
+    "title": "Claude Code Remote Control",
+    "section": "Important Limitations",
+    "text": "Important Limitations\n\n\n\n\n\n\n\nLimitation\nDetails\n\n\n\n\nTerminal must stay open\nIf the terminal process exits, the remote session ends\n\n\nNetwork timeout\n~10 minutes of network inactivity may disconnect (reconnect via same URL)\n\n\nOne browser at a time\nOnly one browser can be connected to a session\n\n\nNo file upload\nYou can’t upload files through the remote interface\n\n\nApproval still needed\nTool calls still require your approval unless auto-approved",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#what-can-be-automated",
+    "href": "tutorials/remote-control.html#what-can-be-automated",
+    "title": "Claude Code Remote Control",
+    "section": "What Can Be Automated",
+    "text": "What Can Be Automated\nFrom the setup steps above, here’s what Claude Code can do itself vs. what requires manual action:\n\n\n\n\n\n\n\n\nStep\nAutomated?\nNotes\n\n\n\n\nInstall Claude Code CLI\nManual\nRequires npm install -g @anthropic-ai/claude-code\n\n\nNavigate to project\nAutomated\nClaude can cd to the project\n\n\nStart claude --remote-control\nRequires session restart\nCurrent session must end and restart with the flag\n\n\nEnable global config\nAutomated\nclaude config set --global remote_control true\n\n\nGenerate QR code\nAutomatic\nDisplayed by Claude Code on startup\n\n\nOpen browser URL\nManual\nUser must scan QR or click URL\n\n\nApprove tool calls\nManual\nUser approves via browser interface\n\n\n\n\n\n\n\n\n\nImportantSession Restart Required\n\n\n\nTo enable remote control for the current session, the Claude Code process must be restarted with the --remote-control flag. This cannot be enabled mid-session unless using the /rc slash command.",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "tutorials/remote-control.html#recommended-workflow",
+    "href": "tutorials/remote-control.html#recommended-workflow",
+    "title": "Claude Code Remote Control",
+    "section": "Recommended Workflow",
+    "text": "Recommended Workflow\nFor NanoMeme development, the ideal remote control setup is:\n# Terminal 1: Start persistent session\ntmux new -s nanomeme\ncd ~/Code/nano/nano-meme\nclaude --remote-control\n\n# Scan QR code with phone\n# Now you can monitor and approve from your phone\n# while Claude works on the codebase\n\n# Detach: Ctrl+B, D\n# Reattach later: tmux attach -t nanomeme\nThis lets you walk away from your desk while Claude continues working — approving tool calls from your phone when needed.",
+    "crumbs": [
+      "Tutorials",
+      "Claude Code Remote Control"
+    ]
+  },
+  {
+    "objectID": "mobile/architecture.html",
+    "href": "mobile/architecture.html",
+    "title": "Mobile Architecture",
+    "section": "",
+    "text": "mobile/\n├── app/                              # Expo Router screens\n│   ├── _layout.tsx                   # Root layout (Tabs + QueryProvider)\n│   ├── index.tsx                     # Home: generate meme\n│   ├── result.tsx                    # Result: view + share\n│   ├── gallery.tsx                   # History of generated memes\n│   └── settings.tsx                  # API key, resolution, about\n├── src/\n│   ├── features/meme/               # Domain logic\n│   │   ├── geminiTypes.ts            # API request/response types\n│   │   ├── geminiClient.ts           # REST API client\n│   │   └── memeService.ts            # Generate + save orchestrator\n│   ├── hooks/\n│   │   └── useSecureStorage.ts       # API key in expo-secure-store\n│   ├── stores/\n│   │   ├── memeStore.ts              # Zustand: generation state + history\n│   │   └── settingsStore.ts          # Zustand: user preferences\n│   └── utils/\n│       ├── colors.ts                 # KaosMaps brand tokens\n│       └── constants.ts              # App config, API URLs, defaults\n├── global.css                        # Tailwind imports\n├── tailwind.config.js                # KaosMaps theme\n├── app.json                          # Expo config\n├── eas.json                          # EAS Build profiles\n└── jest.config.js                    # Multi-project Jest config",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Mobile Architecture"
+    ]
+  },
+  {
+    "objectID": "mobile/architecture.html#directory-structure",
+    "href": "mobile/architecture.html#directory-structure",
+    "title": "Mobile Architecture",
+    "section": "",
+    "text": "mobile/\n├── app/                              # Expo Router screens\n│   ├── _layout.tsx                   # Root layout (Tabs + QueryProvider)\n│   ├── index.tsx                     # Home: generate meme\n│   ├── result.tsx                    # Result: view + share\n│   ├── gallery.tsx                   # History of generated memes\n│   └── settings.tsx                  # API key, resolution, about\n├── src/\n│   ├── features/meme/               # Domain logic\n│   │   ├── geminiTypes.ts            # API request/response types\n│   │   ├── geminiClient.ts           # REST API client\n│   │   └── memeService.ts            # Generate + save orchestrator\n│   ├── hooks/\n│   │   └── useSecureStorage.ts       # API key in expo-secure-store\n│   ├── stores/\n│   │   ├── memeStore.ts              # Zustand: generation state + history\n│   │   └── settingsStore.ts          # Zustand: user preferences\n│   └── utils/\n│       ├── colors.ts                 # KaosMaps brand tokens\n│       └── constants.ts              # App config, API URLs, defaults\n├── global.css                        # Tailwind imports\n├── tailwind.config.js                # KaosMaps theme\n├── app.json                          # Expo config\n├── eas.json                          # EAS Build profiles\n└── jest.config.js                    # Multi-project Jest config",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Mobile Architecture"
+    ]
+  },
+  {
+    "objectID": "mobile/architecture.html#root-layout",
+    "href": "mobile/architecture.html#root-layout",
+    "title": "Mobile Architecture",
+    "section": "Root Layout",
+    "text": "Root Layout\nThe root _layout.tsx provides:\n\nTanStack Query client with 5-minute stale time and 2 retries\nTab navigation with 4 screens and Lucide icons\nKaosMaps dark theme tab bar (dark background, cyan active tint)\n\nexport default function RootLayout() {\n  return (\n    &lt;QueryClientProvider client={queryClient}&gt;\n      &lt;StatusBar style=\"light\" /&gt;\n      &lt;Tabs screenOptions={{\n        tabBarActiveTintColor: colors.brand.cyan,\n        tabBarStyle: {\n          backgroundColor: colors.surface.secondary,\n        },\n      }}&gt;\n        &lt;Tabs.Screen name=\"index\" options={{\n          title: \"Generate\",\n          tabBarIcon: ({ color, size }) =&gt; &lt;Sparkles color={color} size={size} /&gt;,\n        }} /&gt;\n        {/* ... result, gallery, settings */}\n      &lt;/Tabs&gt;\n    &lt;/QueryClientProvider&gt;\n  );\n}",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Mobile Architecture"
+    ]
+  },
+  {
+    "objectID": "mobile/architecture.html#testing-architecture",
+    "href": "mobile/architecture.html#testing-architecture",
+    "title": "Mobile Architecture",
+    "section": "Testing Architecture",
+    "text": "Testing Architecture\nTwo Jest projects handle different test needs:\n\n\n\nProject\nRunner\nScope\n\n\n\n\nunit\nts-jest\nPure TS: utils, stores, services, API types\n\n\ncomponents\njest-expo\nReact Native components (TSX)\n\n\n\nThis separation avoids jest-expo’s heavyweight setup for pure logic tests, keeping the test suite fast (~2 seconds for 49 tests).",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Mobile Architecture"
+    ]
+  },
+  {
+    "objectID": "mobile/state-management.html",
+    "href": "mobile/state-management.html",
+    "title": "State Management",
+    "section": "",
+    "text": "NanoMeme uses Zustand v5 for state management — two focused stores with clear boundaries:\n\n\nShow code\ngraph TD\n    MS[memeStore] --&gt; G[Generation State]\n    MS --&gt; H[History]\n    SS[settingsStore] --&gt; R[Resolution]\n    SS --&gt; A[Aspect Ratio]\n    SS --&gt; O[Auto Overlay]\n    SK[useSecureStorage] --&gt; K[API Key in SecureStore]\n\n\n\n\n\ngraph TD\n    MS[memeStore] --&gt; G[Generation State]\n    MS --&gt; H[History]\n    SS[settingsStore] --&gt; R[Resolution]\n    SS --&gt; A[Aspect Ratio]\n    SS --&gt; O[Auto Overlay]\n    SK[useSecureStorage] --&gt; K[API Key in SecureStore]\n\n\n\n\n\n\n\n\n\nStore\nScope\nPersistence\n\n\n\n\nmemeStore\nGeneration workflow + history\nIn-memory\n\n\nsettingsStore\nUser preferences\nIn-memory\n\n\nuseSecureStorage\nAPI key\nexpo-secure-store (encrypted)",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "State Management"
+    ]
+  },
+  {
+    "objectID": "mobile/state-management.html#store-architecture",
+    "href": "mobile/state-management.html#store-architecture",
+    "title": "State Management",
+    "section": "",
+    "text": "NanoMeme uses Zustand v5 for state management — two focused stores with clear boundaries:\n\n\nShow code\ngraph TD\n    MS[memeStore] --&gt; G[Generation State]\n    MS --&gt; H[History]\n    SS[settingsStore] --&gt; R[Resolution]\n    SS --&gt; A[Aspect Ratio]\n    SS --&gt; O[Auto Overlay]\n    SK[useSecureStorage] --&gt; K[API Key in SecureStore]\n\n\n\n\n\ngraph TD\n    MS[memeStore] --&gt; G[Generation State]\n    MS --&gt; H[History]\n    SS[settingsStore] --&gt; R[Resolution]\n    SS --&gt; A[Aspect Ratio]\n    SS --&gt; O[Auto Overlay]\n    SK[useSecureStorage] --&gt; K[API Key in SecureStore]\n\n\n\n\n\n\n\n\n\nStore\nScope\nPersistence\n\n\n\n\nmemeStore\nGeneration workflow + history\nIn-memory\n\n\nsettingsStore\nUser preferences\nIn-memory\n\n\nuseSecureStorage\nAPI key\nexpo-secure-store (encrypted)",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "State Management"
+    ]
+  },
+  {
+    "objectID": "mobile/state-management.html#meme-store",
+    "href": "mobile/state-management.html#meme-store",
+    "title": "State Management",
+    "section": "Meme Store",
+    "text": "Meme Store\nThe primary store manages the generation lifecycle and meme history:\ninterface MemeState {\n  isGenerating: boolean;\n  currentPrompt: string;\n  overlayText: string;\n  currentImageUri: string | null;\n  lastError: string | null;\n  history: MemeHistoryItem[];\n\n  setPrompt: (prompt: string) =&gt; void;\n  setOverlayText: (text: string) =&gt; void;\n  startGeneration: () =&gt; void;\n  completeGeneration: (imageUri: string) =&gt; void;\n  failGeneration: (error: string) =&gt; void;\n  toggleFavorite: (id: string) =&gt; void;\n  deleteFromHistory: (id: string) =&gt; void;\n  reset: () =&gt; void;\n}\n\nGeneration Lifecycle\n\n\nShow code\nstateDiagram-v2\n    [*] --&gt; Idle\n    Idle --&gt; Generating : startGeneration()\n    Generating --&gt; Result : completeGeneration(uri)\n    Generating --&gt; Idle : failGeneration(error)\n    Result --&gt; Idle : reset()\n\n\n\n\n\nstateDiagram-v2\n    [*] --&gt; Idle\n    Idle --&gt; Generating : startGeneration()\n    Generating --&gt; Result : completeGeneration(uri)\n    Generating --&gt; Idle : failGeneration(error)\n    Result --&gt; Idle : reset()\n\n\n\n\n\n\nOn successful generation, a MemeHistoryItem is prepended to the history array:\ncompleteGeneration: (imageUri) =&gt; {\n  const { currentPrompt, overlayText, history } = get();\n  const item: MemeHistoryItem = {\n    id: String(nextId++),\n    prompt: currentPrompt,\n    overlayText,\n    imageUri,\n    createdAt: new Date().toISOString(),\n    isFavorite: false,\n  };\n  set({\n    isGenerating: false,\n    currentImageUri: imageUri,\n    history: [item, ...history],\n  });\n},\n\n\nHistory Item\ninterface MemeHistoryItem {\n  id: string;\n  prompt: string;\n  overlayText: string;\n  imageUri: string;\n  createdAt: string;     // ISO 8601\n  isFavorite: boolean;\n}",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "State Management"
+    ]
+  },
+  {
+    "objectID": "mobile/state-management.html#settings-store",
+    "href": "mobile/state-management.html#settings-store",
+    "title": "State Management",
+    "section": "Settings Store",
+    "text": "Settings Store\nSimple preference store with sensible defaults:\nconst initialState = {\n  defaultResolution: \"1K\" as Resolution,\n  defaultAspectRatio: \"1:1\" as AspectRatio,\n  autoOverlayText: true,\n};\n\nexport const useSettingsStore = create&lt;SettingsState&gt;()((set) =&gt; ({\n  ...initialState,\n  setDefaultResolution: (resolution) =&gt;\n    set({ defaultResolution: resolution }),\n  setDefaultAspectRatio: (ratio) =&gt;\n    set({ defaultAspectRatio: ratio }),\n  setAutoOverlayText: (value) =&gt;\n    set({ autoOverlayText: value }),\n  reset: () =&gt; set(initialState),\n}));",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "State Management"
+    ]
+  },
+  {
+    "objectID": "mobile/state-management.html#secure-storage",
+    "href": "mobile/state-management.html#secure-storage",
+    "title": "State Management",
+    "section": "Secure Storage",
+    "text": "Secure Storage\nAPI key handling uses expo-secure-store for hardware-backed encryption:\nimport * as SecureStore from \"expo-secure-store\";\n\nconst API_KEY_STORAGE_KEY = \"gemini-api-key\";\n\nexport async function getApiKey(): Promise&lt;string | null&gt; {\n  return SecureStore.getItemAsync(API_KEY_STORAGE_KEY);\n}\n\nexport async function setApiKey(key: string): Promise&lt;void&gt; {\n  await SecureStore.setItemAsync(API_KEY_STORAGE_KEY, key);\n}\n\nexport async function deleteApiKey(): Promise&lt;void&gt; {\n  await SecureStore.deleteItemAsync(API_KEY_STORAGE_KEY);\n}\n\n\n\n\n\n\nTipWhy not AsyncStorage?\n\n\n\nexpo-secure-store encrypts data using the device’s hardware security module (Keychain on iOS, Keystore on Android). API keys should never be stored in plain text via AsyncStorage or MMKV.",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "State Management"
+    ]
+  },
+  {
+    "objectID": "mobile/state-management.html#design-decisions",
+    "href": "mobile/state-management.html#design-decisions",
+    "title": "State Management",
+    "section": "Design Decisions",
+    "text": "Design Decisions\n\nZustand v5 (not Redux, not Context)\n\n\n\n\n\n\n\n\n\nCriterion\nZustand\nRedux Toolkit\nReact Context\n\n\n\n\nBoilerplate\nMinimal\nModerate\nNone\n\n\nPerformance\nSelective re-renders\nNeeds useSelector\nRe-renders entire tree\n\n\nBundle size\n~2KB\n~30KB\n0 (built-in)\n\n\nDevTools\nOptional middleware\nBuilt-in\nNone\n\n\nPersistence\nMiddleware\nMiddleware\nManual\n\n\n\n\n\nTwo Stores (not one)\nSeparation prevents unnecessary re-renders. Changing resolution doesn’t cause the home screen’s generation UI to re-render, because they subscribe to different stores.",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "State Management"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "NanoMeme Compendium",
+    "section": "",
+    "text": "NanoMeme is a meme generator experiment using Google’s Nano Banana 2 model (gemini-3.1-flash-image-preview, released February 26, 2026). It produces two deliverables:\n\nmacOS Swift menu bar app — a hyper-composable SPM monorepo\nReact Native + Expo smartphone app — iOS + Android with NativeWind\n\nBoth apps call the Gemini REST API directly, render text overlays in-app, and share the KaosMaps brand design language.\n\n\n\n\n\n\nNoteAcceptance Criteria\n\n\n\nA high-fidelity image of a Yoda-like character with the text “Make or make not. There is no buy” — generated, rendered, and displayed in both apps."
+  },
+  {
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
+    "title": "NanoMeme Compendium",
+    "section": "",
+    "text": "NanoMeme is a meme generator experiment using Google’s Nano Banana 2 model (gemini-3.1-flash-image-preview, released February 26, 2026). It produces two deliverables:\n\nmacOS Swift menu bar app — a hyper-composable SPM monorepo\nReact Native + Expo smartphone app — iOS + Android with NativeWind\n\nBoth apps call the Gemini REST API directly, render text overlays in-app, and share the KaosMaps brand design language.\n\n\n\n\n\n\nNoteAcceptance Criteria\n\n\n\nA high-fidelity image of a Yoda-like character with the text “Make or make not. There is no buy” — generated, rendered, and displayed in both apps."
+  },
+  {
+    "objectID": "index.html#architecture-at-a-glance",
+    "href": "index.html#architecture-at-a-glance",
+    "title": "NanoMeme Compendium",
+    "section": "Architecture at a Glance",
+    "text": "Architecture at a Glance\n\n\nShow code\ngraph TB\n    subgraph \"Shared\"\n        B[Brand Tokens]\n        P[Yoda Prompt]\n    end\n\n    subgraph \"macOS App\"\n        MC[NanoCore] --&gt; MI[NanoImageKit]\n        MD[NanoDesignKit] --&gt; MU[PopoverView]\n        MI --&gt; MG[ImageGenerator]\n        MS[NanoStorageKit] --&gt; MU\n        MG --&gt; MU\n    end\n\n    subgraph \"Mobile App\"\n        GC[geminiClient.ts] --&gt; MS2[memeService.ts]\n        ZS[Zustand Stores] --&gt; SC[Screens]\n        MS2 --&gt; SC\n    end\n\n    B --&gt; MD\n    B --&gt; SC\n    P --&gt; MG\n    P --&gt; MS2\n\n\n\n\n\ngraph TB\n    subgraph \"Shared\"\n        B[Brand Tokens]\n        P[Yoda Prompt]\n    end\n\n    subgraph \"macOS App\"\n        MC[NanoCore] --&gt; MI[NanoImageKit]\n        MD[NanoDesignKit] --&gt; MU[PopoverView]\n        MI --&gt; MG[ImageGenerator]\n        MS[NanoStorageKit] --&gt; MU\n        MG --&gt; MU\n    end\n\n    subgraph \"Mobile App\"\n        GC[geminiClient.ts] --&gt; MS2[memeService.ts]\n        ZS[Zustand Stores] --&gt; SC[Screens]\n        MS2 --&gt; SC\n    end\n\n    B --&gt; MD\n    B --&gt; SC\n    P --&gt; MG\n    P --&gt; MS2"
+  },
+  {
+    "objectID": "index.html#project-stats",
+    "href": "index.html#project-stats",
+    "title": "NanoMeme Compendium",
+    "section": "Project Stats",
+    "text": "Project Stats\n\n\n\nMetric\nmacOS\nMobile\n\n\n\n\nLanguage\nSwift 6\nTypeScript\n\n\nFramework\nSPM / AppKit / SwiftUI\nExpo 55 / RN 0.83\n\n\nFiles\n52\n26\n\n\nLines of code\n~5,000\n~1,100\n\n\nTests\n14\n49\n\n\nAPI client\nURLSession (Sendable)\nfetch API\n\n\nKey storage\nKeychain Services\nexpo-secure-store\n\n\nUI toolkit\nNSPanel + SwiftUI\nExpo Router + NativeWind\n\n\nState\n@Observable\nZustand"
+  },
+  {
+    "objectID": "index.html#navigation",
+    "href": "index.html#navigation",
+    "title": "NanoMeme Compendium",
+    "section": "Navigation",
+    "text": "Navigation\nUse the sidebar to explore each platform’s implementation in detail, or jump directly:\n\nmacOS Architecture — SPM monorepo design\nMobile Architecture — Expo Router + NativeWind\nKaosMaps Brand + Interactive Palette — color system with live tweaking\nGemini API Reference — request/response format"
+  },
+  {
+    "objectID": "index.html#repository",
+    "href": "index.html#repository",
+    "title": "NanoMeme Compendium",
+    "section": "Repository",
+    "text": "Repository\nhttps://github.com/jankowtf/nano-meme"
+  },
+  {
+    "objectID": "shared/brand-design.html",
+    "href": "shared/brand-design.html",
+    "title": "Brand Design & Color Palette",
+    "section": "",
+    "text": "The KaosMaps design system uses a dark-first palette with vibrant accent colors. These tokens are shared across both macOS (Swift) and mobile (React Native) platforms.\n\n\n\n\n\nToken\nHex\nRole\n\n\n\n\nCyan\n#06b6d4\nPrimary accent, borders, glow\n\n\nTeal\n#14b8a6\nSecondary accent, section headers\n\n\nMagenta\n#ec4899\nTertiary accent, favorites\n\n\nActive\n#facc15\nActive states, highlights\n\n\nSuccess\n#22c55e\nConfirmations, checkmarks\n\n\nWarning\n#f97316\nAlerts, caution states\n\n\n\n\n\n\n\n\n\nToken\nHex\nRole\n\n\n\n\nPrimary\n#0a0a0f\nMain background\n\n\nSecondary\n#12121a\nTab bar, nav background\n\n\nCard\n#1a1a24\nCard backgrounds, inputs\n\n\n\n\n\n\n\n\n\nToken\nValue\nRole\n\n\n\n\nPrimary\n#e2e8f0\nHeadings, body text\n\n\nSecondary\nrgba(204,251,241,0.55)\nSubtitles, labels\n\n\nMuted\nrgba(153,246,228,0.28)\nPlaceholders, disabled",
+    "crumbs": [
+      "Shared",
+      "Brand Design & Color Palette"
+    ]
+  },
+  {
+    "objectID": "shared/brand-design.html#kaosmaps-brand-colors",
+    "href": "shared/brand-design.html#kaosmaps-brand-colors",
+    "title": "Brand Design & Color Palette",
+    "section": "",
+    "text": "The KaosMaps design system uses a dark-first palette with vibrant accent colors. These tokens are shared across both macOS (Swift) and mobile (React Native) platforms.\n\n\n\n\n\nToken\nHex\nRole\n\n\n\n\nCyan\n#06b6d4\nPrimary accent, borders, glow\n\n\nTeal\n#14b8a6\nSecondary accent, section headers\n\n\nMagenta\n#ec4899\nTertiary accent, favorites\n\n\nActive\n#facc15\nActive states, highlights\n\n\nSuccess\n#22c55e\nConfirmations, checkmarks\n\n\nWarning\n#f97316\nAlerts, caution states\n\n\n\n\n\n\n\n\n\nToken\nHex\nRole\n\n\n\n\nPrimary\n#0a0a0f\nMain background\n\n\nSecondary\n#12121a\nTab bar, nav background\n\n\nCard\n#1a1a24\nCard backgrounds, inputs\n\n\n\n\n\n\n\n\n\nToken\nValue\nRole\n\n\n\n\nPrimary\n#e2e8f0\nHeadings, body text\n\n\nSecondary\nrgba(204,251,241,0.55)\nSubtitles, labels\n\n\nMuted\nrgba(153,246,228,0.28)\nPlaceholders, disabled",
+    "crumbs": [
+      "Shared",
+      "Brand Design & Color Palette"
+    ]
+  },
+  {
+    "objectID": "shared/brand-design.html#interactive-color-palette-explorer",
+    "href": "shared/brand-design.html#interactive-color-palette-explorer",
+    "title": "Brand Design & Color Palette",
+    "section": "Interactive Color Palette Explorer",
+    "text": "Interactive Color Palette Explorer\nExplore and customize each KaosMaps brand color. Use the sliders to adjust hue, saturation, and lightness to find the perfect variation.\n\n\nColor palette explorer code\nviewof selectedColor = Inputs.radio(\n  [\"Cyan\", \"Teal\", \"Magenta\", \"Active\", \"Success\", \"Warning\"],\n  { value: \"Cyan\", label: \"Select color\" }\n)\n\nbaseColors = ({\n  Cyan:    { h: 189, s: 95, l: 43 },\n  Teal:    { h: 168, s: 80, l: 40 },\n  Magenta: { h: 330, s: 81, l: 60 },\n  Active:  { h: 48,  s: 96, l: 53 },\n  Success: { h: 142, s: 71, l: 45 },\n  Warning: { h: 25,  s: 95, l: 53 }\n})\n\nbase = baseColors[selectedColor]\n\nviewof hueShift = Inputs.range([-30, 30], {\n  value: 0, step: 1, label: \"Hue shift\"\n})\n\nviewof satAdjust = Inputs.range([-40, 40], {\n  value: 0, step: 1, label: \"Saturation\"\n})\n\nviewof lightAdjust = Inputs.range([-30, 30], {\n  value: 0, step: 1, label: \"Lightness\"\n})\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nShow code\nfunction clamp(val, min, max) { return Math.min(max, Math.max(min, val)); }\n\nfunction hslToHex(h, s, l) {\n  h = ((h % 360) + 360) % 360;\n  s = clamp(s, 0, 100) / 100;\n  l = clamp(l, 0, 100) / 100;\n  const a = s * Math.min(l, 1 - l);\n  const f = n =&gt; {\n    const k = (n + h / 30) % 12;\n    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);\n    return Math.round(255 * color).toString(16).padStart(2, '0');\n  };\n  return `#${f(0)}${f(8)}${f(4)}`;\n}\n\nadjustedH = clamp(base.h + hueShift, 0, 360)\nadjustedS = clamp(base.s + satAdjust, 0, 100)\nadjustedL = clamp(base.l + lightAdjust, 0, 100)\ncurrentHex = hslToHex(adjustedH, adjustedS, adjustedL)\n\n// Generate the palette variations\nvariations = {\n  const steps = [\n    { name: \"Darkest\",  lAdj: -25, sAdj: 10 },\n    { name: \"Darker\",   lAdj: -15, sAdj: 5 },\n    { name: \"Dark\",     lAdj: -8,  sAdj: 2 },\n    { name: \"Base\",     lAdj: 0,   sAdj: 0 },\n    { name: \"Light\",    lAdj: 8,   sAdj: -2 },\n    { name: \"Lighter\",  lAdj: 15,  sAdj: -8 },\n    { name: \"Lightest\", lAdj: 25,  sAdj: -15 },\n    { name: \"Muted\",    lAdj: 5,   sAdj: -30 },\n    { name: \"Vibrant\",  lAdj: -3,  sAdj: 20 },\n  ];\n  return steps.map(s =&gt; ({\n    name: s.name,\n    hex: hslToHex(adjustedH, clamp(adjustedS + s.sAdj, 0, 100), clamp(adjustedL + s.lAdj, 0, 100)),\n    h: adjustedH,\n    s: clamp(adjustedS + s.sAdj, 0, 100),\n    l: clamp(adjustedL + s.lAdj, 0, 100)\n  }));\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCurrent Color: \n\n\nShow code\nhtml`&lt;div style=\"display: flex; align-items: center; gap: 16px; margin: 16px 0;\"&gt;\n  &lt;div style=\"width: 80px; height: 80px; border-radius: 12px; background: ${currentHex}; box-shadow: 0 0 20px ${currentHex}44;\"&gt;&lt;/div&gt;\n  &lt;div&gt;\n    &lt;div style=\"font-size: 24px; font-weight: 700; font-family: monospace;\"&gt;${currentHex}&lt;/div&gt;\n    &lt;div style=\"font-size: 14px; color: #888;\"&gt;HSL(${adjustedH}, ${adjustedS}%, ${adjustedL}%)&lt;/div&gt;\n  &lt;/div&gt;\n&lt;/div&gt;`\n\n\n\n\n\n\n\n\n\nPalette Variations\n\n\nShow code\nhtml`&lt;div style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin: 16px 0;\"&gt;\n  ${variations.map(v =&gt; html`\n    &lt;div style=\"text-align: center;\"&gt;\n      &lt;div style=\"width: 100%; aspect-ratio: 1; border-radius: 10px; background: ${v.hex}; box-shadow: 0 2px 8px ${v.hex}33; margin-bottom: 6px; cursor: pointer;\" title=\"${v.hex}\" onclick=\"navigator.clipboard.writeText('${v.hex}')\"&gt;&lt;/div&gt;\n      &lt;div style=\"font-size: 12px; font-weight: 600;\"&gt;${v.name}&lt;/div&gt;\n      &lt;div style=\"font-size: 11px; font-family: monospace; color: #888;\"&gt;${v.hex}&lt;/div&gt;\n    &lt;/div&gt;\n  `)}\n&lt;/div&gt;`\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipClick to Copy\n\n\n\nClick any color swatch above to copy its hex code to your clipboard.\n\n\n\n\nFull Palette Preview (All Colors)\n\n\nShow code\nallColors = {\n  const palette = {};\n  for (const [name, hsl] of Object.entries(baseColors)) {\n    const h = hsl.h + hueShift;\n    const s = clamp(hsl.s + satAdjust, 0, 100);\n    const l = clamp(hsl.l + lightAdjust, 0, 100);\n    palette[name] = {\n      base: hslToHex(h, s, l),\n      dark: hslToHex(h, clamp(s + 5, 0, 100), clamp(l - 15, 0, 100)),\n      light: hslToHex(h, clamp(s - 8, 0, 100), clamp(l + 15, 0, 100)),\n      muted: hslToHex(h, clamp(s - 30, 0, 100), clamp(l + 5, 0, 100)),\n      vibrant: hslToHex(h, clamp(s + 20, 0, 100), clamp(l - 3, 0, 100)),\n    };\n  }\n  return palette;\n}\n\nhtml`&lt;table style=\"width: 100%; border-collapse: collapse; margin: 16px 0;\"&gt;\n  &lt;thead&gt;\n    &lt;tr&gt;\n      &lt;th style=\"text-align: left; padding: 8px;\"&gt;Color&lt;/th&gt;\n      &lt;th style=\"padding: 8px;\"&gt;Dark&lt;/th&gt;\n      &lt;th style=\"padding: 8px;\"&gt;Base&lt;/th&gt;\n      &lt;th style=\"padding: 8px;\"&gt;Light&lt;/th&gt;\n      &lt;th style=\"padding: 8px;\"&gt;Muted&lt;/th&gt;\n      &lt;th style=\"padding: 8px;\"&gt;Vibrant&lt;/th&gt;\n    &lt;/tr&gt;\n  &lt;/thead&gt;\n  &lt;tbody&gt;\n    ${Object.entries(allColors).map(([name, shades]) =&gt; html`\n      &lt;tr&gt;\n        &lt;td style=\"padding: 8px; font-weight: 600;\"&gt;${name}&lt;/td&gt;\n        ${[\"dark\", \"base\", \"light\", \"muted\", \"vibrant\"].map(shade =&gt; html`\n          &lt;td style=\"padding: 4px; text-align: center;\"&gt;\n            &lt;div style=\"width: 48px; height: 48px; border-radius: 8px; background: ${shades[shade]}; margin: 0 auto; cursor: pointer;\" title=\"${shades[shade]}\" onclick=\"navigator.clipboard.writeText('${shades[shade]}')\"&gt;&lt;/div&gt;\n            &lt;div style=\"font-size: 10px; font-family: monospace; color: #888; margin-top: 2px;\"&gt;${shades[shade]}&lt;/div&gt;\n          &lt;/td&gt;\n        `)}\n      &lt;/tr&gt;\n    `)}\n  &lt;/tbody&gt;\n&lt;/table&gt;`",
+    "crumbs": [
+      "Shared",
+      "Brand Design & Color Palette"
+    ]
+  },
+  {
+    "objectID": "shared/brand-design.html#light-mode-contrast-optimization",
+    "href": "shared/brand-design.html#light-mode-contrast-optimization",
+    "title": "Brand Design & Color Palette",
+    "section": "Light Mode Contrast Optimization",
+    "text": "Light Mode Contrast Optimization\nThe default KaosMaps green (#22c55e / green-500) has a WCAG contrast ratio of only 2.1:1 against white backgrounds — failing AA standards. Our light theme uses optimized alternatives:\n\n\n\nColor\nDefault\nOptimized\nContrast vs White\n\n\n\n\nGreen\n#22c55e (500)\n#15803d (700)\n4.5:1 (AA pass)\n\n\nCyan\n#06b6d4 (500)\n#0891b2 (600)\n4.6:1 (AA pass)\n\n\nTeal\n#14b8a6 (500)\n#0d9488 (600)\n4.5:1 (AA pass)\n\n\nPink\n#ec4899 (500)\n#be185d (700)\n5.2:1 (AA pass)\n\n\n\n\n\n\n\n\n\nWarningWCAG AA Minimum\n\n\n\nText must have a contrast ratio of at least 4.5:1 against its background. The optimized colors above all meet this threshold for light mode while staying visually connected to the brand palette.",
+    "crumbs": [
+      "Shared",
+      "Brand Design & Color Palette"
+    ]
+  },
+  {
+    "objectID": "shared/brand-design.html#platform-implementations",
+    "href": "shared/brand-design.html#platform-implementations",
+    "title": "Brand Design & Color Palette",
+    "section": "Platform Implementations",
+    "text": "Platform Implementations\n\nSwift (macOS)TypeScript (Mobile)Tailwind (NativeWind)\n\n\npublic enum Brand {\n    public static let cyan    = NSColor(hex: \"#06b6d4\")\n    public static let teal    = NSColor(hex: \"#14b8a6\")\n    public static let magenta = NSColor(hex: \"#ec4899\")\n    public static let active  = NSColor(hex: \"#facc15\")\n\n    public enum Surface {\n        public static let primary   = NSColor(hex: \"#0a0a0f\")\n        public static let secondary = NSColor(hex: \"#12121a\")\n        public static let card      = NSColor(hex: \"#1a1a24\")\n    }\n}\n\n\nexport const colors = {\n  brand: {\n    cyan: \"#06b6d4\",\n    teal: \"#14b8a6\",\n    magenta: \"#ec4899\",\n    active: \"#facc15\",\n    success: \"#22c55e\",\n    warning: \"#f97316\",\n  },\n  surface: {\n    primary: \"#0a0a0f\",\n    secondary: \"#12121a\",\n    card: \"#1a1a24\",\n  },\n  text: {\n    primary: \"#e2e8f0\",\n    secondary: \"rgba(204,251,241,0.55)\",\n    muted: \"rgba(153,246,228,0.28)\",\n  },\n} as const;\n\n\n// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: {\n        brand: {\n          cyan: \"#06b6d4\",\n          teal: \"#14b8a6\",\n          magenta: \"#ec4899\",\n          active: \"#facc15\",\n        },\n        surface: {\n          primary: \"#0a0a0f\",\n          secondary: \"#12121a\",\n          card: \"#1a1a24\",\n        },\n      },\n    },\n  },\n};",
+    "crumbs": [
+      "Shared",
+      "Brand Design & Color Palette"
+    ]
+  },
+  {
+    "objectID": "shared/brand-design.html#glow-effect",
+    "href": "shared/brand-design.html#glow-effect",
+    "title": "Brand Design & Color Palette",
+    "section": "Glow Effect",
+    "text": "Glow Effect\nThe signature KaosMaps glow combines layered shadows and subtle borders:\n\nSwift (NSView)React Native\n\n\nlayer?.shadowColor = Brand.cyan.cgColor\nlayer?.shadowRadius = 20\nlayer?.shadowOpacity = 0.15\nlayer?.shadowOffset = .zero\nlayer?.borderColor = Brand.cyan.withAlphaComponent(0.3).cgColor\nlayer?.borderWidth = 1\n\n\nglowOuter: {\n  shadowColor: \"#06b6d4\",\n  shadowOffset: { width: 0, height: 0 },\n  shadowOpacity: 0.15,\n  shadowRadius: 30,\n},\nglowInner: {\n  borderWidth: 1,\n  borderColor: \"rgba(6,182,212,0.3)\",\n},",
+    "crumbs": [
+      "Shared",
+      "Brand Design & Color Palette"
+    ]
+  },
+  {
+    "objectID": "macos/nanostoragekit.html",
+    "href": "macos/nanostoragekit.html",
+    "title": "NanoStorageKit — SwiftData Persistence",
+    "section": "",
+    "text": "NanoStorageKit handles all data persistence: meme records in SwiftData, export to clipboard/file/share, and user settings.",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoStorageKit — SwiftData Persistence"
+    ]
+  },
+  {
+    "objectID": "macos/nanostoragekit.html#purpose",
+    "href": "macos/nanostoragekit.html#purpose",
+    "title": "NanoStorageKit — SwiftData Persistence",
+    "section": "",
+    "text": "NanoStorageKit handles all data persistence: meme records in SwiftData, export to clipboard/file/share, and user settings.",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoStorageKit — SwiftData Persistence"
+    ]
+  },
+  {
+    "objectID": "macos/nanostoragekit.html#memerecord",
+    "href": "macos/nanostoragekit.html#memerecord",
+    "title": "NanoStorageKit — SwiftData Persistence",
+    "section": "MemeRecord",
+    "text": "MemeRecord\nA SwiftData @Model for storing generated memes:\n@Model\npublic final class MemeRecord {\n    public var prompt: String\n    public var overlayText: String\n    public var resolution: String\n    public var aspectRatio: String\n    public var imagePath: String\n    @Attribute(.externalStorage) public var thumbnailData: Data?\n    public var createdAt: Date\n    public var isFavorite: Bool\n}\n\n\n\n\n\n\nTipExternal Storage for Thumbnails\n\n\n\nThe @Attribute(.externalStorage) directive tells SwiftData to store thumbnail data as an external file rather than inline in the database, improving query performance.",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoStorageKit — SwiftData Persistence"
+    ]
+  },
+  {
+    "objectID": "macos/nanostoragekit.html#memestore",
+    "href": "macos/nanostoragekit.html#memestore",
+    "title": "NanoStorageKit — SwiftData Persistence",
+    "section": "MemeStore",
+    "text": "MemeStore\nA @MainActor store managing the SwiftData ModelContainer:\n@MainActor\npublic final class MemeStore {\n    private let container: ModelContainer\n\n    public init() throws {\n        let schema = Schema([MemeRecord.self])\n        let config = ModelConfiguration(\n            \"memes\",\n            url: /* ~/Library/Application Support/NanoMeme/Data/memes.store */\n        )\n        container = try ModelContainer(for: schema, configurations: [config])\n    }\n\n    public func save(_ record: MemeRecord) throws { /* ... */ }\n    public func fetchAll() throws -&gt; [MemeRecord] { /* ... */ }\n    public func delete(_ record: MemeRecord) throws { /* ... */ }\n}",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoStorageKit — SwiftData Persistence"
+    ]
+  },
+  {
+    "objectID": "macos/nanostoragekit.html#memeexporter",
+    "href": "macos/nanostoragekit.html#memeexporter",
+    "title": "NanoStorageKit — SwiftData Persistence",
+    "section": "MemeExporter",
+    "text": "MemeExporter\nThree export methods using AppKit APIs:\n\n\n\nMethod\nAPI\nDescription\n\n\n\n\nCopy\nNSPasteboard\nCopy image to system clipboard\n\n\nSave\nNSSavePanel\nSave to user-chosen location\n\n\nShare\nNSSharingServicePicker\nSystem share sheet",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoStorageKit — SwiftData Persistence"
+    ]
+  },
+  {
+    "objectID": "macos/nanostoragekit.html#settingsstore",
+    "href": "macos/nanostoragekit.html#settingsstore",
+    "title": "NanoStorageKit — SwiftData Persistence",
+    "section": "SettingsStore",
+    "text": "SettingsStore\nA singleton using AppStorageValue wrappers for user preferences:\npublic final class SettingsStore {\n    public static let shared = SettingsStore()\n\n    @AppStorageValue(\"launchAtLogin\", defaultValue: false)\n    public var launchAtLogin: Bool\n\n    @AppStorageValue(\"showInDock\", defaultValue: false)\n    public var showInDock: Bool\n\n    @AppStorageValue(\"defaultResolution\", defaultValue: \"1K\")\n    public var defaultResolution: String\n\n    @AppStorageValue(\"defaultAspectRatio\", defaultValue: \"1:1\")\n    public var defaultAspectRatio: String\n\n    @AppStorageValue(\"autoOverlayText\", defaultValue: true)\n    public var autoOverlayText: Bool\n}",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoStorageKit — SwiftData Persistence"
+    ]
+  },
+  {
+    "objectID": "macos/architecture.html",
+    "href": "macos/architecture.html",
+    "title": "SPM Monorepo Architecture",
+    "section": "",
+    "text": "macos/\n├── Package.swift                          # Root manifest\n├── Packages/\n│   ├── NanoCore/                          # Logging, config\n│   ├── NanoDesignKit/                     # Brand colors\n│   ├── NanoImageKit/                      # Gemini API + image processing\n│   └── NanoStorageKit/                    # SwiftData persistence\n├── Sources/\n│   ├── NanoMeme/                          # Library target (all app logic)\n│   │   ├── App/                           # AppDelegate, AppState, Coordinator\n│   │   └── UI/                            # MenuBar, Settings views\n│   └── NanoMemeApp/                       # Executable (@main)\n├── Tests/NanoMemeTests/                   # App-layer tests\n├── Resources/                             # Info.plist, entitlements\n└── justfile                               # Build pipeline",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "SPM Monorepo Architecture"
+    ]
+  },
+  {
+    "objectID": "macos/architecture.html#directory-structure",
+    "href": "macos/architecture.html#directory-structure",
+    "title": "SPM Monorepo Architecture",
+    "section": "",
+    "text": "macos/\n├── Package.swift                          # Root manifest\n├── Packages/\n│   ├── NanoCore/                          # Logging, config\n│   ├── NanoDesignKit/                     # Brand colors\n│   ├── NanoImageKit/                      # Gemini API + image processing\n│   └── NanoStorageKit/                    # SwiftData persistence\n├── Sources/\n│   ├── NanoMeme/                          # Library target (all app logic)\n│   │   ├── App/                           # AppDelegate, AppState, Coordinator\n│   │   └── UI/                            # MenuBar, Settings views\n│   └── NanoMemeApp/                       # Executable (@main)\n├── Tests/NanoMemeTests/                   # App-layer tests\n├── Resources/                             # Info.plist, entitlements\n└── justfile                               # Build pipeline",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "SPM Monorepo Architecture"
+    ]
+  },
+  {
+    "objectID": "macos/architecture.html#package.swift",
+    "href": "macos/architecture.html#package.swift",
+    "title": "SPM Monorepo Architecture",
+    "section": "Package.swift",
+    "text": "Package.swift\nThe root manifest uses Swift tools version 6.0 with language mode v5 (for compatibility with libraries that aren’t fully Swift 6 ready):\n// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"NanoMeme\",\n    platforms: [.macOS(.v14)],\n    products: [\n        .library(name: \"NanoMemeLib\", targets: [\"NanoMeme\"]),\n        .executable(name: \"NanoMeme\", targets: [\"NanoMemeApp\"]),\n    ],\n    dependencies: [\n        .package(path: \"Packages/NanoCore\"),\n        .package(path: \"Packages/NanoDesignKit\"),\n        .package(path: \"Packages/NanoImageKit\"),\n        .package(path: \"Packages/NanoStorageKit\"),\n        .package(url: \"https://github.com/sindresorhus/KeyboardShortcuts\", from: \"2.0.0\"),\n    ],\n    targets: [\n        .target(\n            name: \"NanoMeme\",\n            dependencies: [\"NanoCore\", \"NanoDesignKit\", \"NanoImageKit\",\n                          \"NanoStorageKit\", \"KeyboardShortcuts\"],\n            swiftSettings: [.swiftLanguageMode(.v5)]\n        ),\n        .executableTarget(name: \"NanoMemeApp\", dependencies: [\"NanoMeme\"]),\n        .testTarget(name: \"NanoMemeTests\", dependencies: [\"NanoMeme\"]),\n    ]\n)\n\n\n\n\n\n\nNoteWhy .swiftLanguageMode(.v5)?\n\n\n\nSwift 6’s strict concurrency checking conflicts with KeyboardShortcuts’ static lazy initialization pattern. Using v5 language mode gives us the SPM 6.0 features while keeping concurrency warnings non-fatal.",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "SPM Monorepo Architecture"
+    ]
+  },
+  {
+    "objectID": "macos/architecture.html#dependency-graph",
+    "href": "macos/architecture.html#dependency-graph",
+    "title": "SPM Monorepo Architecture",
+    "section": "Dependency Graph",
+    "text": "Dependency Graph\nEach package has a single responsibility:\n\n\n\n\n\n\n\n\nPackage\nResponsibility\nDependencies\n\n\n\n\nNanoCore\nLogging, config, UserDefaults wrapper\nNone (Foundation only)\n\n\nNanoDesignKit\nBrand colors, design tokens\nNone\n\n\nNanoImageKit\nGemini API, text overlay, Keychain\nNanoCore\n\n\nNanoStorageKit\nSwiftData models, export, settings\nNanoCore",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "SPM Monorepo Architecture"
+    ]
+  },
+  {
+    "objectID": "macos/architecture.html#testing-strategy",
+    "href": "macos/architecture.html#testing-strategy",
+    "title": "SPM Monorepo Architecture",
+    "section": "Testing Strategy",
+    "text": "Testing Strategy\nAll packages have co-located test targets using Swift Testing framework (@Suite, @Test, #expect):\n@Suite(\"GeminiConfig\")\nstruct GeminiConfigTests {\n    @Test(\"default resolution is 1K\")\n    func defaultResolution() {\n        let config = GeminiConfig()\n        #expect(config.resolution == .one)\n    }\n}\nThe test suite uses MockURLProtocol for HTTP testing and .serialized trait to prevent race conditions between suites sharing mock state.",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "SPM Monorepo Architecture"
+    ]
+  },
+  {
+    "objectID": "macos/nanocore.html",
+    "href": "macos/nanocore.html",
+    "title": "NanoCore Package",
+    "section": "",
+    "text": "NanoCore provides cross-cutting infrastructure: logging, configuration, and UserDefaults wrappers. It has zero external dependencies (Foundation only).",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "NanoCore Package"
+    ]
+  },
+  {
+    "objectID": "macos/nanocore.html#purpose",
+    "href": "macos/nanocore.html#purpose",
+    "title": "NanoCore Package",
+    "section": "",
+    "text": "NanoCore provides cross-cutting infrastructure: logging, configuration, and UserDefaults wrappers. It has zero external dependencies (Foundation only).",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "NanoCore Package"
+    ]
+  },
+  {
+    "objectID": "macos/nanocore.html#components",
+    "href": "macos/nanocore.html#components",
+    "title": "NanoCore Package",
+    "section": "Components",
+    "text": "Components\n\nNanoConfig\nA configuration struct with static presets per app in the nano ecosystem:\npublic struct NanoConfig: Sendable {\n    public let appName: String\n    public let bundleId: String\n    public let logDirectory: URL\n    public let dataCacheDirectory: URL\n\n    public static let nanoMeme = NanoConfig(\n        appName: \"NanoMeme\",\n        bundleId: \"com.kaosmaps.nanomeme\",\n        logDirectory: /* ~/Library/Logs/NanoMeme/ */,\n        dataCacheDirectory: /* ~/Library/Caches/NanoMeme/ */\n    )\n}\n\n\nNanoLog (Log Categories)\nTyped log categories using os.Logger:\npublic enum Log {\n    public static let api = Logger(subsystem: bundleId, category: \"api\")\n    public static let image = Logger(subsystem: bundleId, category: \"image\")\n    public static let ui = Logger(subsystem: bundleId, category: \"ui\")\n    public static let storage = Logger(subsystem: bundleId, category: \"storage\")\n    public static let app = Logger(subsystem: bundleId, category: \"app\")\n    public static let keychain = Logger(subsystem: bundleId, category: \"keychain\")\n}\n\n\nFileLog\nA file-based crash logger with 5MB log rotation, installed via FileLog.shared.installCrashHandlers(). Catches SIGABRT, SIGBUS, SIGSEGV, and SIGFPE.\n\n\nAppStorageValue\nA property wrapper for type-safe UserDefaults access:\n@AppStorageValue(\"defaultResolution\", defaultValue: \"1K\")\nvar defaultResolution: String",
+    "crumbs": [
+      "macOS App",
+      "Architecture",
+      "NanoCore Package"
+    ]
+  },
+  {
+    "objectID": "macos/app-layer.html",
+    "href": "macos/app-layer.html",
+    "title": "App Layer — UI + Composition",
+    "section": "",
+    "text": "The central observable state object using Swift’s @Observable macro:\n@Observable\npublic final class AppState {\n    public var isGenerating = false\n    public var generationProgress: Double = 0\n    public var currentMeme: NSImage?\n    public var currentPrompt = \"\"\n    public var currentOverlayText = \"\"\n    public var selectedResolution: Resolution = .one\n    public var isAPIKeyConfigured = false\n    public var lastError: String?\n}\nSwiftUI views automatically react to changes in these properties without explicit bindings.",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "App Layer — UI + Composition"
+    ]
+  },
+  {
+    "objectID": "macos/app-layer.html#appstate",
+    "href": "macos/app-layer.html#appstate",
+    "title": "App Layer — UI + Composition",
+    "section": "",
+    "text": "The central observable state object using Swift’s @Observable macro:\n@Observable\npublic final class AppState {\n    public var isGenerating = false\n    public var generationProgress: Double = 0\n    public var currentMeme: NSImage?\n    public var currentPrompt = \"\"\n    public var currentOverlayText = \"\"\n    public var selectedResolution: Resolution = .one\n    public var isAPIKeyConfigured = false\n    public var lastError: String?\n}\nSwiftUI views automatically react to changes in these properties without explicit bindings.",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "App Layer — UI + Composition"
+    ]
+  },
+  {
+    "objectID": "macos/app-layer.html#memecoordinator",
+    "href": "macos/app-layer.html#memecoordinator",
+    "title": "App Layer — UI + Composition",
+    "section": "MemeCoordinator",
+    "text": "MemeCoordinator\nThe @MainActor coordinator manages generation lifecycle with cancellation:\n@MainActor\npublic final class MemeCoordinator {\n    private let state: AppState\n    private var currentTask: Task&lt;Void, Never&gt;?\n\n    public func generateMeme(apiKey: String) {\n        cancelGeneration()\n        state.isGenerating = true\n        state.lastError = nil\n\n        currentTask = Task {\n            do {\n                let result = try await generator.generate(\n                    prompt: state.currentPrompt,\n                    overlayText: state.currentOverlayText,\n                    apiKey: apiKey\n                )\n                state.currentMeme = result.image\n            } catch {\n                state.lastError = error.localizedDescription\n            }\n            state.isGenerating = false\n        }\n    }\n\n    public func cancelGeneration() {\n        currentTask?.cancel()\n        currentTask = nil\n        state.isGenerating = false\n    }\n}",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "App Layer — UI + Composition"
+    ]
+  },
+  {
+    "objectID": "macos/app-layer.html#menubarmanager",
+    "href": "macos/app-layer.html#menubarmanager",
+    "title": "App Layer — UI + Composition",
+    "section": "MenuBarManager",
+    "text": "MenuBarManager\nThe NSPanel-based popover attached to an NSStatusItem:\npublic final class MenuBarManager {\n    private var statusItem: NSStatusItem?\n    private var panel: NSPanel?\n\n    public func setup() {\n        statusItem = NSStatusBar.system.statusItem(\n            withLength: NSStatusItem.squareLength\n        )\n        // Configure with photo.artframe SF Symbol\n        // Create NSPanel with .nonactivatingPanel style\n    }\n}\nThe panel uses .nonactivatingPanel behavior mask so it doesn’t steal focus from other applications.",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "App Layer — UI + Composition"
+    ]
+  },
+  {
+    "objectID": "macos/app-layer.html#popoverview",
+    "href": "macos/app-layer.html#popoverview",
+    "title": "App Layer — UI + Composition",
+    "section": "PopoverView",
+    "text": "PopoverView\nA SwiftUI view with three states:\n\n\nShow code\nstateDiagram-v2\n    [*] --&gt; Idle\n    Idle --&gt; Generating : tap Generate\n    Generating --&gt; Result : success\n    Generating --&gt; Idle : error / cancel\n    Result --&gt; Idle : Generate Another\n\n\n\n\n\nstateDiagram-v2\n    [*] --&gt; Idle\n    Idle --&gt; Generating : tap Generate\n    Generating --&gt; Result : success\n    Generating --&gt; Idle : error / cancel\n    Result --&gt; Idle : Generate Another\n\n\n\n\n\n\nThe view features KaosMaps dark theme styling with cyan glow accents:\n\nDark surface background (#0a0a0f)\nCyan-bordered input fields with subtle glow\nPulsing generate button during generation\nImage preview with copy/save/share actions",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "App Layer — UI + Composition"
+    ]
+  },
+  {
+    "objectID": "macos/app-layer.html#keyboard-shortcuts",
+    "href": "macos/app-layer.html#keyboard-shortcuts",
+    "title": "App Layer — UI + Composition",
+    "section": "Keyboard Shortcuts",
+    "text": "Keyboard Shortcuts\nTwo global shortcuts registered via the KeyboardShortcuts library:\n\n\n\nShortcut\nAction\n\n\n\n\nCtrl+Opt+M\nToggle popover visibility\n\n\nCtrl+Opt+G\nGenerate meme",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "App Layer — UI + Composition"
+    ]
+  },
+  {
+    "objectID": "macos/build-pipeline.html",
+    "href": "macos/build-pipeline.html",
+    "title": "Build Pipeline",
+    "section": "",
+    "text": "The entire build lifecycle is managed by a justfile with these recipes:\n# Debug build\nbuild:\n    swift build\n\n# Build and run debug binary\nrun: build\n    .build/debug/NanoMeme\n\n# Run all tests\ntest:\n    swift test\n\n# Release build (arm64)\nbuild-release:\n    swift build -c release\n\n# Create .app bundle from release binary\nbundle: build-release\n    # Copy binary to .app/Contents/MacOS/\n    # Copy Info.plist, set version and git SHA\n    # Copy AppIcon.icns if available\n\n# Ad-hoc codesign the .app bundle\nsign: bundle\n    codesign --force --deep --sign - \\\n        --entitlements Resources/entitlements.plist \\\n        --options runtime \\\n        \"build/NanoMeme.app\"\n\n# Install to /Applications\ninstall: sign\n    cp -R build/NanoMeme.app /Applications/\n\n# Full dev cycle: kill + rebuild + install + launch\nreinstall:\n    pkill -f NanoMeme || true\n    just install\n    open /Applications/NanoMeme.app",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "Build Pipeline"
+    ]
+  },
+  {
+    "objectID": "macos/build-pipeline.html#justfile",
+    "href": "macos/build-pipeline.html#justfile",
+    "title": "Build Pipeline",
+    "section": "",
+    "text": "The entire build lifecycle is managed by a justfile with these recipes:\n# Debug build\nbuild:\n    swift build\n\n# Build and run debug binary\nrun: build\n    .build/debug/NanoMeme\n\n# Run all tests\ntest:\n    swift test\n\n# Release build (arm64)\nbuild-release:\n    swift build -c release\n\n# Create .app bundle from release binary\nbundle: build-release\n    # Copy binary to .app/Contents/MacOS/\n    # Copy Info.plist, set version and git SHA\n    # Copy AppIcon.icns if available\n\n# Ad-hoc codesign the .app bundle\nsign: bundle\n    codesign --force --deep --sign - \\\n        --entitlements Resources/entitlements.plist \\\n        --options runtime \\\n        \"build/NanoMeme.app\"\n\n# Install to /Applications\ninstall: sign\n    cp -R build/NanoMeme.app /Applications/\n\n# Full dev cycle: kill + rebuild + install + launch\nreinstall:\n    pkill -f NanoMeme || true\n    just install\n    open /Applications/NanoMeme.app",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "Build Pipeline"
+    ]
+  },
+  {
+    "objectID": "macos/build-pipeline.html#entitlements",
+    "href": "macos/build-pipeline.html#entitlements",
+    "title": "Build Pipeline",
+    "section": "Entitlements",
+    "text": "Entitlements\nMinimal entitlements — only network access:\n&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n&lt;plist version=\"1.0\"&gt;\n&lt;dict&gt;\n    &lt;key&gt;com.apple.security.network.client&lt;/key&gt;\n    &lt;true/&gt;\n&lt;/dict&gt;\n&lt;/plist&gt;",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "Build Pipeline"
+    ]
+  },
+  {
+    "objectID": "macos/build-pipeline.html#info.plist",
+    "href": "macos/build-pipeline.html#info.plist",
+    "title": "Build Pipeline",
+    "section": "Info.plist",
+    "text": "Info.plist\nKey settings:\n\n\n\n\n\n\n\n\nKey\nValue\nPurpose\n\n\n\n\nLSUIElement\ntrue\nNo Dock icon\n\n\nLSMinimumSystemVersion\n14.0\nmacOS Sonoma+\n\n\nLSApplicationCategoryType\npublic.app-category.graphics-design\nApp Store category\n\n\nCFBundleIdentifier\ncom.kaosmaps.nanomeme\nBundle ID",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "Build Pipeline"
+    ]
+  },
+  {
+    "objectID": "macos/build-pipeline.html#build-flow",
+    "href": "macos/build-pipeline.html#build-flow",
+    "title": "Build Pipeline",
+    "section": "Build Flow",
+    "text": "Build Flow\n\n\nShow code\ngraph LR\n    B[swift build] --&gt; T[swift test]\n    T --&gt; BR[build-release]\n    BR --&gt; BU[bundle .app]\n    BU --&gt; S[codesign]\n    S --&gt; I[install to /Applications]\n    I --&gt; O[open app]\n\n\n\n\n\ngraph LR\n    B[swift build] --&gt; T[swift test]\n    T --&gt; BR[build-release]\n    BR --&gt; BU[bundle .app]\n    BU --&gt; S[codesign]\n    S --&gt; I[install to /Applications]\n    I --&gt; O[open app]\n\n\n\n\n\n\nThe entire flow from source to running app takes ~15 seconds on Apple Silicon.",
+    "crumbs": [
+      "macOS App",
+      "App Layer",
+      "Build Pipeline"
+    ]
+  },
+  {
+    "objectID": "macos/index.html",
+    "href": "macos/index.html",
+    "title": "macOS Menu Bar App",
+    "section": "",
+    "text": "The macOS app is a menu bar application (no Dock icon) that lives in the system tray. Click the photo.artframe icon to open an NSPanel popover with the KaosMaps glow design.\nThe architecture follows the nano-speak pattern: a two-target SPM project with local packages for maximum testability and composability.",
+    "crumbs": [
+      "macOS App",
+      "macOS Menu Bar App"
+    ]
+  },
+  {
+    "objectID": "macos/index.html#overview",
+    "href": "macos/index.html#overview",
+    "title": "macOS Menu Bar App",
+    "section": "",
+    "text": "The macOS app is a menu bar application (no Dock icon) that lives in the system tray. Click the photo.artframe icon to open an NSPanel popover with the KaosMaps glow design.\nThe architecture follows the nano-speak pattern: a two-target SPM project with local packages for maximum testability and composability.",
+    "crumbs": [
+      "macOS App",
+      "macOS Menu Bar App"
+    ]
+  },
+  {
+    "objectID": "macos/index.html#package-map",
+    "href": "macos/index.html#package-map",
+    "title": "macOS Menu Bar App",
+    "section": "Package Map",
+    "text": "Package Map\n\n\nShow code\ngraph LR\n    subgraph \"Root Package.swift\"\n        NanoMemeLib[\"NanoMemeLib&lt;br/&gt;(library target)\"]\n        NanoMeme[\"NanoMeme&lt;br/&gt;(@main executable)\"]\n        Tests[\"NanoMemeTests\"]\n    end\n\n    subgraph \"Local Packages\"\n        NC[NanoCore]\n        NDK[NanoDesignKit]\n        NIK[NanoImageKit]\n        NSK[NanoStorageKit]\n    end\n\n    NanoMeme --&gt; NanoMemeLib\n    Tests --&gt; NanoMemeLib\n    NanoMemeLib --&gt; NC\n    NanoMemeLib --&gt; NDK\n    NanoMemeLib --&gt; NIK\n    NanoMemeLib --&gt; NSK\n    NIK --&gt; NC\n    NSK --&gt; NC\n\n\n\n\n\ngraph LR\n    subgraph \"Root Package.swift\"\n        NanoMemeLib[\"NanoMemeLib&lt;br/&gt;(library target)\"]\n        NanoMeme[\"NanoMeme&lt;br/&gt;(@main executable)\"]\n        Tests[\"NanoMemeTests\"]\n    end\n\n    subgraph \"Local Packages\"\n        NC[NanoCore]\n        NDK[NanoDesignKit]\n        NIK[NanoImageKit]\n        NSK[NanoStorageKit]\n    end\n\n    NanoMeme --&gt; NanoMemeLib\n    Tests --&gt; NanoMemeLib\n    NanoMemeLib --&gt; NC\n    NanoMemeLib --&gt; NDK\n    NanoMemeLib --&gt; NIK\n    NanoMemeLib --&gt; NSK\n    NIK --&gt; NC\n    NSK --&gt; NC",
+    "crumbs": [
+      "macOS App",
+      "macOS Menu Bar App"
+    ]
+  },
+  {
+    "objectID": "macos/index.html#key-design-decisions",
+    "href": "macos/index.html#key-design-decisions",
+    "title": "macOS Menu Bar App",
+    "section": "Key Design Decisions",
+    "text": "Key Design Decisions\n\nTwo-Target Pattern\nThe NanoMemeLib library target contains all logic, while NanoMeme is a thin @main entry point. This allows the test target to import the library without importing AppKit lifecycle code.\n// NanoMemeApp.swift — the entire executable target\nimport AppKit\nimport NanoMemeLib\n\n@main\nstruct NanoMemeApp {\n    static func main() {\n        let app = NSApplication.shared\n        let delegate = AppDelegate()\n        app.delegate = delegate\n        app.run()\n    }\n}\n\n\nLSUIElement\nThe app sets LSUIElement = true in Info.plist, which means:\n\nNo Dock icon\nNo main menu bar\nLives entirely in the system tray\nUses NSApp.setActivationPolicy(.accessory) at runtime\n\n\n\nActor-Based Concurrency\nAll network and image operations use Swift’s structured concurrency. GeminiClient and ImageGenerator are Sendable final classes with async methods, not actors, to avoid executor deadlocks with URLSession.\n\n\n\n\n\n\nTipLesson Learned\n\n\n\nUsing actor + DispatchSemaphore.wait() causes a deadlock because the semaphore blocks the actor’s executor, preventing the URLSession completion handler from running. Solution: use async/await with URLSession.data(for:).",
+    "crumbs": [
+      "macOS App",
+      "macOS Menu Bar App"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html",
+    "href": "macos/nanoimagekit.html",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "",
+    "text": "NanoImageKit is the core domain package handling all image generation. It contains:\n\nGemini API types and client\nAPI key management (Keychain + env var)\nCore Graphics text overlay rendering\nImage generation orchestration",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html#purpose",
+    "href": "macos/nanoimagekit.html#purpose",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "",
+    "text": "NanoImageKit is the core domain package handling all image generation. It contains:\n\nGemini API types and client\nAPI key management (Keychain + env var)\nCore Graphics text overlay rendering\nImage generation orchestration",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html#geminimodels",
+    "href": "macos/nanoimagekit.html#geminimodels",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "GeminiModels",
+    "text": "GeminiModels\nCodable types matching the Gemini REST API exactly:\npublic struct GenerateContentRequest: Codable, Sendable {\n    public let contents: [Content]\n    public let generationConfig: GenerationConfig?\n}\n\npublic struct Content: Codable, Sendable {\n    public let parts: [Part]\n    public let role: String?\n}\n\npublic enum Part: Codable, Sendable {\n    case text(String)\n    case inlineData(mimeType: String, data: String)\n}\nThe response mirrors this structure, with Candidate wrapping Content and parts that can be either text or base64 inline image data.",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html#geminiclient",
+    "href": "macos/nanoimagekit.html#geminiclient",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "GeminiClient",
+    "text": "GeminiClient\nA Sendable final class (not an actor) using URLSession.ephemeral:\npublic final class GeminiClient: Sendable {\n    private let config: GeminiConfig\n    private let session: URLSession  // ephemeral, no disk cache\n\n    public func generateImage(\n        prompt: String,\n        resolution: Resolution? = nil\n    ) async throws -&gt; GeminiResponse {\n        let url = config.apiURL(apiKey: apiKey)\n        var request = URLRequest(url: url)\n        request.httpMethod = \"POST\"\n        request.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\n        request.timeoutInterval = 120\n\n        let body = GenerateContentRequest(/* ... */)\n        request.httpBody = try JSONEncoder().encode(body)\n\n        let (data, response) = try await session.data(for: request)\n        // Handle PROHIBITED_CONTENT errors, decode response\n    }\n}\n\n\n\n\n\n\nImportantWhy Not an Actor?\n\n\n\nUsing actor + synchronous waiting (like DispatchSemaphore) causes executor deadlocks. A Sendable final class with async/await avoids this entirely while still being thread-safe.",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html#keychainhelper",
+    "href": "macos/nanoimagekit.html#keychainhelper",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "KeychainHelper",
+    "text": "KeychainHelper\nThree-tier API key resolution:\n\nKeychain (primary) — service: com.kaosmaps.nanomeme, account: gemini-api-key\nEnvironment variable (fallback) — GEMINI_API_KEY\n1Password (manual) — op item get \"api_key_google_gemini_ops@kaosmaps\" --vault Kai\n\npublic func resolveAPIKey() -&gt; String? {\n    // Try Keychain first\n    if let key = load() { return key }\n    // Fall back to environment variable\n    return ProcessInfo.processInfo.environment[\"GEMINI_API_KEY\"]\n}",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html#textoverlayrenderer",
+    "href": "macos/nanoimagekit.html#textoverlayrenderer",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "TextOverlayRenderer",
+    "text": "TextOverlayRenderer\nCore Graphics text rendering with the classic meme font style:\npublic struct TextOverlayRenderer {\n    public static func render(\n        text: String,\n        on image: NSImage,\n        position: TextPosition = .bottom,\n        fontSize: CGFloat? = nil\n    ) -&gt; NSImage {\n        // Create bitmap context from image\n        // Configure Impact font with white fill + black stroke\n        // Draw text at specified position\n        // Return composited image\n    }\n}\nThe renderer uses:\n\nImpact font (or Helvetica Bold fallback)\nWhite fill with 2pt black stroke for readability\nAuto-sizing based on image dimensions\nThree positions: .top, .center, .bottom",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "macos/nanoimagekit.html#imagegenerator",
+    "href": "macos/nanoimagekit.html#imagegenerator",
+    "title": "NanoImageKit — Gemini API + Image Processing",
+    "section": "ImageGenerator",
+    "text": "ImageGenerator\nThe orchestrator that ties everything together:\npublic final class ImageGenerator: Sendable {\n    public func generate(\n        prompt: String,\n        overlayText: String?,\n        apiKey: String\n    ) async throws -&gt; MemeResult {\n        // 1. Call GeminiClient\n        let response = try await client.generateImage(prompt: prompt)\n\n        // 2. Decode base64 → NSImage\n        let imageData = Data(base64Encoded: response.imageData)!\n        var image = NSImage(data: imageData)!\n\n        // 3. Apply text overlay if provided\n        if let text = overlayText {\n            image = TextOverlayRenderer.render(text: text, on: image)\n        }\n\n        // 4. Return MemeResult\n        return MemeResult(image: image, textResponse: response.textResponse)\n    }\n}",
+    "crumbs": [
+      "macOS App",
+      "Domain",
+      "NanoImageKit — Gemini API + Image Processing"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html",
+    "href": "shared/gemini-api.html",
+    "title": "Gemini API Reference",
+    "section": "",
+    "text": "NanoMeme uses Nano Banana 2 (gemini-2.0-flash-exp) for image generation via the Gemini REST API.\n\n\n\nProperty\nValue\n\n\n\n\nModel ID\ngemini-2.0-flash-exp\n\n\nCapability\nText-to-image generation\n\n\nText rendering\nNear-zero error rate\n\n\nResponse format\nBase64 PNG in JSON",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html#model",
+    "href": "shared/gemini-api.html#model",
+    "title": "Gemini API Reference",
+    "section": "",
+    "text": "NanoMeme uses Nano Banana 2 (gemini-2.0-flash-exp) for image generation via the Gemini REST API.\n\n\n\nProperty\nValue\n\n\n\n\nModel ID\ngemini-2.0-flash-exp\n\n\nCapability\nText-to-image generation\n\n\nText rendering\nNear-zero error rate\n\n\nResponse format\nBase64 PNG in JSON",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html#api-endpoint",
+    "href": "shared/gemini-api.html#api-endpoint",
+    "title": "Gemini API Reference",
+    "section": "API Endpoint",
+    "text": "API Endpoint\nPOST https://generativelanguage.googleapis.com/v1beta/models/{modelId}:generateContent?key={apiKey}",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html#request-structure",
+    "href": "shared/gemini-api.html#request-structure",
+    "title": "Gemini API Reference",
+    "section": "Request Structure",
+    "text": "Request Structure\nBoth platforms send identical JSON payloads:\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"A photorealistic portrait of...\" }\n      ],\n      \"role\": \"user\"\n    }\n  ],\n  \"generationConfig\": {\n    \"responseMimeType\": \"image/png\",\n    \"responseModalities\": [\"Text\", \"Image\"]\n  }\n}\n\nPlatform Implementation\n\nSwift (macOS)TypeScript (Mobile)\n\n\nstruct GenerateContentRequest: Encodable {\n    let contents: [Content]\n    let generationConfig: GenerationConfig?\n}\n\nlet request = GenerateContentRequest(\n    contents: [Content(parts: [.text(prompt)], role: \"user\")],\n    generationConfig: GenerationConfig(\n        responseMimeType: \"image/png\",\n        responseModalities: [\"Text\", \"Image\"]\n    )\n)\n\n\ninterface GenerateContentRequest {\n  contents: Content[];\n  generationConfig?: GenerationConfig;\n}\n\nfunction buildGenerateRequest(\n  prompt: string,\n  config?: Partial&lt;GenerationConfig&gt;,\n): GenerateContentRequest {\n  return {\n    contents: [{ parts: [{ text: prompt }], role: \"user\" }],\n    generationConfig: {\n      responseMimeType: \"image/png\",\n      responseModalities: [\"Text\", \"Image\"],\n      ...config,\n    },\n  };\n}",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html#response-structure",
+    "href": "shared/gemini-api.html#response-structure",
+    "title": "Gemini API Reference",
+    "section": "Response Structure",
+    "text": "Response Structure\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"inlineData\": {\n              \"mimeType\": \"image/png\",\n              \"data\": \"&lt;base64-encoded-image&gt;\"\n            }\n          }\n        ]\n      }\n    }\n  ]\n}\nThe image is extracted by finding the first InlineDataPart in the response candidates.",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html#error-handling",
+    "href": "shared/gemini-api.html#error-handling",
+    "title": "Gemini API Reference",
+    "section": "Error Handling",
+    "text": "Error Handling\n\nPROHIBITED_CONTENT\nThe Gemini API rejects prompts referencing copyrighted characters. The error response includes:\n{\n  \"error\": {\n    \"message\": \"Content generation blocked due to safety filters\",\n    \"status\": \"PROHIBITED_CONTENT\",\n    \"code\": 400\n  }\n}\n\nSwiftTypeScript\n\n\nstruct GeminiAPIError: LocalizedError {\n    let message: String\n    let status: String\n    let httpStatusCode: Int\n\n    var isProhibitedContent: Bool {\n        status == \"PROHIBITED_CONTENT\"\n    }\n}\n\n\nclass GeminiAPIError extends Error {\n  constructor(\n    message: string,\n    public readonly status: string,\n    public readonly httpStatusCode: number,\n  ) { super(message); }\n\n  get isProhibitedContent(): boolean {\n    return this.status === \"PROHIBITED_CONTENT\";\n  }\n}\n\n\n\n\n\nCopyright-Safe Yoda Prompt\nTo avoid PROHIBITED_CONTENT rejections, the Yoda prompt uses only physical traits without IP-specific names:\n\nA photorealistic portrait of a small, ancient humanoid alien elder, approximately 66 centimeters tall, with bright green deeply wrinkled skin. Large pointed ears extending sideways from the head…\n\nThe overlay text “Make or make not. There is no buy” is a play on the original quote, used for parody/commentary purposes.",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/gemini-api.html#api-key-security",
+    "href": "shared/gemini-api.html#api-key-security",
+    "title": "Gemini API Reference",
+    "section": "API Key Security",
+    "text": "API Key Security\n\n\n\n\n\n\n\n\nPlatform\nStorage\nMechanism\n\n\n\n\nmacOS\nKeychain\nSecurity.framework with service ID\n\n\nMobile\nSecureStore\nexpo-secure-store (iOS Keychain / Android Keystore)\n\n\nFallback\nEnvironment\nGEMINI_API_KEY env var (macOS only)\n\n\n\nBoth platforms encrypt API keys at rest using hardware-backed security. Neither stores keys in plain text (no UserDefaults, no AsyncStorage).",
+    "crumbs": [
+      "Shared",
+      "Gemini API Reference"
+    ]
+  },
+  {
+    "objectID": "shared/index.html",
+    "href": "shared/index.html",
+    "title": "Shared Resources",
+    "section": "",
+    "text": "Both the macOS Swift app and the Expo mobile app share common design language, prompts, and API integration patterns. This section documents the shared foundations.",
+    "crumbs": [
+      "Shared",
+      "Shared Resources"
+    ]
+  },
+  {
+    "objectID": "shared/index.html#overview",
+    "href": "shared/index.html#overview",
+    "title": "Shared Resources",
+    "section": "",
+    "text": "Both the macOS Swift app and the Expo mobile app share common design language, prompts, and API integration patterns. This section documents the shared foundations.",
+    "crumbs": [
+      "Shared",
+      "Shared Resources"
+    ]
+  },
+  {
+    "objectID": "shared/index.html#whats-shared",
+    "href": "shared/index.html#whats-shared",
+    "title": "Shared Resources",
+    "section": "What’s Shared",
+    "text": "What’s Shared\n\n\n\n\n\n\n\n\n\nResource\nmacOS\nMobile\nPurpose\n\n\n\n\nBrand colors\nBrand.swift (NanoDesignKit)\ncolors.ts\nKaosMaps palette\n\n\nYoda prompt\nConstants.swift\nconstants.ts\nCopyright-safe prompt\n\n\nGemini API\nGeminiClient.swift (URLSession)\ngeminiClient.ts (fetch)\nREST API client\n\n\nError handling\nGeminiAPIError.swift\nGeminiAPIError class\nPROHIBITED_CONTENT\n\n\nText overlay\nCoreGraphics renderer\nAI prompt-based\nMeme text",
+    "crumbs": [
+      "Shared",
+      "Shared Resources"
+    ]
+  },
+  {
+    "objectID": "shared/index.html#architecture-parallel",
+    "href": "shared/index.html#architecture-parallel",
+    "title": "Shared Resources",
+    "section": "Architecture Parallel",
+    "text": "Architecture Parallel\n\n\nShow code\ngraph TB\n    subgraph macOS [macOS Swift]\n        SC[GeminiClient.swift] --&gt; SM[GeminiModels.swift]\n        IG[ImageGenerator.swift] --&gt; SC\n        IG --&gt; TO[TextOverlayRenderer]\n    end\n\n    subgraph Mobile [Expo React Native]\n        TC[geminiClient.ts] --&gt; TT[geminiTypes.ts]\n        MS[memeService.ts] --&gt; TC\n        MS --&gt; AI[AI Prompt Text]\n    end\n\n    API[Gemini REST API] --&gt; SC\n    API --&gt; TC\n\n\n\n\n\ngraph TB\n    subgraph macOS [macOS Swift]\n        SC[GeminiClient.swift] --&gt; SM[GeminiModels.swift]\n        IG[ImageGenerator.swift] --&gt; SC\n        IG --&gt; TO[TextOverlayRenderer]\n    end\n\n    subgraph Mobile [Expo React Native]\n        TC[geminiClient.ts] --&gt; TT[geminiTypes.ts]\n        MS[memeService.ts] --&gt; TC\n        MS --&gt; AI[AI Prompt Text]\n    end\n\n    API[Gemini REST API] --&gt; SC\n    API --&gt; TC\n\n\n\n\n\n\nBoth platforms call the same Gemini REST endpoint, use the same Codable/TypeScript types, and handle the same error codes. The key difference is text overlay: macOS renders text via Core Graphics post-generation, while mobile includes text in the AI prompt.",
+    "crumbs": [
+      "Shared",
+      "Shared Resources"
+    ]
+  },
+  {
+    "objectID": "shared/index.html#pages",
+    "href": "shared/index.html#pages",
+    "title": "Shared Resources",
+    "section": "Pages",
+    "text": "Pages\n\nBrand Design & Color Palette — KaosMaps colors with interactive palette explorer\nGemini API Reference — Shared API patterns across platforms",
+    "crumbs": [
+      "Shared",
+      "Shared Resources"
+    ]
+  },
+  {
+    "objectID": "mobile/gemini-client.html",
+    "href": "mobile/gemini-client.html",
+    "title": "Gemini API Client",
+    "section": "",
+    "text": "The TypeScript types mirror the macOS Swift Codable types exactly:\ninterface TextPart { text: string; }\ninterface InlineDataPart {\n  inlineData: { mimeType: string; data: string; };\n}\ntype Part = TextPart | InlineDataPart;\n\ninterface Content { parts: Part[]; role?: string; }\ninterface GenerateContentRequest {\n  contents: Content[];\n  generationConfig?: GenerationConfig;\n}\ninterface GenerateContentResponse {\n  candidates: Candidate[];\n}",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Gemini API Client"
+    ]
+  },
+  {
+    "objectID": "mobile/gemini-client.html#type-system",
+    "href": "mobile/gemini-client.html#type-system",
+    "title": "Gemini API Client",
+    "section": "",
+    "text": "The TypeScript types mirror the macOS Swift Codable types exactly:\ninterface TextPart { text: string; }\ninterface InlineDataPart {\n  inlineData: { mimeType: string; data: string; };\n}\ntype Part = TextPart | InlineDataPart;\n\ninterface Content { parts: Part[]; role?: string; }\ninterface GenerateContentRequest {\n  contents: Content[];\n  generationConfig?: GenerationConfig;\n}\ninterface GenerateContentResponse {\n  candidates: Candidate[];\n}",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Gemini API Client"
+    ]
+  },
+  {
+    "objectID": "mobile/gemini-client.html#geminiclient-class",
+    "href": "mobile/gemini-client.html#geminiclient-class",
+    "title": "Gemini API Client",
+    "section": "GeminiClient Class",
+    "text": "GeminiClient Class\nA simple class wrapping the fetch API:\nexport class GeminiClient {\n  private readonly apiKey: string;\n\n  static buildApiUrl(apiKey: string): string {\n    return `${GEMINI_BASE_URL}/${GEMINI_MODEL_ID}:generateContent?key=${apiKey}`;\n  }\n\n  async generateImage(prompt: string): Promise&lt;GenerateImageResult&gt; {\n    const url = GeminiClient.buildApiUrl(this.apiKey);\n    const request = buildGenerateRequest(prompt, {\n      responseMimeType: \"image/png\",\n      responseModalities: [\"Text\", \"Image\"],\n    });\n\n    const response = await fetch(url, {\n      method: \"POST\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify(request),\n    });\n\n    if (!response.ok) {\n      const errorBody = await response.json();\n      throw new GeminiAPIError(\n        errorBody.error.message,\n        errorBody.error.status,\n        response.status,\n      );\n    }\n\n    const data = await response.json();\n    const image = parseImageFromResponse(data);\n    if (!image) throw new Error(\"No image data in response\");\n\n    return { imageData: image.data, mimeType: image.mimeType };\n  }\n}",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Gemini API Client"
+    ]
+  },
+  {
+    "objectID": "mobile/gemini-client.html#error-handling",
+    "href": "mobile/gemini-client.html#error-handling",
+    "title": "Gemini API Client",
+    "section": "Error Handling",
+    "text": "Error Handling\nThe GeminiAPIError class includes a isProhibitedContent getter for handling content policy violations:\nexport class GeminiAPIError extends Error {\n  get isProhibitedContent(): boolean {\n    return this.status === \"PROHIBITED_CONTENT\";\n  }\n}\n\n\n\n\n\n\nWarningPROHIBITED_CONTENT\n\n\n\nThe Gemini API may reject prompts that reference copyrighted characters. Our Yoda prompt uses only physical traits (green skin, pointed ears, brown robes) without any IP-specific names.",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Gemini API Client"
+    ]
+  },
+  {
+    "objectID": "mobile/gemini-client.html#memeservice",
+    "href": "mobile/gemini-client.html#memeservice",
+    "title": "Gemini API Client",
+    "section": "MemeService",
+    "text": "MemeService\nThe orchestrator that ties API calls to file storage:\nexport async function generateAndSaveMeme(\n  apiKey: string,\n  prompt: string,\n  overlayText: string,\n): Promise&lt;MemeResult&gt; {\n  const client = new GeminiClient(apiKey);\n\n  // Include overlay text in AI prompt\n  const fullPrompt = overlayText\n    ? `${prompt}\\n\\nRender the following text prominently...`\n    : prompt;\n\n  const result = await client.generateImage(fullPrompt);\n\n  // Save base64 image to local filesystem\n  const file = new File(Paths.document, `meme_${Date.now()}.png`);\n  const bytes = new Uint8Array(/* base64 decode */);\n  file.write(bytes);\n\n  return { imageUri: file.uri, mimeType: result.mimeType };\n}\n\n\n\n\n\n\nNoteExpo SDK 55 File API\n\n\n\nExpo SDK 55 replaced documentDirectory and writeAsStringAsync with the new File / Directory / Paths class-based API. We use new File(Paths.document, filename) and file.write(bytes) for the modern pattern.",
+    "crumbs": [
+      "Mobile App",
+      "Architecture",
+      "Gemini API Client"
+    ]
+  },
+  {
+    "objectID": "mobile/index.html",
+    "href": "mobile/index.html",
+    "title": "Mobile App (Expo + React Native)",
+    "section": "",
+    "text": "The mobile app is built with Expo SDK 55 and React Native 0.83, targeting both iOS and Android from a single codebase. It uses:\n\nExpo Router v55 for file-based tab navigation\nNativeWind v4 (Tailwind CSS for React Native) with KaosMaps dark theme\nZustand v5 for state management\nTanStack Query v5 for API call caching\nLucide React Native for icons (no emojis in UI)\nexpo-secure-store for encrypted API key storage",
+    "crumbs": [
+      "Mobile App",
+      "Mobile App (Expo + React Native)"
+    ]
+  },
+  {
+    "objectID": "mobile/index.html#overview",
+    "href": "mobile/index.html#overview",
+    "title": "Mobile App (Expo + React Native)",
+    "section": "",
+    "text": "The mobile app is built with Expo SDK 55 and React Native 0.83, targeting both iOS and Android from a single codebase. It uses:\n\nExpo Router v55 for file-based tab navigation\nNativeWind v4 (Tailwind CSS for React Native) with KaosMaps dark theme\nZustand v5 for state management\nTanStack Query v5 for API call caching\nLucide React Native for icons (no emojis in UI)\nexpo-secure-store for encrypted API key storage",
+    "crumbs": [
+      "Mobile App",
+      "Mobile App (Expo + React Native)"
+    ]
+  },
+  {
+    "objectID": "mobile/index.html#screen-flow",
+    "href": "mobile/index.html#screen-flow",
+    "title": "Mobile App (Expo + React Native)",
+    "section": "Screen Flow",
+    "text": "Screen Flow\n\n\nShow code\ngraph LR\n    G[Generate] --&gt; R[Result]\n    R --&gt; G\n    G --&gt; S[Settings]\n    GL[Gallery] --&gt; R\n\n\n\n\n\ngraph LR\n    G[Generate] --&gt; R[Result]\n    R --&gt; G\n    G --&gt; S[Settings]\n    GL[Gallery] --&gt; R\n\n\n\n\n\n\nFour tab screens:\n\n\n\n\n\n\n\nTab\nPurpose\n\n\n\n\nGenerate\nPrompt input, overlay text, resolution picker, generate button\n\n\nResult\nImage preview with share/save/favorite actions\n\n\nGallery\nHistory list of generated memes\n\n\nSettings\nAPI key, default resolution/aspect ratio, about",
+    "crumbs": [
+      "Mobile App",
+      "Mobile App (Expo + React Native)"
+    ]
+  },
+  {
+    "objectID": "mobile/index.html#tech-stack",
+    "href": "mobile/index.html#tech-stack",
+    "title": "Mobile App (Expo + React Native)",
+    "section": "Tech Stack",
+    "text": "Tech Stack\n\n\n\nLayer\nChoice\nWhy\n\n\n\n\nRuntime\nExpo SDK 55\nManaged workflow, EAS builds\n\n\nRouting\nExpo Router\nFile-based, type-safe\n\n\nStyling\nNativeWind v4\nTailwind for RN, consistent with web\n\n\nState\nZustand\nMinimal boilerplate, persist middleware\n\n\nAPI\nTanStack Query\nCaching, retry, stale-while-revalidate\n\n\nIcons\nLucide RN\nSVG-based, tree-shakeable\n\n\nSecurity\nexpo-secure-store\nHardware-backed encryption\n\n\nTests\nJest + ts-jest\n49 unit tests passing",
+    "crumbs": [
+      "Mobile App",
+      "Mobile App (Expo + React Native)"
+    ]
+  },
+  {
+    "objectID": "mobile/ui-screens.html",
+    "href": "mobile/ui-screens.html",
+    "title": "UI Screens",
+    "section": "",
+    "text": "Four tab screens compose the mobile experience:\n\n\nShow code\ngraph LR\n    G[Generate] --&gt;|success| R[Result]\n    G --&gt;|no API key| S[Settings]\n    R --&gt;|back| G\n    GL[Gallery] --&gt; R\n\n\n\n\n\ngraph LR\n    G[Generate] --&gt;|success| R[Result]\n    G --&gt;|no API key| S[Settings]\n    R --&gt;|back| G\n    GL[Gallery] --&gt; R",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "UI Screens"
+    ]
+  },
+  {
+    "objectID": "mobile/ui-screens.html#screen-overview",
+    "href": "mobile/ui-screens.html#screen-overview",
+    "title": "UI Screens",
+    "section": "",
+    "text": "Four tab screens compose the mobile experience:\n\n\nShow code\ngraph LR\n    G[Generate] --&gt;|success| R[Result]\n    G --&gt;|no API key| S[Settings]\n    R --&gt;|back| G\n    GL[Gallery] --&gt; R\n\n\n\n\n\ngraph LR\n    G[Generate] --&gt;|success| R[Result]\n    G --&gt;|no API key| S[Settings]\n    R --&gt;|back| G\n    GL[Gallery] --&gt; R",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "UI Screens"
+    ]
+  },
+  {
+    "objectID": "mobile/ui-screens.html#home-screen-generate",
+    "href": "mobile/ui-screens.html#home-screen-generate",
+    "title": "UI Screens",
+    "section": "Home Screen (Generate)",
+    "text": "Home Screen (Generate)\nThe primary screen with prompt input, overlay text, resolution picker, and generate button.\n\nLayout Structure\nSafeAreaView\n└── ScrollView (keyboardShouldPersistTaps)\n    ├── Header (Sparkles icon + \"NanoMeme\")\n    ├── Subtitle\n    ├── Prompt Section\n    │   ├── TextInput (multiline, 4 lines)\n    │   └── \"Load Yoda Preset\" button\n    ├── Overlay Text Section\n    │   └── TextInput (single line)\n    ├── Resolution Picker\n    │   └── Row of 4 buttons (0.5K | 1K | 2K | 4K)\n    ├── Error Card (conditional)\n    └── Generate Button (with ActivityIndicator)\n\n\nGeneration Flow\nconst handleGenerate = useCallback(async () =&gt; {\n  const apiKey = await getApiKey();\n  if (!apiKey) {\n    failGeneration(\"No API key configured...\");\n    router.navigate(\"/settings\");\n    return;\n  }\n\n  startGeneration();\n  try {\n    const result = await generateAndSaveMeme(\n      apiKey,\n      currentPrompt || DEFAULT_YODA_PROMPT,\n      overlayText || DEFAULT_OVERLAY_TEXT,\n    );\n    completeGeneration(result.imageUri);\n    router.navigate(\"/result\");\n  } catch (error) {\n    failGeneration(\n      error instanceof Error ? error.message : \"Generation failed\",\n    );\n  }\n}, [currentPrompt, overlayText, ...]);\nKey behaviors:\n\nNo API key → Redirects to Settings tab\nEmpty prompt → Falls back to Yoda preset prompt\nSuccess → Navigates to Result screen\nError → Shows error card with red border\n\n\n\nKaosMaps Styling\nAll input fields use the dark theme with cyan-tinted borders:\ntextArea: {\n  backgroundColor: colors.surface.card,  // #1a1a24\n  borderRadius: 12,\n  padding: 14,\n  color: colors.text.primary,            // #e2e8f0\n  borderWidth: 1,\n  borderColor: \"rgba(6,182,212,0.15)\",   // Cyan subtle border\n},",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "UI Screens"
+    ]
+  },
+  {
+    "objectID": "mobile/ui-screens.html#result-screen",
+    "href": "mobile/ui-screens.html#result-screen",
+    "title": "UI Screens",
+    "section": "Result Screen",
+    "text": "Result Screen\nDisplays the generated meme with share/save/favorite actions.\n\nKaosMaps Glow Effect\nThe image container features the signature KaosMaps glow:\nglowOuter: {\n  position: \"absolute\",\n  top: -2, left: -2, right: -2, bottom: -2,\n  borderRadius: 18,\n  shadowColor: colors.brand.cyan,\n  shadowOffset: { width: 0, height: 0 },\n  shadowOpacity: 0.15,\n  shadowRadius: 30,\n},\nglowInner: {\n  position: \"absolute\",\n  top: -1, left: -1, right: -1, bottom: -1,\n  borderRadius: 17,\n  borderWidth: 1,\n  borderColor: \"rgba(6,182,212,0.3)\",\n},\n\n\nActions\n\n\n\nAction\nIcon\nLibrary\n\n\n\n\nShare\nShare2\nexpo-sharing\n\n\nSave\nDownload\nAlert confirmation\n\n\nFavorite\nHeart\nZustand toggleFavorite",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "UI Screens"
+    ]
+  },
+  {
+    "objectID": "mobile/ui-screens.html#gallery-screen",
+    "href": "mobile/ui-screens.html#gallery-screen",
+    "title": "UI Screens",
+    "section": "Gallery Screen",
+    "text": "Gallery Screen\nFlatList of generated memes with the MemeCard component.\n\nMemeCard Component\nCard (row layout)\n├── Image (80x80 thumbnail)\n├── Content\n│   ├── Overlay text (1 line, truncated)\n│   └── Date\n└── Actions\n    ├── Heart (toggle favorite)\n    └── Trash2 (delete)\nThe gallery uses keyExtractor on item.id and renders with gap: 12 spacing between cards.\n\n\nEmpty State\nWhen no memes exist, a centered message encourages the user to start generating.",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "UI Screens"
+    ]
+  },
+  {
+    "objectID": "mobile/ui-screens.html#settings-screen",
+    "href": "mobile/ui-screens.html#settings-screen",
+    "title": "UI Screens",
+    "section": "Settings Screen",
+    "text": "Settings Screen\nThree sections: API Key, Generation defaults, and About.\n\nAPI Key Section\nThe API key input features a secure text field with eye toggle:\napiKeyRow\n├── TextInput (secureTextEntry toggled)\n└── Eye/EyeOff toggle button\n\napiKeyActions\n├── \"Save to Keychain\" button (cyan)\n└── \"Remove\" button (red, conditional)\n\n\n\n\n\n\nNoteSecureField Pattern\n\n\n\nThe secureTextEntry prop is toggled via the eye icon, allowing users to verify their API key before saving. The key is stored in expo-secure-store which uses iOS Keychain / Android Keystore.\n\n\n\n\nGeneration Defaults\n\nResolution picker: 4 options (0.5K, 1K, 2K, 4K) — horizontally laid out\nAspect ratio picker: 3 options (1:1, 16:9, 9:16) — horizontally laid out\nAuto overlay text: Switch toggle with cyan track color\n\n\n\nAbout Section\nSimple key-value rows showing app name, version, model (Nano Banana 2), and author (KaosMaps). Separated by subtle cyan-tinted dividers.",
+    "crumbs": [
+      "Mobile App",
+      "Implementation",
+      "UI Screens"
+    ]
+  }
+]

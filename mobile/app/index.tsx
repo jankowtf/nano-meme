@@ -54,6 +54,7 @@ export default function HomeScreen() {
         apiKey,
         currentPrompt || DEFAULT_YODA_PROMPT,
         overlayText || DEFAULT_OVERLAY_TEXT,
+        selectedResolution,
       );
       completeGeneration(result.imageUri);
       router.navigate("/result");

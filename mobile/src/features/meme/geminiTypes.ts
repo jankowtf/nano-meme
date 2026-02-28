@@ -18,9 +18,14 @@ export interface Content {
   role?: string;
 }
 
+export interface ImageConfig {
+  imageSize?: string;
+}
+
 export interface GenerationConfig {
   responseMimeType?: string;
   responseModalities?: string[];
+  imageConfig?: ImageConfig;
 }
 
 export interface GenerateContentRequest {

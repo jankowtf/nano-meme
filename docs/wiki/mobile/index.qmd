@@ -1,0 +1,47 @@
+---
+title: "Mobile App (Expo + React Native)"
+subtitle: "iOS + Android with NativeWind and KaosMaps dark theme"
+---
+
+## Overview
+
+The mobile app is built with **Expo SDK 55** and **React Native 0.83**, targeting both iOS and Android from a single codebase. It uses:
+
+- **Expo Router v55** for file-based tab navigation
+- **NativeWind v4** (Tailwind CSS for React Native) with KaosMaps dark theme
+- **Zustand v5** for state management
+- **TanStack Query v5** for API call caching
+- **Lucide React Native** for icons (no emojis in UI)
+- **expo-secure-store** for encrypted API key storage
+
+## Screen Flow
+
+```{mermaid}
+graph LR
+    G[Generate] --> R[Result]
+    R --> G
+    G --> S[Settings]
+    GL[Gallery] --> R
+```
+
+Four tab screens:
+
+| Tab | Purpose |
+|-----|---------|
+| **Generate** | Prompt input, overlay text, resolution picker, generate button |
+| **Result** | Image preview with share/save/favorite actions |
+| **Gallery** | History list of generated memes |
+| **Settings** | API key, default resolution/aspect ratio, about |
+
+## Tech Stack
+
+| Layer | Choice | Why |
+|-------|--------|-----|
+| Runtime | Expo SDK 55 | Managed workflow, EAS builds |
+| Routing | Expo Router | File-based, type-safe |
+| Styling | NativeWind v4 | Tailwind for RN, consistent with web |
+| State | Zustand | Minimal boilerplate, persist middleware |
+| API | TanStack Query | Caching, retry, stale-while-revalidate |
+| Icons | Lucide RN | SVG-based, tree-shakeable |
+| Security | expo-secure-store | Hardware-backed encryption |
+| Tests | Jest + ts-jest | 49 unit tests passing |

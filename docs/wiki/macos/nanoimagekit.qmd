@@ -1,0 +1,141 @@
+---
+title: "NanoImageKit — Gemini API + Image Processing"
+---
+
+## Purpose
+
+NanoImageKit is the **core domain package** handling all image generation. It contains:
+
+- Gemini API types and client
+- API key management (Keychain + env var)
+- Core Graphics text overlay rendering
+- Image generation orchestration
+
+## GeminiModels
+
+Codable types matching the Gemini REST API exactly:
+
+```swift
+public struct GenerateContentRequest: Codable, Sendable {
+    public let contents: [Content]
+    public let generationConfig: GenerationConfig?
+}
+
+public struct Content: Codable, Sendable {
+    public let parts: [Part]
+    public let role: String?
+}
+
+public enum Part: Codable, Sendable {
+    case text(String)
+    case inlineData(mimeType: String, data: String)
+}
+```
+
+The response mirrors this structure, with `Candidate` wrapping `Content` and parts that can be either text or base64 inline image data.
+
+## GeminiClient
+
+A `Sendable` final class (not an actor) using `URLSession.ephemeral`:
+
+```swift
+public final class GeminiClient: Sendable {
+    private let config: GeminiConfig
+    private let session: URLSession  // ephemeral, no disk cache
+
+    public func generateImage(
+        prompt: String,
+        resolution: Resolution? = nil
+    ) async throws -> GeminiResponse {
+        let url = config.apiURL(apiKey: apiKey)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 120
+
+        let body = GenerateContentRequest(/* ... */)
+        request.httpBody = try JSONEncoder().encode(body)
+
+        let (data, response) = try await session.data(for: request)
+        // Handle PROHIBITED_CONTENT errors, decode response
+    }
+}
+```
+
+::: {.callout-important}
+## Why Not an Actor?
+Using `actor` + synchronous waiting (like `DispatchSemaphore`) causes executor deadlocks. A `Sendable` final class with `async/await` avoids this entirely while still being thread-safe.
+:::
+
+## KeychainHelper
+
+Three-tier API key resolution:
+
+1. **Keychain** (primary) --- `service: com.kaosmaps.nanomeme`, `account: gemini-api-key`
+2. **Environment variable** (fallback) --- `GEMINI_API_KEY`
+3. **1Password** (manual) --- `op item get "api_key_google_gemini_ops@kaosmaps" --vault Kai`
+
+```swift
+public func resolveAPIKey() -> String? {
+    // Try Keychain first
+    if let key = load() { return key }
+    // Fall back to environment variable
+    return ProcessInfo.processInfo.environment["GEMINI_API_KEY"]
+}
+```
+
+## TextOverlayRenderer
+
+Core Graphics text rendering with the classic meme font style:
+
+```swift
+public struct TextOverlayRenderer {
+    public static func render(
+        text: String,
+        on image: NSImage,
+        position: TextPosition = .bottom,
+        fontSize: CGFloat? = nil
+    ) -> NSImage {
+        // Create bitmap context from image
+        // Configure Impact font with white fill + black stroke
+        // Draw text at specified position
+        // Return composited image
+    }
+}
+```
+
+The renderer uses:
+
+- **Impact** font (or Helvetica Bold fallback)
+- White fill with 2pt black stroke for readability
+- Auto-sizing based on image dimensions
+- Three positions: `.top`, `.center`, `.bottom`
+
+## ImageGenerator
+
+The orchestrator that ties everything together:
+
+```swift
+public final class ImageGenerator: Sendable {
+    public func generate(
+        prompt: String,
+        overlayText: String?,
+        apiKey: String
+    ) async throws -> MemeResult {
+        // 1. Call GeminiClient
+        let response = try await client.generateImage(prompt: prompt)
+
+        // 2. Decode base64 → NSImage
+        let imageData = Data(base64Encoded: response.imageData)!
+        var image = NSImage(data: imageData)!
+
+        // 3. Apply text overlay if provided
+        if let text = overlayText {
+            image = TextOverlayRenderer.render(text: text, on: image)
+        }
+
+        // 4. Return MemeResult
+        return MemeResult(image: image, textResponse: response.textResponse)
+    }
+}
+```

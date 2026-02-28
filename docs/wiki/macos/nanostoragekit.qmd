@@ -1,0 +1,89 @@
+---
+title: "NanoStorageKit — SwiftData Persistence"
+---
+
+## Purpose
+
+NanoStorageKit handles all data persistence: meme records in SwiftData, export to clipboard/file/share, and user settings.
+
+## MemeRecord
+
+A SwiftData `@Model` for storing generated memes:
+
+```swift
+@Model
+public final class MemeRecord {
+    public var prompt: String
+    public var overlayText: String
+    public var resolution: String
+    public var aspectRatio: String
+    public var imagePath: String
+    @Attribute(.externalStorage) public var thumbnailData: Data?
+    public var createdAt: Date
+    public var isFavorite: Bool
+}
+```
+
+::: {.callout-tip}
+## External Storage for Thumbnails
+The `@Attribute(.externalStorage)` directive tells SwiftData to store thumbnail data as an external file rather than inline in the database, improving query performance.
+:::
+
+## MemeStore
+
+A `@MainActor` store managing the SwiftData `ModelContainer`:
+
+```swift
+@MainActor
+public final class MemeStore {
+    private let container: ModelContainer
+
+    public init() throws {
+        let schema = Schema([MemeRecord.self])
+        let config = ModelConfiguration(
+            "memes",
+            url: /* ~/Library/Application Support/NanoMeme/Data/memes.store */
+        )
+        container = try ModelContainer(for: schema, configurations: [config])
+    }
+
+    public func save(_ record: MemeRecord) throws { /* ... */ }
+    public func fetchAll() throws -> [MemeRecord] { /* ... */ }
+    public func delete(_ record: MemeRecord) throws { /* ... */ }
+}
+```
+
+## MemeExporter
+
+Three export methods using AppKit APIs:
+
+| Method | API | Description |
+|--------|-----|-------------|
+| **Copy** | `NSPasteboard` | Copy image to system clipboard |
+| **Save** | `NSSavePanel` | Save to user-chosen location |
+| **Share** | `NSSharingServicePicker` | System share sheet |
+
+## SettingsStore
+
+A singleton using `AppStorageValue` wrappers for user preferences:
+
+```swift
+public final class SettingsStore {
+    public static let shared = SettingsStore()
+
+    @AppStorageValue("launchAtLogin", defaultValue: false)
+    public var launchAtLogin: Bool
+
+    @AppStorageValue("showInDock", defaultValue: false)
+    public var showInDock: Bool
+
+    @AppStorageValue("defaultResolution", defaultValue: "1K")
+    public var defaultResolution: String
+
+    @AppStorageValue("defaultAspectRatio", defaultValue: "1:1")
+    public var defaultAspectRatio: String
+
+    @AppStorageValue("autoOverlayText", defaultValue: true)
+    public var autoOverlayText: Bool
+}
+```
