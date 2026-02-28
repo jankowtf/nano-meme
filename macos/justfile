@@ -1,0 +1,125 @@
+# NanoMeme — macOS menu bar meme generator
+# https://github.com/jankowtf/nano-meme
+
+app_name    := "NanoMeme"
+bundle_id   := "com.kaosmaps.nanomeme"
+version     := `cat ../VERSION`
+git_sha     := `git rev-parse --short HEAD 2>/dev/null || echo "unknown"`
+arch        := arch()
+release_bin := justfile_directory() / ".build" / "release" / app_name
+app_bundle  := justfile_directory() / "build" / app_name + ".app"
+
+# List available recipes
+default:
+    @just --list
+
+# Debug build
+build:
+    swift build
+
+# Build and run debug binary
+run: build
+    .build/debug/{{app_name}}
+
+# Run all tests
+test:
+    swift test
+
+# Run filtered tests
+test-filter FILTER:
+    swift test --filter '{{FILTER}}'
+
+# Remove all build artifacts
+clean:
+    rm -rf .build/ build/
+
+# Release build (arm64)
+build-release:
+    swift build -c release
+
+# Create .app bundle from release binary
+bundle: build-release
+    #!/usr/bin/env bash
+    set -euo pipefail
+    APP="{{app_bundle}}"
+    rm -rf "$APP"
+    mkdir -p "$APP/Contents/MacOS"
+    mkdir -p "$APP/Contents/Resources"
+    cp "{{release_bin}}" "$APP/Contents/MacOS/{{app_name}}"
+    cp Resources/Info.plist "$APP/Contents/"
+    /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString {{version}}" "$APP/Contents/Info.plist"
+    /usr/libexec/PlistBuddy -c "Set :CFBundleVersion {{git_sha}}" "$APP/Contents/Info.plist"
+    if [ -f Resources/AppIcon.icns ]; then
+        cp Resources/AppIcon.icns "$APP/Contents/Resources/"
+        /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$APP/Contents/Info.plist" 2>/dev/null || \
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile AppIcon" "$APP/Contents/Info.plist"
+    fi
+    echo "Bundle created: $APP"
+
+# Ad-hoc codesign the .app bundle
+sign: bundle
+    codesign --force --deep --sign - \
+        --entitlements Resources/entitlements.plist \
+        --options runtime \
+        "{{app_bundle}}"
+    codesign --verify --verbose "{{app_bundle}}"
+    echo "Ad-hoc signed: {{app_bundle}}"
+
+# Install .app to /Applications
+install: sign
+    #!/usr/bin/env bash
+    set -euo pipefail
+    DEST="/Applications/{{app_name}}.app"
+    if [ -d "$DEST" ]; then
+        echo "Removing existing $DEST..."
+        rm -rf "$DEST"
+    fi
+    cp -R "{{app_bundle}}" "$DEST"
+    echo "Installed to $DEST"
+
+# Kill + rebuild + install + launch (full dev cycle)
+reinstall:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Killing running NanoMeme..."
+    pkill -f NanoMeme 2>/dev/null || true
+    sleep 1
+    just install
+    echo "Launching NanoMeme..."
+    open "/Applications/{{app_name}}.app"
+    echo "NanoMeme reinstalled and launched"
+
+# Remove .app from /Applications
+uninstall:
+    rm -rf "/Applications/{{app_name}}.app"
+    echo "Removed /Applications/{{app_name}}.app"
+
+# Launch installed app
+open:
+    open "/Applications/{{app_name}}.app"
+
+# Generate .icns from a 1024x1024 PNG
+icon SRC:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    ICONSET=$(mktemp -d)/AppIcon.iconset
+    mkdir -p "$ICONSET"
+    for size in 16 32 64 128 256 512; do
+        sips -z $size $size "{{SRC}}" --out "$ICONSET/icon_${size}x${size}.png" > /dev/null
+        double=$((size * 2))
+        sips -z $double $double "{{SRC}}" --out "$ICONSET/icon_${size}x${size}@2x.png" > /dev/null
+    done
+    iconutil -c icns "$ICONSET" -o Resources/AppIcon.icns
+    rm -rf "$(dirname "$ICONSET")"
+    echo "Icon created: Resources/AppIcon.icns"
+
+# Print version info
+version:
+    @echo "{{app_name}} {{version}} ({{git_sha}}) {{arch}}"
+
+# Count Swift files and lines
+count:
+    @echo "Swift files:"
+    @find Sources Tests Packages -name "*.swift" | wc -l | tr -d ' '
+    @echo "Lines of code:"
+    @find Sources Tests Packages -name "*.swift" -exec cat {} + | wc -l | tr -d ' '

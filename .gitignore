@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+.build/
+build/
+dist/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+*.resolved
+
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/ios/
+mobile/android/
+mobile/.turbo/
+mobile/coverage/
+
+# Environment
+.env
+.env.local
+*.key
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Me
+.me/

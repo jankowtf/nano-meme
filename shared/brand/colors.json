@@ -1,0 +1,18 @@
+{
+  "cyan": "#06b6d4",
+  "teal": "#14b8a6",
+  "magenta": "#ec4899",
+  "active": "#facc15",
+  "success": "#22c55e",
+  "warning": "#f97316",
+  "surface": {
+    "primary": "#0a0a0f",
+    "secondary": "#12121a",
+    "card": "#1a1a24"
+  },
+  "text": {
+    "primary": "#e2e8f0",
+    "secondary": "rgba(204,251,241,0.55)",
+    "muted": "rgba(153,246,228,0.28)"
+  }
+}
