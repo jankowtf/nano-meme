@@ -41,6 +41,6 @@ describe("constants", () => {
   });
 
   it("defines overlay text", () => {
-    expect(DEFAULT_OVERLAY_TEXT).toBe("Make or make not. There is no buy");
+    expect(DEFAULT_OVERLAY_TEXT).toBe("Make or make not. There is no buy.");
   });
 });
