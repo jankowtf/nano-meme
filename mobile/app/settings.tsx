@@ -311,7 +311,7 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>Version</Text>
-            <Text style={styles.aboutValue}>0.0.2</Text>
+            <Text style={styles.aboutValue}>0.0.3</Text>
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>Model</Text>
