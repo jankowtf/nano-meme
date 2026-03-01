@@ -18,22 +18,59 @@ public final class MenuBarManager {
     }
 
     public func setup() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusItem = NSStatusBar.system.statusItem(withLength: 30)
+        statusItem?.autosaveName = "NanoMemeStatusItem"
 
         if let button = statusItem?.button {
-            if let image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: "NanoMeme") {
-                image.isTemplate = true
-                button.image = image
-                button.imagePosition = .imageOnly
-            } else {
-                button.title = "✦"
-            }
+            button.image = makeMenuBarIcon(generating: false)
+            button.imagePosition = .imageOnly
             button.action = #selector(togglePopover)
             button.target = self
             button.toolTip = "NanoMeme"
         }
 
         Log.ui.info("Menu bar item configured")
+    }
+
+    /// Draw a custom 4-point star icon for the menu bar (18x18 template image)
+    private func makeMenuBarIcon(generating: Bool) -> NSImage {
+        let size: CGFloat = 18
+        let image = NSImage(size: NSSize(width: size, height: size), flipped: false) { rect in
+            let ctx = NSGraphicsContext.current!.cgContext
+            let cx = rect.midX
+            let cy = rect.midY
+
+            if generating {
+                // Single pulsing star when generating
+                self.drawStar(in: ctx, cx: cx, cy: cy, outerR: 7, innerR: 2)
+            } else {
+                // Two stars (sparkles): large + small
+                self.drawStar(in: ctx, cx: cx - 1, cy: cy - 1, outerR: 7, innerR: 2)
+                self.drawStar(in: ctx, cx: cx + 5, cy: cy + 5, outerR: 3, innerR: 1)
+            }
+            return true
+        }
+        image.isTemplate = true
+        return image
+    }
+
+    /// Draw a 4-point star at the given center
+    private func drawStar(in ctx: CGContext, cx: CGFloat, cy: CGFloat, outerR: CGFloat, innerR: CGFloat) {
+        let path = CGMutablePath()
+        // 4-point star: top, right, bottom, left with inner points between
+        path.move(to: CGPoint(x: cx, y: cy + outerR))       // top
+        path.addLine(to: CGPoint(x: cx + innerR, y: cy + innerR))
+        path.addLine(to: CGPoint(x: cx + outerR, y: cy))    // right
+        path.addLine(to: CGPoint(x: cx + innerR, y: cy - innerR))
+        path.addLine(to: CGPoint(x: cx, y: cy - outerR))    // bottom
+        path.addLine(to: CGPoint(x: cx - innerR, y: cy - innerR))
+        path.addLine(to: CGPoint(x: cx - outerR, y: cy))    // left
+        path.addLine(to: CGPoint(x: cx - innerR, y: cy + innerR))
+        path.closeSubpath()
+
+        ctx.addPath(path)
+        ctx.setFillColor(NSColor.black.cgColor) // template mode: black = opaque
+        ctx.fillPath()
     }
 
     @objc private func togglePopover() {
@@ -91,11 +128,6 @@ public final class MenuBarManager {
 
     public func updateIcon(isGenerating: Bool) {
         guard let button = statusItem?.button else { return }
-        let symbolName = isGenerating ? "sparkle" : "sparkles"
-        let description = isGenerating ? "Generating" : "NanoMeme"
-        if let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: description) {
-            image.isTemplate = true
-            button.image = image
-        }
+        button.image = makeMenuBarIcon(generating: isGenerating)
     }
 }
