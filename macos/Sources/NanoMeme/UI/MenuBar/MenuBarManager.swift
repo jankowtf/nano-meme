@@ -18,17 +18,19 @@ public final class MenuBarManager {
     }
 
     public func setup() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem?.button {
             if let image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: "NanoMeme") {
                 image.isTemplate = true
                 button.image = image
+                button.imagePosition = .imageOnly
             } else {
-                button.title = "M"
+                button.title = "✦"
             }
             button.action = #selector(togglePopover)
             button.target = self
+            button.toolTip = "NanoMeme"
         }
 
         Log.ui.info("Menu bar item configured")

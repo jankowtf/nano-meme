@@ -73,11 +73,15 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        // LSUIElement=true in Info.plist already hides dock icon.
-        // Do NOT call NSApp.setActivationPolicy(.accessory) here — it can
-        // disrupt the NSStatusItem when called after setup().
-
         Log.app.info("NanoMeme ready")
+    }
+
+    // Handle dock icon click — show the popover
+    public func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag {
+            menuBarManager.showPopover()
+        }
+        return true
     }
 
     private func generate() {
