@@ -28,7 +28,7 @@ import {
   RESOLUTIONS,
   type Resolution,
 } from "../src/utils/constants";
-import { TEST_FIXTURE_IMAGES } from "../src/fixtures/testImages";
+import { MASHUP_IMAGES } from "../src/fixtures/mashupImages";
 
 export default function HomeScreen() {
   const {
@@ -112,7 +112,7 @@ export default function HomeScreen() {
     setPrompt(MASHUP_PRESET_PROMPT);
     setOverlayText(MASHUP_OVERLAY_TEXT);
     clearImages();
-    for (const img of TEST_FIXTURE_IMAGES) {
+    for (const img of MASHUP_IMAGES) {
       addImage(img.data, img.mimeType);
     }
   }, [setPrompt, setOverlayText, clearImages, addImage]);

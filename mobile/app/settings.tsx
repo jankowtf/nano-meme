@@ -144,6 +144,8 @@ export default function SettingsScreen() {
                 autoCapitalize="none"
                 keyboardType="email-address"
                 autoCorrect={false}
+                textContentType="username"
+                autoComplete="username"
               />
               <TextInput
                 style={[styles.authInput, { marginTop: 8 }]}
@@ -152,6 +154,8 @@ export default function SettingsScreen() {
                 value={loginPassword}
                 onChangeText={setLoginPassword}
                 secureTextEntry
+                textContentType="password"
+                autoComplete="password"
               />
               {authError && (
                 <Text style={styles.authError}>{authError}</Text>
@@ -311,7 +315,7 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>Version</Text>
-            <Text style={styles.aboutValue}>0.0.4</Text>
+            <Text style={styles.aboutValue}>0.0.5</Text>
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>Model</Text>

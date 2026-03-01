@@ -32,6 +32,6 @@ export const DEFAULT_YODA_PROMPT =
 export const DEFAULT_OVERLAY_TEXT = "Make or make not. There is no buy.";
 
 export const MASHUP_PRESET_PROMPT =
-  "Create a cinematic meme combining both reference images: take the main subject from @img-1 and place them in the environment from @img-2. Photorealistic, dramatic lighting, humorous composition.";
+  "Combine both reference images into one cinematic meme: the cat from @img-1 is sitting at the desk from @img-2, paws on the laptop keyboard, typing with intense focus. A coffee mug and sticky notes are nearby. The cat has a serious professional expression. Photorealistic, office lighting, humorous composition.";
 
-export const MASHUP_OVERLAY_TEXT = "When worlds collide, memes are born.";
+export const MASHUP_OVERLAY_TEXT = "DOING VERY IMPORTANT WORK";
