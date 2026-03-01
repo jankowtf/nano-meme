@@ -119,6 +119,27 @@ describe("memeService", () => {
     expect(callBody.generationConfig?.imageConfig?.imageSize).toBe("1K");
   });
 
+  it("throws timeout error when fetch takes too long", async () => {
+    // Simulate a fetch that never resolves within the timeout
+    mockFetch.mockImplementationOnce(
+      (_url: string, options: { signal?: AbortSignal }) =>
+        new Promise((_resolve, reject) => {
+          if (options?.signal) {
+            options.signal.addEventListener("abort", () => {
+              reject(new DOMException("The operation was aborted", "AbortError"));
+            });
+          }
+        }),
+    );
+
+    // Use fake timers to advance past the timeout
+    jest.useFakeTimers();
+    const promise = generateAndSaveMeme("test-key", "A slow prompt");
+    jest.advanceTimersByTime(121_000);
+    await expect(promise).rejects.toThrow("timed out");
+    jest.useRealTimers();
+  });
+
   it("throws when API returns no image data", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,

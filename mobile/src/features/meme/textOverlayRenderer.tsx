@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { View, Image, type ImageStyle } from "react-native";
-import Svg, { Text as SvgText } from "react-native-svg";
+import Svg, { Text as SvgText, TSpan } from "react-native-svg";
 import { computeOverlayStyle, type OverlayStyleConfig } from "./overlayStyle";
 
 export type { OverlayStyleConfig } from "./overlayStyle";
@@ -22,8 +22,7 @@ export interface MemeCompositeProps {
  */
 export const MemeComposite = forwardRef<View, MemeCompositeProps>(
   ({ baseImageUri, overlayText, overlayConfig, imageWidth, imageHeight, style, onImageLoad }, ref) => {
-    const computed = computeOverlayStyle(overlayConfig, imageWidth, imageHeight);
-    const upperText = overlayText.toUpperCase();
+    const computed = computeOverlayStyle(overlayConfig, imageWidth, imageHeight, overlayText);
 
     return (
       <View ref={ref} style={[{ width: imageWidth, height: imageHeight }, style]} collapsable={false}>
@@ -33,7 +32,7 @@ export const MemeComposite = forwardRef<View, MemeCompositeProps>(
           resizeMode="cover"
           onLoad={onImageLoad}
         />
-        {overlayText.length > 0 && (
+        {computed.lines.length > 0 && (
           <Svg
             width={imageWidth}
             height={imageHeight}
@@ -51,7 +50,11 @@ export const MemeComposite = forwardRef<View, MemeCompositeProps>(
               stroke="black"
               strokeWidth={computed.fontSize * 0.08}
             >
-              {upperText}
+              {computed.lines.map((line, i) => (
+                <TSpan x={computed.x} dy={i === 0 ? 0 : computed.lineHeight} key={i}>
+                  {line}
+                </TSpan>
+              ))}
             </SvgText>
             {/* White fill on top */}
             <SvgText
@@ -63,7 +66,11 @@ export const MemeComposite = forwardRef<View, MemeCompositeProps>(
               fontFamily="Impact"
               fill="white"
             >
-              {upperText}
+              {computed.lines.map((line, i) => (
+                <TSpan x={computed.x} dy={i === 0 ? 0 : computed.lineHeight} key={i}>
+                  {line}
+                </TSpan>
+              ))}
             </SvgText>
           </Svg>
         )}

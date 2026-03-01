@@ -1,15 +1,18 @@
-import { View, Text, Image, Pressable, StyleSheet, Alert } from "react-native";
+import { useState } from "react";
+import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 import { Share2, Download, ArrowLeft, Heart, Type } from "lucide-react-native";
+import { MemeComposite } from "../src/features/meme/textOverlayRenderer";
 import { useMemeStore } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
 
 export default function ResultScreen() {
-  const { currentImageUri, overlayText, history } = useMemeStore();
+  const { currentImageUri, currentBaseImageUri, overlayText, overlayConfig, history } = useMemeStore();
   const latestItem = history[0];
+  const [imageSize, setImageSize] = useState({ width: 320, height: 320 });
 
   if (!currentImageUri) {
     return (
@@ -68,21 +71,25 @@ export default function ResultScreen() {
           <View style={{ width: 24 }} />
         </View>
 
-        {/* Image Preview */}
-        <View style={styles.imageContainer}>
+        {/* Image Preview with Overlay */}
+        <View
+          style={styles.imageContainer}
+          onLayout={(e) => {
+            const { width, height } = e.nativeEvent.layout;
+            if (width > 0 && height > 0) setImageSize({ width, height });
+          }}
+        >
           <View style={styles.glowOuter} />
           <View style={styles.glowInner} />
-          <Image
-            source={{ uri: currentImageUri }}
+          <MemeComposite
+            baseImageUri={currentBaseImageUri ?? currentImageUri!}
+            overlayText={overlayText}
+            overlayConfig={overlayConfig}
+            imageWidth={imageSize.width}
+            imageHeight={imageSize.height}
             style={styles.image}
-            resizeMode="contain"
           />
         </View>
-
-        {/* Overlay Text Display */}
-        {overlayText ? (
-          <Text style={styles.overlayLabel}>{overlayText}</Text>
-        ) : null}
 
         {/* Action Buttons */}
         <View style={styles.actions}>
@@ -183,14 +190,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     backgroundColor: colors.surface.card,
-  },
-  overlayLabel: {
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text.secondary,
-    fontStyle: "italic",
-    marginBottom: 16,
   },
   actions: {
     flexDirection: "row",

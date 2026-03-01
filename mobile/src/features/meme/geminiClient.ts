@@ -63,17 +63,27 @@ export class GeminiClient {
       referenceImages,
     );
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120_000);
+
     let response: Response;
     try {
       response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request),
+        signal: controller.signal,
       });
     } catch (networkError) {
+      clearTimeout(timeout);
+      if (networkError instanceof DOMException && networkError.name === "AbortError") {
+        throw new Error("Request timed out after 120 seconds");
+      }
       throw new Error(
         `Network error: ${networkError instanceof Error ? networkError.message : "Failed to connect to Gemini API"}`,
       );
+    } finally {
+      clearTimeout(timeout);
     }
 
     if (!response.ok) {
