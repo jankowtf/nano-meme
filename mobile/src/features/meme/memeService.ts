@@ -25,21 +25,10 @@ export async function generateAndSaveMeme(
     throw new Error("API returned no image data");
   }
 
-  // Save the base64 image to local filesystem using new File API
-  if (!File || !Paths?.document) {
-    throw new Error("expo-file-system File/Paths API not available");
-  }
-
+  // Save the base64 image to local filesystem (expo-file-system v55 API)
   const filename = `meme_${Date.now()}.png`;
   const file = new File(Paths.document, filename);
-
-  // Decode base64 and write as bytes
-  const binaryString = atob(result.imageData);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  file.write(bytes);
+  file.write(result.imageData, { encoding: "base64" });
 
   return {
     imageUri: file.uri,

@@ -37,7 +37,7 @@ describe("constants", () => {
   });
 
   it("defines yoda prompt", () => {
-    expect(DEFAULT_YODA_PROMPT).toContain("ancient humanoid alien elder");
+    expect(DEFAULT_YODA_PROMPT).toContain("ancient green-skinned alien elder");
   });
 
   it("defines overlay text", () => {

@@ -27,6 +27,6 @@ export const DEFAULT_RESOLUTION: Resolution = "1K";
 export const DEFAULT_ASPECT_RATIO: AspectRatio = "1:1";
 
 export const DEFAULT_YODA_PROMPT =
-  "A photorealistic portrait of a small, ancient humanoid alien elder with bright green deeply wrinkled skin, wearing a neon pink beanie hat. Large pointed ears extending sideways from the head. Large brown wise and contemplative eyes with heavy eyelids. Sparse white wispy hair peeking from under the beanie. Simple earthy brown monk robes with rough-woven texture. Holding a gnarled wooden walking cane with three-fingered hands. Serene, knowing expression. Sitting on a mossy stone in a mystical misty swamp forest with bioluminescent plants. Cinematic lighting, 85mm f/1.4 portrait lens.";
+  "A photorealistic portrait of a small, ancient green-skinned alien elder with large pointed ears, wise brown eyes, and sparse white hair, wearing a neon pink beanie hat and earthy brown robes. Holding a gnarled wooden cane. Sitting on a mossy stone in a mystical swamp forest with bioluminescent plants. Cinematic lighting, 85mm f/1.4 portrait lens.";
 
 export const DEFAULT_OVERLAY_TEXT = "Make or make not. There is no buy.";
