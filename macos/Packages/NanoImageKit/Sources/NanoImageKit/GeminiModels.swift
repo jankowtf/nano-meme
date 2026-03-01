@@ -57,10 +57,28 @@ public struct GenerationConfig: Codable, Sendable {
 
 public struct ImageConfig: Codable, Sendable {
     public let imageSize: String
+    public let aspectRatio: String?
 
-    public init(imageSize: String) {
+    public init(imageSize: String, aspectRatio: String? = nil) {
         self.imageSize = imageSize
+        self.aspectRatio = aspectRatio
     }
+}
+
+// MARK: - Reference Image
+
+public struct ReferenceImage: Sendable {
+    public let id: String // "img-1", "img-2", etc.
+    public let data: Data
+    public let mimeType: String
+
+    public init(id: String, data: Data, mimeType: String) {
+        self.id = id
+        self.data = data
+        self.mimeType = mimeType
+    }
+
+    public static let maxCount = 14
 }
 
 // MARK: - Response Types

@@ -49,10 +49,12 @@ public final class GeminiClient: Sendable {
 
     public func generateImage(
         prompt: String,
-        resolution: Resolution? = nil
+        resolution: Resolution? = nil,
+        referenceImages: [ReferenceImage] = [],
+        aspectRatio: AspectRatio? = nil
     ) async throws -> GeminiResponse {
         let actualResolution = resolution ?? config.resolution
-        let request = buildRequest(prompt: prompt, resolution: actualResolution)
+        let request = buildRequest(prompt: prompt, resolution: actualResolution, referenceImages: referenceImages, aspectRatio: aspectRatio)
 
         let (data, response) = try await session.data(for: request)
 
@@ -79,17 +81,25 @@ public final class GeminiClient: Sendable {
 
     // MARK: - Private
 
-    private func buildRequest(prompt: String, resolution: Resolution) -> URLRequest {
+    private func buildRequest(prompt: String, resolution: Resolution, referenceImages: [ReferenceImage] = [], aspectRatio: AspectRatio? = nil) -> URLRequest {
         let url = config.apiURL(apiKey: apiKey)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
+        var parts: [Part] = [Part(text: prompt)]
+        for img in referenceImages {
+            parts.append(Part(inlineData: InlineData(
+                mimeType: img.mimeType,
+                data: img.data.base64EncodedString()
+            )))
+        }
+
         let body = GenerateContentRequest(
-            contents: [Content(parts: [Part(text: prompt)])],
+            contents: [Content(parts: parts)],
             generationConfig: GenerationConfig(
                 responseModalities: ["TEXT", "IMAGE"],
-                imageConfig: ImageConfig(imageSize: resolution.rawValue)
+                imageConfig: ImageConfig(imageSize: resolution.rawValue, aspectRatio: aspectRatio?.rawValue)
             )
         )
 

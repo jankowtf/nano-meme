@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import NanoDesignKit
 import NanoImageKit
 
@@ -115,6 +116,110 @@ public struct PopoverView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Brand.border, lineWidth: 1)
                     )
+
+                // Position presets
+                HStack(spacing: 6) {
+                    Text("Position")
+                        .font(.system(size: 10))
+                        .foregroundStyle(Brand.textMuted)
+
+                    ForEach(TextOverlayPosition.allCases, id: \.rawValue) { pos in
+                        Button(action: {
+                            state.overlayConfig.position = pos
+                            state.overlayConfig.offsetX = 0
+                            state.overlayConfig.offsetY = 0
+                        }) {
+                            Text(pos.rawValue.capitalized)
+                                .font(.system(size: 10, weight: .medium))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(
+                                    state.overlayConfig.position == pos
+                                        ? Brand.cyan.opacity(0.2)
+                                        : Color.clear
+                                )
+                                .foregroundStyle(
+                                    state.overlayConfig.position == pos
+                                        ? Brand.cyan
+                                        : Brand.textMuted
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                // Font size slider
+                HStack(spacing: 6) {
+                    Text("Size")
+                        .font(.system(size: 10))
+                        .foregroundStyle(Brand.textMuted)
+                        .frame(width: 44, alignment: .leading)
+
+                    Text("A")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(Brand.textMuted)
+
+                    Slider(value: $state.overlayConfig.fontScale, in: 0.5...2.0, step: 0.1)
+                        .tint(Brand.cyan)
+
+                    Text("A")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(Brand.textMuted)
+                }
+            }
+
+            // Reference images
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Reference Images (\(state.referenceImages.count)/\(ReferenceImage.maxCount))")
+                    .font(.caption)
+                    .foregroundStyle(Brand.textSecondary)
+
+                if !state.referenceImages.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(state.referenceImages, id: \.id) { img in
+                                ZStack(alignment: .topTrailing) {
+                                    if let nsImage = NSImage(data: img.data) {
+                                        Image(nsImage: nsImage)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 56, height: 56)
+                                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    }
+
+                                    // Badge
+                                    Text("@\(img.id)")
+                                        .font(.system(size: 8, weight: .semibold, design: .monospaced))
+                                        .foregroundStyle(Brand.cyan)
+                                        .padding(.horizontal, 3)
+                                        .padding(.vertical, 1)
+                                        .background(.black.opacity(0.7))
+                                        .clipShape(RoundedRectangle(cornerRadius: 3))
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+
+                                    // Remove button
+                                    Button(action: { state.removeImage(id: img.id) }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundStyle(.white, .red)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .offset(x: 4, y: -4)
+                                }
+                                .frame(width: 56, height: 56)
+                            }
+                        }
+                    }
+                }
+
+                Button(action: pickImages) {
+                    Text("Add Images")
+                        .font(.caption)
+                        .foregroundStyle(Brand.cyan)
+                }
+                .buttonStyle(.plain)
+                .disabled(state.referenceImages.count >= ReferenceImage.maxCount)
             }
 
             // Resolution picker
@@ -128,6 +233,21 @@ public struct PopoverView: View {
                     Text("1K").tag("1K")
                     Text("2K").tag("2K")
                     Text("4K").tag("4K")
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 200)
+            }
+
+            // Aspect ratio picker
+            HStack {
+                Text("Aspect Ratio")
+                    .font(.caption)
+                    .foregroundStyle(Brand.textSecondary)
+                Spacer()
+                Picker("", selection: $state.selectedAspectRatio) {
+                    ForEach(AspectRatio.allCases, id: \.self) { ratio in
+                        Text(ratio.rawValue).tag(ratio)
+                    }
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 200)
@@ -274,6 +394,23 @@ public struct PopoverView: View {
         let pb = NSPasteboard.general
         pb.clearContents()
         pb.writeObjects([image])
+    }
+
+    private func pickImages() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = true
+        panel.canChooseDirectories = false
+        panel.allowedContentTypes = [.png, .jpeg, .webP, .heic]
+        panel.begin { response in
+            if response == .OK {
+                for url in panel.urls {
+                    guard state.referenceImages.count < ReferenceImage.maxCount,
+                          let data = try? Data(contentsOf: url) else { continue }
+                    let mimeType = url.pathExtension.lowercased() == "png" ? "image/png" : "image/jpeg"
+                    state.addImage(data: data, mimeType: mimeType)
+                }
+            }
+        }
     }
 
     private func saveToFile(_ meme: MemeResult) {

@@ -2,6 +2,7 @@ import { GEMINI_BASE_URL, GEMINI_MODEL_ID } from "../../utils/constants";
 import {
   type GenerateContentResponse,
   type GeminiErrorResponse,
+  type ReferenceImage,
   buildGenerateRequest,
   parseImageFromResponse,
 } from "./geminiTypes";
@@ -42,12 +43,25 @@ export class GeminiClient {
   async generateImage(
     prompt: string,
     resolution?: string,
+    referenceImages?: ReferenceImage[],
+    aspectRatio?: string,
   ): Promise<GenerateImageResult> {
     const url = GeminiClient.buildApiUrl(this.apiKey);
-    const request = buildGenerateRequest(prompt, {
-      responseModalities: ["Text", "Image"],
-      ...(resolution && { imageConfig: { imageSize: resolution } }),
-    });
+    const imageConfig =
+      resolution || aspectRatio
+        ? {
+            ...(resolution && { imageSize: resolution }),
+            ...(aspectRatio && { aspectRatio }),
+          }
+        : undefined;
+    const request = buildGenerateRequest(
+      prompt,
+      {
+        responseModalities: ["Text", "Image"],
+        ...(imageConfig && { imageConfig }),
+      },
+      referenceImages,
+    );
 
     let response: Response;
     try {

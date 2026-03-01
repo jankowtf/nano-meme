@@ -1,25 +1,23 @@
 import { File, Paths } from "expo-file-system";
 import { GeminiClient } from "./geminiClient";
+import type { ReferenceImage } from "./geminiTypes";
 
 export interface MemeResult {
   imageUri: string;
+  baseImageUri: string;
   mimeType: string;
 }
 
 export async function generateAndSaveMeme(
   apiKey: string,
   prompt: string,
-  overlayText: string,
   resolution?: string,
+  referenceImages?: ReferenceImage[],
+  aspectRatio?: string,
 ): Promise<MemeResult> {
   const client = new GeminiClient(apiKey);
 
-  // Include overlay text in the prompt for AI-rendered text
-  const fullPrompt = overlayText
-    ? `${prompt}\n\nRender the following text prominently in the image using a bold, white font with black outline, positioned at the bottom: "${overlayText}"`
-    : prompt;
-
-  const result = await client.generateImage(fullPrompt, resolution);
+  const result = await client.generateImage(prompt, resolution, referenceImages, aspectRatio);
 
   if (!result?.imageData) {
     throw new Error("API returned no image data");
@@ -32,6 +30,7 @@ export async function generateAndSaveMeme(
 
   return {
     imageUri: file.uri,
+    baseImageUri: file.uri,
     mimeType: result.mimeType,
   };
 }

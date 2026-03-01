@@ -1,5 +1,29 @@
 // Gemini API request/response types
 
+export const MAX_REFERENCE_IMAGES = 14;
+
+export interface ReferenceImage {
+  id: string; // "img-1", "img-2", etc.
+  data: string; // base64 encoded
+  mimeType: string;
+}
+
+export type OverlayPosition = "top" | "center" | "bottom";
+
+export interface OverlayConfig {
+  position: OverlayPosition;
+  fontScale: number; // 0.5 - 2.0 multiplier
+  offsetX: number;   // normalized -1.0 to 1.0
+  offsetY: number;   // normalized -1.0 to 1.0
+}
+
+export const DEFAULT_OVERLAY_CONFIG: OverlayConfig = {
+  position: "bottom",
+  fontScale: 1.0,
+  offsetX: 0,
+  offsetY: 0,
+};
+
 export interface TextPart {
   text: string;
 }
@@ -20,6 +44,7 @@ export interface Content {
 
 export interface ImageConfig {
   imageSize?: string;
+  aspectRatio?: string;
 }
 
 export interface GenerationConfig {
@@ -58,13 +83,23 @@ export interface ImageResult {
 export function buildGenerateRequest(
   prompt: string,
   config?: GenerationConfig,
+  referenceImages?: ReferenceImage[],
 ): GenerateContentRequest {
+  const parts: Part[] = [{ text: prompt }];
+
+  if (referenceImages?.length) {
+    for (const img of referenceImages) {
+      parts.push({
+        inlineData: {
+          mimeType: img.mimeType,
+          data: img.data,
+        },
+      });
+    }
+  }
+
   return {
-    contents: [
-      {
-        parts: [{ text: prompt }],
-      },
-    ],
+    contents: [{ parts }],
     ...(config && { generationConfig: config }),
   };
 }

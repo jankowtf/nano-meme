@@ -6,6 +6,7 @@ import NanoCore
 public final class MenuBarManager {
     private var statusItem: NSStatusItem?
     private var panel: NSPanel?
+    private var eventMonitor: Any?
 
     private let state: AppState
     private let popoverContent: () -> AnyView
@@ -99,9 +100,17 @@ public final class MenuBarManager {
         panel.setFrame(NSRect(x: x, y: y, width: panelWidth, height: panelHeight), display: true)
         panel.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+
+        eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
+            self?.hidePopover()
+        }
     }
 
     public func hidePopover() {
+        if let monitor = eventMonitor {
+            NSEvent.removeMonitor(monitor)
+            eventMonitor = nil
+        }
         panel?.orderOut(nil)
     }
 

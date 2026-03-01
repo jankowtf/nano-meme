@@ -25,6 +25,9 @@ public final class MemeCoordinator {
         let prompt = state.currentPrompt
         let overlayText = state.currentOverlayText
         let resolution = Resolution(rawValue: state.selectedResolution) ?? .one
+        let aspectRatio = state.selectedAspectRatio
+        let images = state.referenceImages
+        let overlayConfig = state.overlayConfig
 
         generationTask = Task {
             do {
@@ -34,7 +37,10 @@ public final class MemeCoordinator {
                 let result = try await generator.generateMeme(
                     prompt: prompt,
                     overlayText: overlayText,
-                    resolution: resolution
+                    resolution: resolution,
+                    referenceImages: images,
+                    overlayConfig: overlayConfig,
+                    aspectRatio: aspectRatio
                 )
 
                 state.currentMeme = result

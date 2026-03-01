@@ -45,13 +45,16 @@ public final class ImageGenerator: Sendable {
     public func generateMeme(
         prompt: String,
         overlayText: String,
-        resolution: Resolution? = nil
+        resolution: Resolution? = nil,
+        referenceImages: [ReferenceImage] = [],
+        overlayConfig: OverlayConfig = .default,
+        aspectRatio: AspectRatio? = nil
     ) async throws -> MemeResult {
         let actualResolution = resolution ?? config.resolution
 
         Log.api.info("Generating image: \(prompt.prefix(50))...")
 
-        let response = try await client.generateImage(prompt: prompt, resolution: actualResolution)
+        let response = try await client.generateImage(prompt: prompt, resolution: actualResolution, referenceImages: referenceImages, aspectRatio: aspectRatio)
 
         guard let imageData = response.imageData else {
             throw GeminiError.noImageGenerated
@@ -68,7 +71,7 @@ public final class ImageGenerator: Sendable {
         if overlayText.isEmpty {
             finalImage = baseImage
         } else {
-            finalImage = renderer.render(text: overlayText, onto: baseImage, position: .bottom)
+            finalImage = renderer.render(text: overlayText, onto: baseImage, config: overlayConfig)
             Log.image.info("Text overlay applied: \(overlayText.prefix(30))...")
         }
 

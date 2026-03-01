@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
-import { Share2, Download, ArrowLeft, Heart } from "lucide-react-native";
+import { Share2, Download, ArrowLeft, Heart, Type } from "lucide-react-native";
 import { useMemeStore } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
 
@@ -48,6 +48,14 @@ export default function ResultScreen() {
     }
   };
 
+  const handleEditText = () => {
+    if (latestItem) {
+      router.navigate(`/edit-overlay?id=${latestItem.id}`);
+    }
+  };
+
+  const canEdit = latestItem?.baseImageUri != null;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -87,6 +95,13 @@ export default function ResultScreen() {
             <Download color={colors.brand.teal} size={22} />
             <Text style={styles.actionText}>Save</Text>
           </Pressable>
+
+          {canEdit && (
+            <Pressable style={styles.actionButton} onPress={handleEditText}>
+              <Type color={colors.brand.magenta} size={22} />
+              <Text style={styles.actionText}>Edit Text</Text>
+            </Pressable>
+          )}
 
           {latestItem && (
             <Pressable
@@ -180,8 +195,9 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 24,
+    gap: 16,
     marginBottom: 20,
+    flexWrap: "wrap",
   },
   actionButton: {
     alignItems: "center",

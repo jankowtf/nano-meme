@@ -7,6 +7,28 @@ public enum TextOverlayPosition: String, CaseIterable, Sendable {
     case bottom
 }
 
+/// Configuration for text overlay rendering.
+public struct OverlayConfig: Sendable, Equatable {
+    public var position: TextOverlayPosition
+    public var fontScale: CGFloat // 0.5 - 2.0 multiplier on default font size
+    public var offsetX: CGFloat   // normalized -1.0 to 1.0 (fraction of image width)
+    public var offsetY: CGFloat   // normalized -1.0 to 1.0 (fraction of image height)
+
+    public static let `default` = OverlayConfig(
+        position: .bottom,
+        fontScale: 1.0,
+        offsetX: 0,
+        offsetY: 0
+    )
+
+    public init(position: TextOverlayPosition, fontScale: CGFloat = 1.0, offsetX: CGFloat = 0, offsetY: CGFloat = 0) {
+        self.position = position
+        self.fontScale = fontScale
+        self.offsetX = offsetX
+        self.offsetY = offsetY
+    }
+}
+
 public struct TextOverlayRenderer: Sendable {
 
     public init() {}
@@ -19,6 +41,16 @@ public struct TextOverlayRenderer: Sendable {
         position: TextOverlayPosition,
         fontSize: CGFloat? = nil
     ) -> NSImage {
+        render(text: text, onto: image, config: OverlayConfig(position: position), fontSize: fontSize)
+    }
+
+    /// Renders text overlay with full configuration control.
+    public func render(
+        text: String,
+        onto image: NSImage,
+        config: OverlayConfig,
+        fontSize: CGFloat? = nil
+    ) -> NSImage {
         guard !text.isEmpty else { return image }
 
         let size = image.size
@@ -27,7 +59,8 @@ public struct TextOverlayRenderer: Sendable {
         result.lockFocus()
         image.draw(in: NSRect(origin: .zero, size: size))
 
-        let calculatedFontSize = fontSize ?? max(size.width / 14, 24)
+        let baseFontSize = fontSize ?? max(size.width / 14, 24)
+        let calculatedFontSize = baseFontSize * config.fontScale
 
         // Impact font with fallback to Helvetica-Bold
         let font = NSFont(name: "Impact", size: calculatedFontSize)
@@ -62,8 +95,8 @@ public struct TextOverlayRenderer: Sendable {
             attributes: fillAttributes
         )
 
-        let drawRect: NSRect
-        switch position {
+        var drawRect: NSRect
+        switch config.position {
         case .top:
             drawRect = NSRect(
                 x: margin,
@@ -81,11 +114,15 @@ public struct TextOverlayRenderer: Sendable {
         case .bottom:
             drawRect = NSRect(
                 x: margin,
-                y: margin,
+                y: margin * 2,
                 width: maxWidth,
                 height: textRect.height + margin
             )
         }
+
+        // Apply custom offsets
+        drawRect.origin.x += config.offsetX * size.width
+        drawRect.origin.y += config.offsetY * size.height
 
         // Draw stroke first, then fill
         (upperText as NSString).draw(in: drawRect, withAttributes: strokeAttributes)

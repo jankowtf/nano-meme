@@ -7,12 +7,14 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { GalleryHorizontalEnd, Heart, Trash2 } from "lucide-react-native";
+import { router } from "expo-router";
+import { GalleryHorizontalEnd, Heart, Trash2, Type } from "lucide-react-native";
 import { useMemeStore, type MemeHistoryItem } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
 
 function MemeCard({ item }: { item: MemeHistoryItem }) {
   const { toggleFavorite, deleteFromHistory } = useMemeStore();
+  const canEdit = item.baseImageUri != null;
 
   return (
     <View style={styles.card}>
@@ -30,6 +32,14 @@ function MemeCard({ item }: { item: MemeHistoryItem }) {
         </Text>
       </View>
       <View style={styles.cardActions}>
+        {canEdit && (
+          <Pressable
+            onPress={() => router.navigate(`/edit-overlay?id=${item.id}`)}
+            hitSlop={8}
+          >
+            <Type color={colors.brand.cyan} size={18} />
+          </Pressable>
+        )}
         <Pressable onPress={() => toggleFavorite(item.id)} hitSlop={8}>
           <Heart
             color={colors.brand.magenta}

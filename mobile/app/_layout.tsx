@@ -1,3 +1,4 @@
+import { LogBox } from "react-native";
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -5,6 +6,13 @@ import { Image, Sparkles, GalleryHorizontalEnd, Settings } from "lucide-react-na
 import { colors } from "../src/utils/colors";
 
 import "../global.css";
+
+// Suppress non-critical dev warnings in the UI
+LogBox.ignoreLogs([
+  "Require cycle:",
+  "ViewManagerPropertyUpdater",
+  "StatusBarModule",
+]);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +75,12 @@ export default function RootLayout() {
             tabBarIcon: ({ color, size }) => (
               <Settings color={color} size={size} />
             ),
+          }}
+        />
+        <Tabs.Screen
+          name="edit-overlay"
+          options={{
+            href: null,
           }}
         />
       </Tabs>

@@ -9,6 +9,8 @@ import {
   DEFAULT_ASPECT_RATIO,
   DEFAULT_YODA_PROMPT,
   DEFAULT_OVERLAY_TEXT,
+  MASHUP_PRESET_PROMPT,
+  MASHUP_OVERLAY_TEXT,
 } from "../constants";
 
 describe("constants", () => {
@@ -42,5 +44,15 @@ describe("constants", () => {
 
   it("defines overlay text", () => {
     expect(DEFAULT_OVERLAY_TEXT).toBe("Make or make not. There is no buy.");
+  });
+
+  it("defines mashup preset prompt with image references", () => {
+    expect(MASHUP_PRESET_PROMPT).toContain("@img-1");
+    expect(MASHUP_PRESET_PROMPT).toContain("@img-2");
+  });
+
+  it("defines mashup overlay text", () => {
+    expect(typeof MASHUP_OVERLAY_TEXT).toBe("string");
+    expect(MASHUP_OVERLAY_TEXT.length).toBeGreaterThan(0);
   });
 });

@@ -30,3 +30,8 @@ export const DEFAULT_YODA_PROMPT =
   "A photorealistic portrait of a small, ancient green-skinned alien elder with large pointed ears, wise brown eyes, and sparse white hair, wearing a neon pink beanie hat and earthy brown robes. Holding a gnarled wooden cane. Sitting on a mossy stone in a mystical swamp forest with bioluminescent plants. Cinematic lighting, 85mm f/1.4 portrait lens.";
 
 export const DEFAULT_OVERLAY_TEXT = "Make or make not. There is no buy.";
+
+export const MASHUP_PRESET_PROMPT =
+  "Create a cinematic meme combining both reference images: take the main subject from @img-1 and place them in the environment from @img-2. Photorealistic, dramatic lighting, humorous composition.";
+
+export const MASHUP_OVERLAY_TEXT = "When worlds collide, memes are born.";
