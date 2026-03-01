@@ -144,4 +144,22 @@ describe("wrapText", () => {
     const rejoined = lines.join(" ");
     expect(rejoined).toBe(input);
   });
+
+  it("respects explicit line breaks (\\n)", () => {
+    const lines = wrapText("LINE ONE\nLINE TWO\nLINE THREE", 500, 40);
+    expect(lines).toEqual(["LINE ONE", "LINE TWO", "LINE THREE"]);
+  });
+
+  it("combines explicit line breaks with word wrapping", () => {
+    // First paragraph is short, second is long enough to wrap
+    const lines = wrapText("SHORT\nTHIS IS A MUCH LONGER PARAGRAPH THAT WRAPS", 200, 40);
+    expect(lines[0]).toBe("SHORT");
+    expect(lines.length).toBeGreaterThan(2);
+  });
+
+  it("handles multiple consecutive line breaks", () => {
+    const lines = wrapText("A\n\nB", 500, 40);
+    // Empty line between A and B becomes an empty string entry
+    expect(lines).toEqual(["A", "", "B"]);
+  });
 });

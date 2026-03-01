@@ -148,11 +148,16 @@ export const useMemeStore = create<MemeState>()(
               ? { ...item, overlayText, overlayConfig: { ...overlayConfig }, imageUri: newImageUri }
               : item,
           );
-          // If editing the latest (first) item, update currentImageUri too
           const isLatest = state.history[0]?.id === id;
           return {
             history,
-            ...(isLatest ? { currentImageUri: newImageUri } : {}),
+            ...(isLatest
+              ? {
+                  currentImageUri: newImageUri,
+                  overlayText,
+                  overlayConfig: { ...overlayConfig },
+                }
+              : {}),
           };
         }),
 

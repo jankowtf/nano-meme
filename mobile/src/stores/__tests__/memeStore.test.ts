@@ -161,6 +161,52 @@ describe("memeStore", () => {
 
       expect(useMemeStore.getState().currentImageUri).toBe("file:///updated.png");
     });
+
+    it("updates top-level overlayText and overlayConfig when editing latest", () => {
+      useMemeStore.getState().setPrompt("Test");
+      useMemeStore.getState().setOverlayText("Original");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base.png", "file:///original.png");
+
+      const id = useMemeStore.getState().history[0].id;
+      useMemeStore.getState().updateOverlay(id, "Edited text", {
+        position: "top",
+        fontScale: 1.5,
+        offsetX: 0,
+        offsetY: 0,
+      }, "file:///updated.png");
+
+      // Top-level state should match the edit
+      expect(useMemeStore.getState().overlayText).toBe("Edited text");
+      expect(useMemeStore.getState().overlayConfig.position).toBe("top");
+      expect(useMemeStore.getState().overlayConfig.fontScale).toBe(1.5);
+    });
+
+    it("does not update top-level state when editing non-latest item", () => {
+      // Generate two memes
+      useMemeStore.getState().setPrompt("First");
+      useMemeStore.getState().setOverlayText("First overlay");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base1.png", "file:///first.png");
+
+      useMemeStore.getState().setPrompt("Second");
+      useMemeStore.getState().setOverlayText("Second overlay");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base2.png", "file:///second.png");
+
+      // Edit the first (non-latest) meme
+      const olderId = useMemeStore.getState().history[1].id;
+      useMemeStore.getState().updateOverlay(olderId, "Edited old", {
+        position: "center",
+        fontScale: 0.7,
+        offsetX: 0,
+        offsetY: 0,
+      }, "file:///edited-old.png");
+
+      // Top-level state should NOT change
+      expect(useMemeStore.getState().overlayText).toBe("Second overlay");
+      expect(useMemeStore.getState().overlayConfig.position).toBe("bottom");
+    });
   });
 
   describe("reference images", () => {

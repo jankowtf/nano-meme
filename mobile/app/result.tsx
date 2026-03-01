@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -6,12 +6,14 @@ import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 import { Share2, Download, ArrowLeft, Heart, Type } from "lucide-react-native";
 import { MemeComposite } from "../src/features/meme/textOverlayRenderer";
+import { captureComposite } from "../src/hooks/useOverlayCapture";
 import { useMemeStore } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
 
 export default function ResultScreen() {
   const { currentImageUri, currentBaseImageUri, overlayText, overlayConfig, history } = useMemeStore();
   const latestItem = history[0];
+  const compositeRef = useRef<View>(null);
   const [imageSize, setImageSize] = useState({ width: 320, height: 320 });
 
   if (!currentImageUri) {
@@ -31,20 +33,25 @@ export default function ResultScreen() {
   }
 
   const handleShare = async () => {
-    if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(currentImageUri);
+    try {
+      const uri = await captureComposite(compositeRef);
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      }
+    } catch {
+      Alert.alert("Error", "Failed to capture meme for sharing.");
     }
   };
 
   const handleSave = async () => {
-    if (!currentImageUri) return;
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== "granted") {
       Alert.alert("Permission required", "Allow photo library access to save memes.");
       return;
     }
     try {
-      await MediaLibrary.saveToLibraryAsync(currentImageUri);
+      const uri = await captureComposite(compositeRef);
+      await MediaLibrary.saveToLibraryAsync(uri);
       Alert.alert("Saved", "Meme saved to your photo library.");
     } catch {
       Alert.alert("Error", "Failed to save meme to photo library.");
@@ -82,6 +89,7 @@ export default function ResultScreen() {
           <View style={styles.glowOuter} />
           <View style={styles.glowInner} />
           <MemeComposite
+            ref={compositeRef}
             baseImageUri={currentBaseImageUri ?? currentImageUri!}
             overlayText={overlayText}
             overlayConfig={overlayConfig}

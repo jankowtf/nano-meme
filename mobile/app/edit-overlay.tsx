@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,12 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft, Check, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd } from "lucide-react-native";
 import type { OverlayPosition, OverlayConfig } from "../src/features/meme/geminiTypes";
 import { MemeComposite } from "../src/features/meme/textOverlayRenderer";
-import { captureComposite } from "../src/hooks/useOverlayCapture";
 import { useMemeStore } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
 
@@ -22,9 +20,6 @@ export default function EditOverlayScreen() {
   const { history, updateOverlay } = useMemeStore();
 
   const item = history.find((h) => h.id === id);
-  const compositeRef = useRef<View>(null);
-  const [isCapturing, setIsCapturing] = useState(false);
-
   const [editText, setEditText] = useState(item?.overlayText ?? "");
   const [editConfig, setEditConfig] = useState<OverlayConfig>(
     item?.overlayConfig ?? { position: "bottom", fontScale: 1.0, offsetX: 0, offsetY: 0 },
@@ -45,17 +40,12 @@ export default function EditOverlayScreen() {
     );
   }
 
-  const handleApply = useCallback(async () => {
-    if (!compositeRef.current || !id) return;
-    setIsCapturing(true);
-    try {
-      const newUri = await captureComposite(compositeRef);
-      updateOverlay(id, editText, editConfig, newUri);
-      router.back();
-    } catch {
-      setIsCapturing(false);
-    }
-  }, [id, editText, editConfig, updateOverlay]);
+  const handleApply = useCallback(() => {
+    if (!id) return;
+    // Update store state — result screen re-renders live via MemeComposite
+    updateOverlay(id, editText, editConfig, item.imageUri);
+    router.back();
+  }, [id, editText, editConfig, item?.imageUri, updateOverlay]);
 
   const setPosition = (position: OverlayPosition) => {
     setEditConfig((prev) => ({ ...prev, position, offsetX: 0, offsetY: 0 }));
@@ -80,7 +70,6 @@ export default function EditOverlayScreen() {
         {/* Live Preview */}
         <View style={styles.previewContainer}>
           <MemeComposite
-            ref={compositeRef}
             baseImageUri={item.baseImageUri}
             overlayText={editText}
             overlayConfig={editConfig}
@@ -153,19 +142,9 @@ export default function EditOverlayScreen() {
         </View>
 
         {/* Apply Button */}
-        <Pressable
-          style={[styles.applyButton, isCapturing && { opacity: 0.6 }]}
-          onPress={handleApply}
-          disabled={isCapturing}
-        >
-          {isCapturing ? (
-            <ActivityIndicator color={colors.surface.primary} />
-          ) : (
-            <Check color={colors.surface.primary} size={20} />
-          )}
-          <Text style={styles.applyButtonText}>
-            {isCapturing ? "Applying..." : "Apply Changes"}
-          </Text>
+        <Pressable style={styles.applyButton} onPress={handleApply}>
+          <Check color={colors.surface.primary} size={20} />
+          <Text style={styles.applyButtonText}>Apply Changes</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>

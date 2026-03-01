@@ -27,21 +27,32 @@ export function wrapText(text: string, maxWidth: number, fontSize: number): stri
 
   const charWidth = fontSize * 0.6;
   const charsPerLine = Math.max(1, Math.floor(maxWidth / charWidth));
-  const words = text.split(" ");
-  const lines: string[] = [];
-  let currentLine = "";
 
-  for (const word of words) {
-    if (!currentLine) {
-      currentLine = word;
-    } else if (currentLine.length + 1 + word.length <= charsPerLine) {
-      currentLine += " " + word;
-    } else {
-      lines.push(currentLine);
-      currentLine = word;
+  // Split by explicit line breaks first, then word-wrap each paragraph
+  const paragraphs = text.split("\n");
+  const lines: string[] = [];
+
+  for (const paragraph of paragraphs) {
+    if (!paragraph) {
+      lines.push("");
+      continue;
     }
+
+    const words = paragraph.split(" ");
+    let currentLine = "";
+
+    for (const word of words) {
+      if (!currentLine) {
+        currentLine = word;
+      } else if (currentLine.length + 1 + word.length <= charsPerLine) {
+        currentLine += " " + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
   }
-  if (currentLine) lines.push(currentLine);
 
   return lines;
 }
