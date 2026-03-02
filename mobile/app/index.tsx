@@ -56,7 +56,7 @@ export default function HomeScreen() {
   const [showRefImages, setShowRefImages] = useState(false);
 
   useEffect(() => {
-    if (referenceImages.length > 0) setShowRefImages(true);
+    setShowRefImages(referenceImages.length > 0);
   }, [referenceImages.length]);
 
   const handleGenerate = useCallback(async () => {
