@@ -15,7 +15,7 @@ import {
 
 describe("constants", () => {
   it("defines app identity", () => {
-    expect(APP_NAME).toBe("NanoMeme");
+    expect(APP_NAME).toBe("KaosMeme");
     expect(BUNDLE_ID).toBe("com.kaosmaps.nanomeme");
   });
 

@@ -315,11 +315,11 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>Version</Text>
-            <Text style={styles.aboutValue}>0.0.5</Text>
+            <Text style={styles.aboutValue}>0.0.6</Text>
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>Model</Text>
-            <Text style={styles.aboutValue}>Nano Banana 2</Text>
+            <Text style={styles.aboutValue}>Kaos Banana 2</Text>
           </View>
           <View style={styles.aboutRow}>
             <Text style={styles.aboutLabel}>By</Text>

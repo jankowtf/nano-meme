@@ -8,50 +8,48 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { GalleryHorizontalEnd, Heart, Trash2, Type } from "lucide-react-native";
+import { GalleryHorizontalEnd, Heart, Trash2 } from "lucide-react-native";
 import { useMemeStore, type MemeHistoryItem } from "../src/stores/memeStore";
 import { colors } from "../src/utils/colors";
 
 function MemeCard({ item }: { item: MemeHistoryItem }) {
-  const { toggleFavorite, deleteFromHistory } = useMemeStore();
-  const canEdit = item.baseImageUri != null;
+  const { toggleFavorite, deleteFromHistory, selectFromHistory } = useMemeStore();
+
+  const handleTapCard = () => {
+    selectFromHistory(item.id);
+    router.navigate("/result");
+  };
 
   return (
-    <View style={styles.card}>
-      <Image
-        source={{ uri: item.imageUri }}
-        style={styles.thumbnail}
-        resizeMode="cover"
-      />
-      <View style={styles.cardContent}>
-        <Text style={styles.cardOverlay} numberOfLines={1}>
-          {item.overlayText || "No overlay"}
-        </Text>
-        <Text style={styles.cardDate}>
-          {new Date(item.createdAt).toLocaleDateString()}
-        </Text>
-      </View>
-      <View style={styles.cardActions}>
-        {canEdit && (
-          <Pressable
-            onPress={() => router.navigate(`/edit-overlay?id=${item.id}`)}
-            hitSlop={8}
-          >
-            <Type color={colors.brand.cyan} size={18} />
+    <Pressable onPress={handleTapCard}>
+      <View style={styles.card}>
+        <Image
+          source={{ uri: item.imageUri }}
+          style={styles.thumbnail}
+          resizeMode="cover"
+        />
+        <View style={styles.cardContent}>
+          <Text style={styles.cardOverlay} numberOfLines={1}>
+            {item.overlayText || "No overlay"}
+          </Text>
+          <Text style={styles.cardDate}>
+            {new Date(item.createdAt).toLocaleDateString()}
+          </Text>
+        </View>
+        <View style={styles.cardActions}>
+          <Pressable onPress={() => toggleFavorite(item.id)} hitSlop={8}>
+            <Heart
+              color={colors.brand.magenta}
+              size={18}
+              fill={item.isFavorite ? colors.brand.magenta : "none"}
+            />
           </Pressable>
-        )}
-        <Pressable onPress={() => toggleFavorite(item.id)} hitSlop={8}>
-          <Heart
-            color={colors.brand.magenta}
-            size={18}
-            fill={item.isFavorite ? colors.brand.magenta : "none"}
-          />
-        </Pressable>
-        <Pressable onPress={() => deleteFromHistory(item.id)} hitSlop={8}>
-          <Trash2 color={colors.text.muted} size={18} />
-        </Pressable>
+          <Pressable onPress={() => deleteFromHistory(item.id)} hitSlop={8}>
+            <Trash2 color={colors.text.muted} size={18} />
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

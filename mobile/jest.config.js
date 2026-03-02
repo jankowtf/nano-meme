@@ -3,12 +3,13 @@ module.exports = {
     // Pure TypeScript tests (utils, stores, services)
     {
       displayName: "unit",
-      testMatch: ["<rootDir>/src/**/__tests__/**/*.test.ts", "<rootDir>/app/__tests__/**/*.test.ts", "<rootDir>/__tests__/**/*.test.ts"],
+      testMatch: ["<rootDir>/src/**/__tests__/**/*.test.ts", "<rootDir>/app/__tests__/**/*.test.ts", "<rootDir>/__tests__/**/*.test.ts", "<rootDir>/__mocks__/__tests__/**/*.test.ts"],
       transform: {
         "^.+\\.tsx?$": ["ts-jest", { tsconfig: "tsconfig.json", diagnostics: { exclude: ["**/mmkvStorage.ts"] } }],
       },
       moduleNameMapper: {
         "^react-native-mmkv$": "<rootDir>/__mocks__/react-native-mmkv.ts",
+        "^react-native-gesture-handler$": "<rootDir>/__mocks__/react-native-gesture-handler.ts",
         "^@/(.*)$": "<rootDir>/src/$1",
       },
     },

@@ -44,6 +44,7 @@ interface MemeState {
   failGeneration: (error: string) => void;
   updateOverlay: (id: string, overlayText: string, overlayConfig: OverlayConfig, newImageUri: string) => void;
   toggleFavorite: (id: string) => void;
+  selectFromHistory: (id: string) => void;
   deleteFromHistory: (id: string) => void;
   reset: () => void;
 }
@@ -160,6 +161,17 @@ export const useMemeStore = create<MemeState>()(
               : {}),
           };
         }),
+
+      selectFromHistory: (id) => {
+        const item = get().history.find((h) => h.id === id);
+        if (!item) return;
+        set({
+          currentImageUri: item.imageUri,
+          currentBaseImageUri: item.baseImageUri ?? null,
+          overlayText: item.overlayText,
+          overlayConfig: { ...item.overlayConfig },
+        });
+      },
 
       toggleFavorite: (id) =>
         set((state) => ({

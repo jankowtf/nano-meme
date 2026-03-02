@@ -2,6 +2,7 @@ import { LogBox } from "react-native";
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Image, Sparkles, GalleryHorizontalEnd, Settings } from "lucide-react-native";
 import { colors } from "../src/utils/colors";
 
@@ -25,65 +26,61 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar style="light" />
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarActiveTintColor: colors.brand.cyan,
-          tabBarInactiveTintColor: colors.text.muted,
-          tabBarStyle: {
-            backgroundColor: colors.surface.secondary,
-            borderTopColor: colors.surface.card,
-            height: 85,
-            paddingBottom: 20,
-            paddingTop: 8,
-          },
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Generate",
-            tabBarIcon: ({ color, size }) => (
-              <Sparkles color={color} size={size} />
-            ),
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="light" />
+        <Tabs
+          screenOptions={{
+            headerShown: false,
+            tabBarActiveTintColor: colors.brand.cyan,
+            tabBarInactiveTintColor: colors.text.muted,
+            tabBarStyle: {
+              backgroundColor: colors.surface.secondary,
+              borderTopColor: colors.surface.card,
+              height: 85,
+              paddingBottom: 20,
+              paddingTop: 8,
+            },
           }}
-        />
-        <Tabs.Screen
-          name="result"
-          options={{
-            title: "Result",
-            tabBarIcon: ({ color, size }) => (
-              <Image color={color} size={size} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="gallery"
-          options={{
-            title: "Gallery",
-            tabBarIcon: ({ color, size }) => (
-              <GalleryHorizontalEnd color={color} size={size} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: "Settings",
-            tabBarIcon: ({ color, size }) => (
-              <Settings color={color} size={size} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="edit-overlay"
-          options={{
-            href: null,
-          }}
-        />
-      </Tabs>
-    </QueryClientProvider>
+        >
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: "Generate",
+              tabBarIcon: ({ color, size }) => (
+                <Sparkles color={color} size={size} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="result"
+            options={{
+              title: "Result",
+              tabBarIcon: ({ color, size }) => (
+                <Image color={color} size={size} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="gallery"
+            options={{
+              title: "Gallery",
+              tabBarIcon: ({ color, size }) => (
+                <GalleryHorizontalEnd color={color} size={size} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="settings"
+            options={{
+              title: "Settings",
+              tabBarIcon: ({ color, size }) => (
+                <Settings color={color} size={size} />
+              ),
+            }}
+          />
+        </Tabs>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }

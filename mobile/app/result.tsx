@@ -1,20 +1,32 @@
-import { useState, useRef } from "react";
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
+import { useState, useRef, useCallback } from "react";
+import { View, Text, Pressable, ScrollView, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
-import { Share2, Download, ArrowLeft, Heart, Type } from "lucide-react-native";
+import {
+  Share2,
+  Download,
+  ArrowLeft,
+  Heart,
+  AlignVerticalJustifyStart,
+  AlignVerticalJustifyCenter,
+  AlignVerticalJustifyEnd,
+  SlidersHorizontal,
+} from "lucide-react-native";
+import { InteractiveOverlay } from "../src/features/meme/InteractiveOverlay";
 import { MemeComposite } from "../src/features/meme/textOverlayRenderer";
 import { captureComposite } from "../src/hooks/useOverlayCapture";
 import { useMemeStore } from "../src/stores/memeStore";
+import type { OverlayPosition, OverlayConfig } from "../src/features/meme/geminiTypes";
 import { colors } from "../src/utils/colors";
 
 export default function ResultScreen() {
-  const { currentImageUri, currentBaseImageUri, overlayText, overlayConfig, history } = useMemeStore();
-  const latestItem = history[0];
+  const { currentImageUri, currentBaseImageUri, overlayText, overlayConfig, history, updateOverlay, setOverlayPosition, setOverlayFontScale } = useMemeStore();
+  const activeItem = history.find((h) => h.imageUri === currentImageUri) ?? history[0];
   const compositeRef = useRef<View>(null);
   const [imageSize, setImageSize] = useState({ width: 320, height: 320 });
+  const [showControls, setShowControls] = useState(false);
 
   if (!currentImageUri) {
     return (
@@ -31,6 +43,9 @@ export default function ResultScreen() {
       </SafeAreaView>
     );
   }
+
+  const canEdit = activeItem?.baseImageUri != null;
+  const baseImageUri = currentBaseImageUri ?? currentImageUri!;
 
   const handleShare = async () => {
     try {
@@ -58,17 +73,45 @@ export default function ResultScreen() {
     }
   };
 
-  const handleEditText = () => {
-    if (latestItem) {
-      router.navigate(`/edit-overlay?id=${latestItem.id}`);
+  const handleConfigChange = useCallback(
+    (newConfig: OverlayConfig) => {
+      if (activeItem) {
+        updateOverlay(activeItem.id, overlayText, newConfig, activeItem.imageUri);
+      }
+    },
+    [activeItem, overlayText, updateOverlay],
+  );
+
+  const handleTextChange = useCallback(
+    (newText: string) => {
+      if (activeItem) {
+        updateOverlay(activeItem.id, newText, overlayConfig, activeItem.imageUri);
+      }
+    },
+    [activeItem, overlayConfig, updateOverlay],
+  );
+
+  const handlePositionChange = (position: OverlayPosition) => {
+    const newConfig = { ...overlayConfig, position, offsetX: 0, offsetY: 0 };
+    if (activeItem) {
+      updateOverlay(activeItem.id, overlayText, newConfig, activeItem.imageUri);
+    } else {
+      setOverlayPosition(position);
     }
   };
 
-  const canEdit = latestItem?.baseImageUri != null;
+  const handleFontScaleChange = (scale: number) => {
+    const newConfig = { ...overlayConfig, fontScale: scale };
+    if (activeItem) {
+      updateOverlay(activeItem.id, overlayText, newConfig, activeItem.imageUri);
+    } else {
+      setOverlayFontScale(scale);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => router.navigate("/")} hitSlop={12}>
@@ -78,7 +121,7 @@ export default function ResultScreen() {
           <View style={{ width: 24 }} />
         </View>
 
-        {/* Image Preview with Overlay */}
+        {/* Image Preview with Interactive Overlay */}
         <View
           style={styles.imageContainer}
           onLayout={(e) => {
@@ -88,16 +131,35 @@ export default function ResultScreen() {
         >
           <View style={styles.glowOuter} />
           <View style={styles.glowInner} />
-          <MemeComposite
-            ref={compositeRef}
-            baseImageUri={currentBaseImageUri ?? currentImageUri!}
-            overlayText={overlayText}
-            overlayConfig={overlayConfig}
-            imageWidth={imageSize.width}
-            imageHeight={imageSize.height}
-            style={styles.image}
-          />
+          {canEdit ? (
+            <InteractiveOverlay
+              baseImageUri={baseImageUri}
+              overlayText={overlayText}
+              overlayConfig={overlayConfig}
+              imageWidth={imageSize.width}
+              imageHeight={imageSize.height}
+              onConfigChange={handleConfigChange}
+              onTextChange={handleTextChange}
+              compositeRef={compositeRef}
+            />
+          ) : (
+            <MemeComposite
+              ref={compositeRef}
+              baseImageUri={baseImageUri}
+              overlayText={overlayText}
+              overlayConfig={overlayConfig}
+              imageWidth={imageSize.width}
+              imageHeight={imageSize.height}
+              style={styles.image}
+            />
+          )}
         </View>
+
+        {canEdit && (
+          <Text style={styles.gestureHint}>
+            Drag to move text, pinch to resize, double-tap to edit
+          </Text>
+        )}
 
         {/* Action Buttons */}
         <View style={styles.actions}>
@@ -112,26 +174,86 @@ export default function ResultScreen() {
           </Pressable>
 
           {canEdit && (
-            <Pressable style={styles.actionButton} onPress={handleEditText}>
-              <Type color={colors.brand.magenta} size={22} />
-              <Text style={styles.actionText}>Edit Text</Text>
+            <Pressable
+              style={[styles.actionButton, showControls && styles.actionButtonActive]}
+              onPress={() => setShowControls((prev) => !prev)}
+            >
+              <SlidersHorizontal color={showControls ? colors.brand.cyan : colors.brand.magenta} size={22} />
+              <Text style={styles.actionText}>Controls</Text>
             </Pressable>
           )}
 
-          {latestItem && (
+          {activeItem && (
             <Pressable
               style={styles.actionButton}
-              onPress={() => useMemeStore.getState().toggleFavorite(latestItem.id)}
+              onPress={() => useMemeStore.getState().toggleFavorite(activeItem.id)}
             >
               <Heart
                 color={colors.brand.magenta}
                 size={22}
-                fill={latestItem.isFavorite ? colors.brand.magenta : "none"}
+                fill={activeItem.isFavorite ? colors.brand.magenta : "none"}
               />
               <Text style={styles.actionText}>Favorite</Text>
             </Pressable>
           )}
         </View>
+
+        {/* Collapsible Controls */}
+        {showControls && canEdit && (
+          <View style={styles.controlsPanel}>
+            {/* Position Presets */}
+            <View style={styles.controlsRow}>
+              {(["top", "center", "bottom"] as OverlayPosition[]).map((pos) => {
+                const icons = {
+                  top: AlignVerticalJustifyStart,
+                  center: AlignVerticalJustifyCenter,
+                  bottom: AlignVerticalJustifyEnd,
+                };
+                const Icon = icons[pos];
+                const isActive = overlayConfig.position === pos;
+                return (
+                  <Pressable
+                    key={pos}
+                    style={[styles.positionButton, isActive && styles.positionButtonActive]}
+                    onPress={() => handlePositionChange(pos)}
+                  >
+                    <Icon color={isActive ? colors.brand.cyan : colors.text.muted} size={16} />
+                    <Text style={[styles.positionText, isActive && styles.positionTextActive]}>
+                      {pos.charAt(0).toUpperCase() + pos.slice(1)}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* Font Scale */}
+            <View style={styles.fontScaleRow}>
+              <Text style={styles.fontScaleLabel}>Size</Text>
+              <View style={styles.fontScaleButtons}>
+                {[0.7, 1.0, 1.3, 1.7].map((scale) => {
+                  const isActive = Math.abs(overlayConfig.fontScale - scale) < 0.05;
+                  return (
+                    <Pressable
+                      key={scale}
+                      style={[styles.scaleButton, isActive && styles.scaleButtonActive]}
+                      onPress={() => handleFontScaleChange(scale)}
+                    >
+                      <Text
+                        style={[
+                          styles.scaleText,
+                          isActive && styles.scaleTextActive,
+                          { fontSize: 10 + scale * 4 },
+                        ]}
+                      >
+                        A
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* Generate Another */}
         <Pressable
@@ -140,7 +262,7 @@ export default function ResultScreen() {
         >
           <Text style={styles.generateAnotherText}>Generate Another</Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -151,8 +273,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface.primary,
   },
   content: {
-    flex: 1,
     padding: 20,
+    paddingBottom: 40,
   },
   header: {
     flexDirection: "row",
@@ -166,11 +288,11 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
   },
   imageContainer: {
-    flex: 1,
     borderRadius: 16,
     overflow: "hidden",
     position: "relative",
-    marginBottom: 16,
+    marginBottom: 8,
+    minHeight: 280,
   },
   glowOuter: {
     position: "absolute",
@@ -199,11 +321,18 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: colors.surface.card,
   },
+  gestureHint: {
+    fontSize: 12,
+    color: colors.text.muted,
+    textAlign: "center",
+    marginBottom: 12,
+    fontStyle: "italic",
+  },
   actions: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 16,
-    marginBottom: 20,
+    gap: 12,
+    marginBottom: 16,
     flexWrap: "wrap",
   },
   actionButton: {
@@ -214,10 +343,83 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors.surface.card,
   },
+  actionButtonActive: {
+    borderWidth: 1,
+    borderColor: colors.brand.cyan,
+    backgroundColor: "rgba(6,182,212,0.1)",
+  },
   actionText: {
     fontSize: 12,
     color: colors.text.secondary,
     fontWeight: "500",
+  },
+  controlsPanel: {
+    marginBottom: 16,
+    gap: 12,
+  },
+  controlsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  positionButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: colors.surface.card,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  positionButtonActive: {
+    borderColor: colors.brand.cyan,
+    backgroundColor: "rgba(6,182,212,0.1)",
+  },
+  positionText: {
+    fontSize: 12,
+    fontWeight: "500" as const,
+    color: colors.text.muted,
+  },
+  positionTextActive: {
+    color: colors.brand.cyan,
+  },
+  fontScaleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  fontScaleLabel: {
+    fontSize: 12,
+    color: colors.text.muted,
+    fontWeight: "500" as const,
+  },
+  fontScaleButtons: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 6,
+  },
+  scaleButton: {
+    flex: 1,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: colors.surface.card,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  scaleButtonActive: {
+    borderColor: colors.brand.cyan,
+    backgroundColor: "rgba(6,182,212,0.1)",
+  },
+  scaleText: {
+    fontWeight: "700" as const,
+    color: colors.text.muted,
+  },
+  scaleTextActive: {
+    color: colors.brand.cyan,
   },
   generateAnotherButton: {
     alignItems: "center",

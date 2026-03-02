@@ -1,4 +1,4 @@
-export const APP_NAME = "NanoMeme";
+export const APP_NAME = "KaosMeme";
 export const BUNDLE_ID = "com.kaosmaps.nanomeme";
 
 export const GEMINI_MODEL_ID = "gemini-3.1-flash-image-preview";

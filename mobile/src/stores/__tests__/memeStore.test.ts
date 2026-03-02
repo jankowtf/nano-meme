@@ -209,6 +209,38 @@ describe("memeStore", () => {
     });
   });
 
+  describe("selectFromHistory", () => {
+    it("sets current state from a history item", () => {
+      useMemeStore.getState().setPrompt("First");
+      useMemeStore.getState().setOverlayText("First overlay");
+      useMemeStore.getState().setOverlayPosition("top");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base1.png", "file:///first.png");
+
+      useMemeStore.getState().setPrompt("Second");
+      useMemeStore.getState().setOverlayText("Second overlay");
+      useMemeStore.getState().setOverlayPosition("center");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base2.png", "file:///second.png");
+
+      // Select the first (older) item
+      const olderId = useMemeStore.getState().history[1].id;
+      useMemeStore.getState().selectFromHistory(olderId);
+
+      const state = useMemeStore.getState();
+      expect(state.currentImageUri).toBe("file:///first.png");
+      expect(state.currentBaseImageUri).toBe("file:///base1.png");
+      expect(state.overlayText).toBe("First overlay");
+      expect(state.overlayConfig.position).toBe("top");
+    });
+
+    it("does nothing for non-existent id", () => {
+      useMemeStore.getState().setOverlayText("Unchanged");
+      useMemeStore.getState().selectFromHistory("nonexistent");
+      expect(useMemeStore.getState().overlayText).toBe("Unchanged");
+    });
+  });
+
   describe("reference images", () => {
     it("starts with empty reference images", () => {
       expect(useMemeStore.getState().referenceImages).toEqual([]);

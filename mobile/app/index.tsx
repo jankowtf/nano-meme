@@ -127,10 +127,10 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Sparkles color={colors.brand.cyan} size={28} />
-          <Text style={styles.title}>NanoMeme</Text>
+          <Text style={styles.title}>KaosMeme</Text>
         </View>
         <Text style={styles.subtitle}>
-          Generate memes with Nano Banana 2
+          Generate memes with Kaos Banana 2
         </Text>
 
         {/* Prompt Input */}
