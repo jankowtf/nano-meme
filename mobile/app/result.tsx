@@ -25,8 +25,13 @@ export default function ResultScreen() {
   const { currentImageUri, currentBaseImageUri, overlayText, overlayConfig, history, updateOverlay, setOverlayPosition, setOverlayFontScale } = useMemeStore();
   const activeItem = history.find((h) => h.imageUri === currentImageUri) ?? history[0];
   const compositeRef = useRef<View>(null);
-  const [imageSize, setImageSize] = useState({ width: 320, height: 320 });
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [showControls, setShowControls] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  const handleGestureActive = useCallback((active: boolean) => {
+    setScrollEnabled(!active);
+  }, []);
 
   if (!currentImageUri) {
     return (
@@ -111,7 +116,7 @@ export default function ResultScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => router.navigate("/")} hitSlop={12}>
@@ -131,7 +136,7 @@ export default function ResultScreen() {
         >
           <View style={styles.glowOuter} />
           <View style={styles.glowInner} />
-          {canEdit ? (
+          {canEdit && imageSize.width > 0 && imageSize.height > 0 ? (
             <InteractiveOverlay
               baseImageUri={baseImageUri}
               overlayText={overlayText}
@@ -140,6 +145,7 @@ export default function ResultScreen() {
               imageHeight={imageSize.height}
               onConfigChange={handleConfigChange}
               onTextChange={handleTextChange}
+              onGestureActive={handleGestureActive}
               compositeRef={compositeRef}
             />
           ) : (

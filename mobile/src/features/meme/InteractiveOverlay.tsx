@@ -1,7 +1,9 @@
 import React, { useState, useRef, useCallback } from "react";
 import { View, TextInput, StyleSheet, Keyboard } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import { MemeComposite } from "./textOverlayRenderer";
+import { computeOverlayStyle } from "./overlayStyle";
 import type { OverlayConfig } from "./geminiTypes";
 import { clampOffset, clampFontScale } from "./overlayGestureUtils";
 
@@ -13,6 +15,7 @@ export interface InteractiveOverlayProps {
   imageHeight: number;
   onConfigChange: (config: OverlayConfig) => void;
   onTextChange: (text: string) => void;
+  onGestureActive?: (active: boolean) => void;
   compositeRef: React.RefObject<View | null>;
 }
 
@@ -24,12 +27,19 @@ export function InteractiveOverlay({
   imageHeight,
   onConfigChange,
   onTextChange,
+  onGestureActive,
   compositeRef,
 }: InteractiveOverlayProps) {
   const [isEditing, setIsEditing] = useState(false);
   const startOffsetX = useRef(0);
   const startOffsetY = useRef(0);
   const startFontScale = useRef(1);
+
+  const savePanStart = useCallback(() => {
+    startOffsetX.current = overlayConfig.offsetX;
+    startOffsetY.current = overlayConfig.offsetY;
+    onGestureActive?.(true);
+  }, [overlayConfig.offsetX, overlayConfig.offsetY, onGestureActive]);
 
   const handlePanUpdate = useCallback(
     (translationX: number, translationY: number) => {
@@ -44,14 +54,14 @@ export function InteractiveOverlay({
     [imageWidth, imageHeight, overlayConfig, onConfigChange],
   );
 
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
-      startOffsetX.current = overlayConfig.offsetX;
-      startOffsetY.current = overlayConfig.offsetY;
-    })
-    .onUpdate((e: { translationX: number; translationY: number }) => {
-      handlePanUpdate(e.translationX, e.translationY);
-    });
+  const handlePanEnd = useCallback(() => {
+    onGestureActive?.(false);
+  }, [onGestureActive]);
+
+  const savePinchStart = useCallback(() => {
+    startFontScale.current = overlayConfig.fontScale;
+    onGestureActive?.(true);
+  }, [overlayConfig.fontScale, onGestureActive]);
 
   const handlePinchUpdate = useCallback(
     (scale: number) => {
@@ -64,18 +74,40 @@ export function InteractiveOverlay({
     [overlayConfig, onConfigChange],
   );
 
+  const handlePinchEnd = useCallback(() => {
+    onGestureActive?.(false);
+  }, [onGestureActive]);
+
+  const toggleEditing = useCallback(() => {
+    setIsEditing((prev) => !prev);
+  }, []);
+
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      runOnJS(savePanStart)();
+    })
+    .onUpdate((e: { translationX: number; translationY: number }) => {
+      runOnJS(handlePanUpdate)(e.translationX, e.translationY);
+    })
+    .onEnd(() => {
+      runOnJS(handlePanEnd)();
+    });
+
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
-      startFontScale.current = overlayConfig.fontScale;
+      runOnJS(savePinchStart)();
     })
     .onUpdate((e: { scale: number }) => {
-      handlePinchUpdate(e.scale);
+      runOnJS(handlePinchUpdate)(e.scale);
+    })
+    .onEnd(() => {
+      runOnJS(handlePinchEnd)();
     });
 
   const doubleTapGesture = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      setIsEditing((prev) => !prev);
+      runOnJS(toggleEditing)();
     });
 
   const composedGesture = Gesture.Race(
@@ -87,6 +119,8 @@ export function InteractiveOverlay({
     setIsEditing(false);
     Keyboard.dismiss();
   }, []);
+
+  const computed = computeOverlayStyle(overlayConfig, imageWidth, imageHeight, overlayText);
 
   return (
     <GestureDetector gesture={composedGesture}>
@@ -100,9 +134,21 @@ export function InteractiveOverlay({
           imageHeight={imageHeight}
         />
         {isEditing && (
-          <View style={styles.editOverlay}>
+          <View
+            style={[
+              styles.editContainer,
+              {
+                top: Math.max(0, computed.y - computed.fontSize * 0.5),
+                left: imageWidth * 0.05,
+                width: imageWidth * 0.9,
+              },
+            ]}
+          >
             <TextInput
-              style={styles.editInput}
+              style={[
+                styles.editInput,
+                { fontSize: Math.max(12, computed.fontSize * 0.6) },
+              ]}
               value={overlayText}
               onChangeText={onTextChange}
               multiline
@@ -119,27 +165,19 @@ export function InteractiveOverlay({
 }
 
 const styles = StyleSheet.create({
-  editOverlay: {
+  editContainer: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    minHeight: 48,
   },
   editInput: {
-    width: "85%",
-    minHeight: 60,
     backgroundColor: "rgba(0,0,0,0.7)",
-    borderRadius: 12,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: "rgba(6,182,212,0.6)",
     color: "#ffffff",
-    fontSize: 18,
     fontWeight: "bold",
-    padding: 16,
+    padding: 12,
     textAlign: "center",
+    minHeight: 48,
   },
 });

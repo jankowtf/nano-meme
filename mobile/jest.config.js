@@ -10,6 +10,7 @@ module.exports = {
       moduleNameMapper: {
         "^react-native-mmkv$": "<rootDir>/__mocks__/react-native-mmkv.ts",
         "^react-native-gesture-handler$": "<rootDir>/__mocks__/react-native-gesture-handler.ts",
+        "^react-native-reanimated$": "<rootDir>/__mocks__/react-native-reanimated.ts",
         "^@/(.*)$": "<rootDir>/src/$1",
       },
     },

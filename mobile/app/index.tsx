@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { Sparkles, Wand2, Type, Maximize, ImagePlus, X, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, Combine } from "lucide-react-native";
+import { Sparkles, Wand2, Type, Maximize, ImagePlus, X, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, Combine, ChevronDown } from "lucide-react-native";
 import type { OverlayPosition } from "../src/features/meme/geminiTypes";
 import { useMemeStore } from "../src/stores/memeStore";
 import { useSettingsStore } from "../src/stores/settingsStore";
@@ -53,6 +53,11 @@ export default function HomeScreen() {
   const { defaultResolution, defaultAspectRatio } = useSettingsStore();
   const [selectedResolution, setSelectedResolution] =
     useState<Resolution>(defaultResolution);
+  const [showRefImages, setShowRefImages] = useState(false);
+
+  useEffect(() => {
+    if (referenceImages.length > 0) setShowRefImages(true);
+  }, [referenceImages.length]);
 
   const handleGenerate = useCallback(async () => {
     const apiKey = await getEffectiveApiKey();
@@ -126,7 +131,10 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Sparkles color={colors.brand.cyan} size={28} />
+          <Image
+            source={require("../assets/icon.png")}
+            style={styles.logoImage}
+          />
           <Text style={styles.title}>KaosMeme</Text>
         </View>
         <Text style={styles.subtitle}>
@@ -158,6 +166,66 @@ export default function HomeScreen() {
               <Text style={styles.presetButtonText}>Load Mashup Preset</Text>
             </Pressable>
           </View>
+        </View>
+
+        {/* Reference Images (collapsible, right after prompt) */}
+        <View style={styles.section}>
+          <Pressable
+            style={styles.sectionHeaderPressable}
+            onPress={() => setShowRefImages((prev) => !prev)}
+          >
+            <ImagePlus color={colors.brand.active} size={18} />
+            <Text style={[styles.sectionTitle, { flex: 1 }]}>
+              Reference Images ({referenceImages.length}/{MAX_REFERENCE_IMAGES})
+            </Text>
+            <ChevronDown
+              color={colors.text.muted}
+              size={16}
+              style={{ transform: [{ rotate: showRefImages ? "180deg" : "0deg" }] }}
+            />
+          </Pressable>
+
+          {showRefImages && (
+            <>
+              {referenceImages.length > 0 && (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.thumbnailStrip}
+                  contentContainerStyle={styles.thumbnailStripContent}
+                >
+                  {referenceImages.map((img) => (
+                    <View key={img.id} style={styles.thumbnailContainer}>
+                      <Image
+                        source={{ uri: `data:${img.mimeType};base64,${img.data}` }}
+                        style={styles.thumbnail}
+                      />
+                      <View style={styles.thumbnailBadge}>
+                        <Text style={styles.thumbnailBadgeText}>@{img.id}</Text>
+                      </View>
+                      <Pressable
+                        style={styles.thumbnailRemove}
+                        onPress={() => removeImage(img.id)}
+                      >
+                        <X color="#fff" size={12} />
+                      </Pressable>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+
+              <Pressable
+                style={[
+                  styles.presetButton,
+                  referenceImages.length >= MAX_REFERENCE_IMAGES && { opacity: 0.4 },
+                ]}
+                onPress={handleAttachImage}
+                disabled={referenceImages.length >= MAX_REFERENCE_IMAGES}
+              >
+                <Text style={styles.presetButtonText}>Attach Images</Text>
+              </Pressable>
+            </>
+          )}
         </View>
 
         {/* Overlay Text */}
@@ -241,54 +309,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Reference Images */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <ImagePlus color={colors.brand.active} size={18} />
-            <Text style={styles.sectionTitle}>
-              Reference Images ({referenceImages.length}/{MAX_REFERENCE_IMAGES})
-            </Text>
-          </View>
-
-          {referenceImages.length > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.thumbnailStrip}
-              contentContainerStyle={styles.thumbnailStripContent}
-            >
-              {referenceImages.map((img) => (
-                <View key={img.id} style={styles.thumbnailContainer}>
-                  <Image
-                    source={{ uri: `data:${img.mimeType};base64,${img.data}` }}
-                    style={styles.thumbnail}
-                  />
-                  <View style={styles.thumbnailBadge}>
-                    <Text style={styles.thumbnailBadgeText}>@{img.id}</Text>
-                  </View>
-                  <Pressable
-                    style={styles.thumbnailRemove}
-                    onPress={() => removeImage(img.id)}
-                  >
-                    <X color="#fff" size={12} />
-                  </Pressable>
-                </View>
-              ))}
-            </ScrollView>
-          )}
-
-          <Pressable
-            style={[
-              styles.presetButton,
-              referenceImages.length >= MAX_REFERENCE_IMAGES && { opacity: 0.4 },
-            ]}
-            onPress={handleAttachImage}
-            disabled={referenceImages.length >= MAX_REFERENCE_IMAGES}
-          >
-            <Text style={styles.presetButtonText}>Attach Images</Text>
-          </Pressable>
-        </View>
-
         {/* Resolution Picker */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -363,6 +383,11 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 4,
   },
+  logoImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+  },
   title: {
     fontSize: 28,
     fontWeight: "700",
@@ -377,6 +402,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+  },
+  sectionHeaderPressable: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
