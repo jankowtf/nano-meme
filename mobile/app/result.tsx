@@ -33,6 +33,24 @@ export default function ResultScreen() {
     setScrollEnabled(!active);
   }, []);
 
+  const handleConfigChange = useCallback(
+    (newConfig: OverlayConfig) => {
+      if (activeItem) {
+        updateOverlay(activeItem.id, overlayText, newConfig, activeItem.imageUri);
+      }
+    },
+    [activeItem, overlayText, updateOverlay],
+  );
+
+  const handleTextChange = useCallback(
+    (newText: string) => {
+      if (activeItem) {
+        updateOverlay(activeItem.id, newText, overlayConfig, activeItem.imageUri);
+      }
+    },
+    [activeItem, overlayConfig, updateOverlay],
+  );
+
   if (!currentImageUri) {
     return (
       <SafeAreaView style={styles.container}>
@@ -77,24 +95,6 @@ export default function ResultScreen() {
       Alert.alert("Error", "Failed to save meme to photo library.");
     }
   };
-
-  const handleConfigChange = useCallback(
-    (newConfig: OverlayConfig) => {
-      if (activeItem) {
-        updateOverlay(activeItem.id, overlayText, newConfig, activeItem.imageUri);
-      }
-    },
-    [activeItem, overlayText, updateOverlay],
-  );
-
-  const handleTextChange = useCallback(
-    (newText: string) => {
-      if (activeItem) {
-        updateOverlay(activeItem.id, newText, overlayConfig, activeItem.imageUri);
-      }
-    },
-    [activeItem, overlayConfig, updateOverlay],
-  );
 
   const handlePositionChange = (position: OverlayPosition) => {
     const newConfig = { ...overlayConfig, position, offsetX: 0, offsetY: 0 };
