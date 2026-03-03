@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { GalleryHorizontalEnd, Heart, Trash2 } from "lucide-react-native";
 import { useMemeStore, type MemeHistoryItem } from "../src/stores/memeStore";
+import { MemeComposite } from "../src/features/meme/textOverlayRenderer";
 import { colors } from "../src/utils/colors";
 
 function MemeCard({ item }: { item: MemeHistoryItem }) {
@@ -23,11 +24,23 @@ function MemeCard({ item }: { item: MemeHistoryItem }) {
   return (
     <Pressable onPress={handleTapCard}>
       <View style={styles.card}>
-        <Image
-          source={{ uri: item.imageUri }}
-          style={styles.thumbnail}
-          resizeMode="cover"
-        />
+        {item.baseImageUri ? (
+          <View style={styles.thumbnail}>
+            <MemeComposite
+              baseImageUri={item.baseImageUri}
+              overlayText={item.overlayText}
+              overlayConfig={item.overlayConfig}
+              imageWidth={80}
+              imageHeight={80}
+            />
+          </View>
+        ) : (
+          <Image
+            source={{ uri: item.imageUri }}
+            style={styles.thumbnail}
+            resizeMode="cover"
+          />
+        )}
         <View style={styles.cardContent}>
           <Text style={styles.cardOverlay} numberOfLines={1}>
             {item.overlayText || "No overlay"}

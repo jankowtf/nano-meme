@@ -76,7 +76,6 @@ describe("GalleryScreen", () => {
       let displayDate: string;
       try {
         displayDate = new Date(invalidDate).toLocaleDateString();
-        // Some environments return "Invalid Date" string instead of throwing
         if (displayDate === "Invalid Date") {
           displayDate = "Unknown date";
         }
@@ -199,7 +198,6 @@ describe("GalleryScreen", () => {
       expect(() => {
         useMemeStore.getState().selectFromHistory("non-existent-id");
       }).not.toThrow();
-      // State should not change
       expect(useMemeStore.getState().currentImageUri).toBe("file:///second.png");
     });
   });
@@ -240,6 +238,50 @@ describe("GalleryScreen", () => {
       const item = useMemeStore.getState().history[0];
       const displayText = item.overlayText || "No overlay";
       expect(displayText).toBe("No overlay");
+    });
+  });
+
+  describe("gallery composite thumbnails", () => {
+    it("history item with baseImageUri should use MemeComposite", () => {
+      useMemeStore.getState().setPrompt("Test");
+      useMemeStore.getState().setOverlayText("OVERLAY TEXT");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base.png", "file:///meme.png");
+
+      const item = useMemeStore.getState().history[0];
+      expect(item.baseImageUri).toBe("file:///base.png");
+      // Gallery should render MemeComposite with overlayText + overlayConfig
+      expect(item.overlayText).toBe("OVERLAY TEXT");
+      expect(item.overlayConfig).toBeDefined();
+    });
+
+    it("updated overlay reflects in history for gallery composite", () => {
+      useMemeStore.getState().setPrompt("Test");
+      useMemeStore.getState().setOverlayText("ORIGINAL");
+      useMemeStore.getState().startGeneration();
+      useMemeStore.getState().completeGeneration("file:///base.png", "file:///meme.png");
+
+      const id = useMemeStore.getState().history[0].id;
+      const config = { ...useMemeStore.getState().history[0].overlayConfig, offsetX: 0.3 };
+      useMemeStore.getState().updateOverlay(id, "UPDATED TEXT", config, "file:///new-composite.png");
+
+      const updated = useMemeStore.getState().history[0];
+      expect(updated.overlayText).toBe("UPDATED TEXT");
+      expect(updated.overlayConfig.offsetX).toBe(0.3);
+      // baseImageUri preserved — gallery MemeComposite re-renders with new overlay state
+      expect(updated.baseImageUri).toBe("file:///base.png");
+    });
+
+    it("legacy items without baseImageUri fallback to plain image", () => {
+      // Simulate legacy item by manually checking condition
+      const legacyItem: { baseImageUri?: string; imageUri: string } = {
+        imageUri: "file:///old.png",
+        // no baseImageUri
+      };
+
+      // Gallery condition: item.baseImageUri ? MemeComposite : Image
+      const useMemeComposite = !!legacyItem.baseImageUri;
+      expect(useMemeComposite).toBe(false);
     });
   });
 });

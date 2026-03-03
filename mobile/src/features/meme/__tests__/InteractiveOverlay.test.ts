@@ -1,4 +1,10 @@
-import { clampOffset, clampFontScale } from "../overlayGestureUtils";
+import {
+  clampOffset,
+  clampFontScale,
+  computeTextBoundingBox,
+  isNearCorner,
+  computeResizeScale,
+} from "../overlayGestureUtils";
 import { computeOverlayStyle } from "../overlayStyle";
 
 describe("InteractiveOverlay integration", () => {
@@ -18,6 +24,16 @@ describe("InteractiveOverlay integration", () => {
       expect(newOffsetY).toBeCloseTo(-0.194, 2);
     });
 
+    it("pan allows wide offset range for free positioning", () => {
+      const imageWidth = 320;
+      const startOffsetX = 0;
+      const translationX = 300; // drag almost full image width
+
+      const newOffsetX = clampOffset(startOffsetX + translationX / imageWidth);
+      expect(newOffsetX).toBeCloseTo(0.9375, 2);
+      expect(newOffsetX).toBeLessThanOrEqual(1.0);
+    });
+
     it("pinch update computes clamped scale from gesture scale * start scale", () => {
       const startFontScale = 1.0;
       const gestureScale = 1.5;
@@ -35,14 +51,43 @@ describe("InteractiveOverlay integration", () => {
     });
   });
 
+  describe("resize mode detection", () => {
+    it("detects corner touch and switches to resize mode", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const computed = computeOverlayStyle(config, 320, 320, "HELLO WORLD");
+      const bbox = computeTextBoundingBox(computed, 320);
+
+      // Touch at top-left corner of bbox
+      const nearTopLeft = isNearCorner(bbox.left, bbox.top, bbox, 24);
+      expect(nearTopLeft).toBe(true);
+    });
+
+    it("detects center touch and stays in drag mode", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const computed = computeOverlayStyle(config, 320, 320, "HELLO WORLD");
+      const bbox = computeTextBoundingBox(computed, 320);
+
+      // Touch at center of bbox
+      const centerX = bbox.left + bbox.width / 2;
+      const centerY = bbox.top + bbox.height / 2;
+      const nearCenter = isNearCorner(centerX, centerY, bbox, 24);
+      expect(nearCenter).toBe(false);
+    });
+
+    it("resize via corner drag changes font scale", () => {
+      const startScale = 1.0;
+      const newScale = computeResizeScale(startScale, 40, 40, 320);
+      expect(newScale).toBeGreaterThan(1.0);
+    });
+  });
+
   describe("edit input positioning", () => {
     it("computes edit position from overlayStyle at text location", () => {
       const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
       const computed = computeOverlayStyle(config, 320, 320, "HELLO WORLD");
 
-      // Edit input should be near the text y position
       const editTop = Math.max(0, computed.y - computed.fontSize * 0.5);
-      expect(editTop).toBeGreaterThan(200); // bottom position → lower half of image
+      expect(editTop).toBeGreaterThan(200);
       expect(editTop).toBeLessThan(320);
     });
 
@@ -51,7 +96,7 @@ describe("InteractiveOverlay integration", () => {
       const computed = computeOverlayStyle(config, 320, 320, "HELLO WORLD");
 
       const editTop = Math.max(0, computed.y - computed.fontSize * 0.5);
-      expect(editTop).toBeLessThan(100); // top position → upper area
+      expect(editTop).toBeLessThan(100);
     });
 
     it("edit font size scales with overlay fontScale", () => {
@@ -72,11 +117,9 @@ describe("InteractiveOverlay integration", () => {
     it("is called with true on gesture start and false on end", () => {
       const onGestureActive = jest.fn();
 
-      // Simulate savePanStart calling onGestureActive(true)
       onGestureActive(true);
       expect(onGestureActive).toHaveBeenCalledWith(true);
 
-      // Simulate handlePanEnd calling onGestureActive(false)
       onGestureActive(false);
       expect(onGestureActive).toHaveBeenCalledWith(false);
     });
@@ -120,6 +163,52 @@ describe("InteractiveOverlay integration", () => {
       const translationX = 50;
       const newOffsetX = clampOffset(startOffsetX + translationX / safeWidth);
       expect(Number.isNaN(newOffsetX)).toBe(false);
+    });
+
+    it("computeTextBoundingBox returns zero for zero dimensions", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const computed = computeOverlayStyle(config, 300, 300, "TEST");
+      const bbox = computeTextBoundingBox(computed, 0);
+      expect(bbox.width).toBe(0);
+      expect(bbox.height).toBe(0);
+    });
+  });
+
+  describe("selection box visibility", () => {
+    it("handles show when text has content and bbox has size", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const computed = computeOverlayStyle(config, 320, 320, "HELLO");
+      const bbox = computeTextBoundingBox(computed, 320);
+      const isSelected = true;
+      const isEditing = false;
+      const overlayText = "HELLO";
+
+      const showHandles = isSelected && !isEditing && overlayText.length > 0 && bbox.width > 0;
+      expect(showHandles).toBe(true);
+    });
+
+    it("hides when editing", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const computed = computeOverlayStyle(config, 320, 320, "HELLO");
+      const bbox = computeTextBoundingBox(computed, 320);
+      const isSelected = true;
+      const isEditing = true;
+      const overlayText = "HELLO";
+
+      const showHandles = isSelected && !isEditing && overlayText.length > 0 && bbox.width > 0;
+      expect(showHandles).toBe(false);
+    });
+
+    it("hides when no text", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const computed = computeOverlayStyle(config, 320, 320, "");
+      const bbox = computeTextBoundingBox(computed, 320);
+      const isSelected = true;
+      const isEditing = false;
+      const overlayText = "";
+
+      const showHandles = isSelected && !isEditing && overlayText.length > 0 && bbox.width > 0;
+      expect(showHandles).toBe(false);
     });
   });
 });

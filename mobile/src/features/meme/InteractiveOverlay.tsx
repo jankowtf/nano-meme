@@ -5,7 +5,17 @@ import { runOnJS } from "react-native-reanimated";
 import { MemeComposite } from "./textOverlayRenderer";
 import { computeOverlayStyle } from "./overlayStyle";
 import type { OverlayConfig } from "./geminiTypes";
-import { clampOffset, clampFontScale } from "./overlayGestureUtils";
+import {
+  clampOffset,
+  clampFontScale,
+  computeTextBoundingBox,
+  isNearCorner,
+  computeResizeScale,
+} from "./overlayGestureUtils";
+import { colors } from "../../utils/colors";
+
+const HANDLE_SIZE = 16;
+const HANDLE_HIT = 24;
 
 export interface InteractiveOverlayProps {
   baseImageUri: string;
@@ -31,60 +41,115 @@ export function InteractiveOverlay({
   compositeRef,
 }: InteractiveOverlayProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSelected, setIsSelected] = useState(true);
   const startOffsetX = useRef(0);
   const startOffsetY = useRef(0);
   const startFontScale = useRef(1);
+  const gestureMode = useRef<"drag" | "resize">("drag");
 
-  const savePanStart = useCallback(() => {
-    startOffsetX.current = overlayConfig.offsetX;
-    startOffsetY.current = overlayConfig.offsetY;
-    onGestureActive?.(true);
-  }, [overlayConfig.offsetX, overlayConfig.offsetY, onGestureActive]);
+  const safeWidth = imageWidth > 0 ? imageWidth : 300;
+  const safeHeight = imageHeight > 0 ? imageHeight : 300;
+  const computed = computeOverlayStyle(overlayConfig, safeWidth, safeHeight, overlayText);
+  const bbox = computeTextBoundingBox(computed, safeWidth);
+
+  const savePanStart = useCallback(
+    (absX: number, absY: number) => {
+      try {
+        // Detect if touch is near a corner handle
+        if (isNearCorner(absX, absY, bbox, HANDLE_HIT)) {
+          gestureMode.current = "resize";
+          startFontScale.current = overlayConfig.fontScale;
+        } else {
+          gestureMode.current = "drag";
+          startOffsetX.current = overlayConfig.offsetX;
+          startOffsetY.current = overlayConfig.offsetY;
+        }
+        setIsSelected(true);
+        onGestureActive?.(true);
+      } catch {
+        // Prevent crash from UI thread callback
+      }
+    },
+    [overlayConfig.offsetX, overlayConfig.offsetY, overlayConfig.fontScale, onGestureActive, bbox],
+  );
 
   const handlePanUpdate = useCallback(
     (translationX: number, translationY: number) => {
-      const newOffsetX = clampOffset(startOffsetX.current + translationX / imageWidth);
-      const newOffsetY = clampOffset(startOffsetY.current + translationY / imageHeight);
-      onConfigChange({
-        ...overlayConfig,
-        offsetX: newOffsetX,
-        offsetY: newOffsetY,
-      });
+      try {
+        if (gestureMode.current === "resize") {
+          const newScale = computeResizeScale(startFontScale.current, translationX, translationY, safeWidth);
+          onConfigChange({
+            ...overlayConfig,
+            fontScale: newScale,
+          });
+        } else {
+          const newOffsetX = clampOffset(startOffsetX.current + translationX / safeWidth);
+          const newOffsetY = clampOffset(startOffsetY.current + translationY / safeHeight);
+          onConfigChange({
+            ...overlayConfig,
+            offsetX: newOffsetX,
+            offsetY: newOffsetY,
+          });
+        }
+      } catch {
+        // Prevent crash from UI thread callback
+      }
     },
-    [imageWidth, imageHeight, overlayConfig, onConfigChange],
+    [safeWidth, safeHeight, overlayConfig, onConfigChange],
   );
 
   const handlePanEnd = useCallback(() => {
-    onGestureActive?.(false);
+    try {
+      onGestureActive?.(false);
+    } catch {
+      // Prevent crash from UI thread callback
+    }
   }, [onGestureActive]);
 
   const savePinchStart = useCallback(() => {
-    startFontScale.current = overlayConfig.fontScale;
-    onGestureActive?.(true);
+    try {
+      startFontScale.current = overlayConfig.fontScale;
+      onGestureActive?.(true);
+    } catch {
+      // Prevent crash
+    }
   }, [overlayConfig.fontScale, onGestureActive]);
 
   const handlePinchUpdate = useCallback(
     (scale: number) => {
-      const newScale = clampFontScale(startFontScale.current * scale);
-      onConfigChange({
-        ...overlayConfig,
-        fontScale: newScale,
-      });
+      try {
+        const newScale = clampFontScale(startFontScale.current * scale);
+        onConfigChange({
+          ...overlayConfig,
+          fontScale: newScale,
+        });
+      } catch {
+        // Prevent crash
+      }
     },
     [overlayConfig, onConfigChange],
   );
 
   const handlePinchEnd = useCallback(() => {
-    onGestureActive?.(false);
+    try {
+      onGestureActive?.(false);
+    } catch {
+      // Prevent crash
+    }
   }, [onGestureActive]);
 
   const toggleEditing = useCallback(() => {
-    setIsEditing((prev) => !prev);
+    try {
+      setIsEditing((prev) => !prev);
+      setIsSelected(true);
+    } catch {
+      // Prevent crash
+    }
   }, []);
 
   const panGesture = Gesture.Pan()
-    .onStart(() => {
-      runOnJS(savePanStart)();
+    .onStart((e: { absoluteX: number; absoluteY: number }) => {
+      runOnJS(savePanStart)(e.absoluteX, e.absoluteY);
     })
     .onUpdate((e: { translationX: number; translationY: number }) => {
       runOnJS(handlePanUpdate)(e.translationX, e.translationY);
@@ -120,9 +185,7 @@ export function InteractiveOverlay({
     Keyboard.dismiss();
   }, []);
 
-  const safeWidth = imageWidth > 0 ? imageWidth : 300;
-  const safeHeight = imageHeight > 0 ? imageHeight : 300;
-  const computed = computeOverlayStyle(overlayConfig, safeWidth, safeHeight, overlayText);
+  const showHandles = isSelected && !isEditing && overlayText.length > 0 && bbox.width > 0;
 
   return (
     <GestureDetector gesture={composedGesture}>
@@ -135,6 +198,29 @@ export function InteractiveOverlay({
           imageWidth={imageWidth}
           imageHeight={imageHeight}
         />
+
+        {/* Selection border + corner handles */}
+        {showHandles && (
+          <View
+            style={[
+              styles.selectionBorder,
+              {
+                left: bbox.left - 4,
+                top: bbox.top - 4,
+                width: bbox.width + 8,
+                height: bbox.height + 8,
+              },
+            ]}
+            pointerEvents="none"
+          >
+            {/* Corner handles */}
+            <View style={[styles.handle, styles.handleTopLeft]} />
+            <View style={[styles.handle, styles.handleTopRight]} />
+            <View style={[styles.handle, styles.handleBottomLeft]} />
+            <View style={[styles.handle, styles.handleBottomRight]} />
+          </View>
+        )}
+
         {isEditing && (
           <View
             style={[
@@ -181,5 +267,37 @@ const styles = StyleSheet.create({
     padding: 12,
     textAlign: "center",
     minHeight: 48,
+  },
+  selectionBorder: {
+    position: "absolute",
+    borderWidth: 1.5,
+    borderColor: colors.brand.cyan,
+    borderStyle: "dashed",
+    borderRadius: 4,
+  },
+  handle: {
+    position: "absolute",
+    width: HANDLE_SIZE,
+    height: HANDLE_SIZE,
+    borderRadius: HANDLE_SIZE / 2,
+    backgroundColor: colors.brand.cyan,
+    borderWidth: 2,
+    borderColor: "#ffffff",
+  },
+  handleTopLeft: {
+    top: -HANDLE_SIZE / 2,
+    left: -HANDLE_SIZE / 2,
+  },
+  handleTopRight: {
+    top: -HANDLE_SIZE / 2,
+    right: -HANDLE_SIZE / 2,
+  },
+  handleBottomLeft: {
+    bottom: -HANDLE_SIZE / 2,
+    left: -HANDLE_SIZE / 2,
+  },
+  handleBottomRight: {
+    bottom: -HANDLE_SIZE / 2,
+    right: -HANDLE_SIZE / 2,
   },
 });
