@@ -96,11 +96,27 @@ describe("authClient", () => {
     it("returns API key when authenticated", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ geminiApiKey: "AIza-test-key" }),
+        json: () => Promise.resolve({ gemini_api_key: "AIza-test-key" }),
       });
 
       const key = await fetchApiKey("http://localhost:3100", "token-123");
       expect(key).toBe("AIza-test-key");
+    });
+
+    it("calls /api/v1/nanomeme/config with Bearer header", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ gemini_api_key: "AIza-test-key" }),
+      });
+
+      await fetchApiKey("http://localhost:3100", "my-session-token");
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3100/api/v1/nanomeme/config",
+        expect.objectContaining({
+          headers: { Authorization: "Bearer my-session-token" },
+        }),
+      );
     });
 
     it("returns null when unauthorized", async () => {
@@ -111,6 +127,13 @@ describe("authClient", () => {
       });
 
       const key = await fetchApiKey("http://localhost:3100", "bad-token");
+      expect(key).toBeNull();
+    });
+
+    it("returns null on network error", async () => {
+      mockFetch.mockRejectedValueOnce(new Error("Network error"));
+
+      const key = await fetchApiKey("http://localhost:3100", "token-123");
       expect(key).toBeNull();
     });
   });

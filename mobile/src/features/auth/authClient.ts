@@ -55,12 +55,12 @@ export async function fetchApiKey(
   token: string,
 ): Promise<string | null> {
   try {
-    const response = await fetch(`${baseUrl}/api/nanomeme/config`, {
+    const response = await fetch(`${baseUrl}/api/v1/nanomeme/config`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) return null;
-    const data = (await response.json()) as { geminiApiKey?: string };
-    return data.geminiApiKey ?? null;
+    const data = (await response.json()) as { gemini_api_key?: string };
+    return data.gemini_api_key ?? null;
   } catch {
     return null;
   }
