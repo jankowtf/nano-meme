@@ -120,7 +120,9 @@ export function InteractiveOverlay({
     Keyboard.dismiss();
   }, []);
 
-  const computed = computeOverlayStyle(overlayConfig, imageWidth, imageHeight, overlayText);
+  const safeWidth = imageWidth > 0 ? imageWidth : 300;
+  const safeHeight = imageHeight > 0 ? imageHeight : 300;
+  const computed = computeOverlayStyle(overlayConfig, safeWidth, safeHeight, overlayText);
 
   return (
     <GestureDetector gesture={composedGesture}>

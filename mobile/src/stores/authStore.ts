@@ -35,10 +35,14 @@ export const useAuthStore = create<AuthStoreState>()(
           const session = await signIn(AUTH_BASE_URL, email, password);
           set({ session, isAuthenticated: true, isLoading: false, error: null });
 
-          // Fetch and store the API key
-          const apiKey = await fetchApiKey(AUTH_BASE_URL, session.token);
-          if (apiKey) {
-            await setCortexApiKey(apiKey);
+          // Fetch and store the API key (best-effort, don't crash auth flow)
+          try {
+            const apiKey = await fetchApiKey(AUTH_BASE_URL, session.token);
+            if (apiKey) {
+              await setCortexApiKey(apiKey);
+            }
+          } catch {
+            // SecureStore or network failure — auth succeeded, key storage didn't
           }
         } catch (err) {
           set({
@@ -59,7 +63,11 @@ export const useAuthStore = create<AuthStoreState>()(
             // Best effort — clear local state regardless
           }
         }
-        await deleteCortexApiKey();
+        try {
+          await deleteCortexApiKey();
+        } catch {
+          // Best effort — clear local state regardless
+        }
         set({ session: null, isAuthenticated: false, error: null });
       },
 

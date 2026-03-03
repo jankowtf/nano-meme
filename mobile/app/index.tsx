@@ -89,24 +89,28 @@ export default function HomeScreen() {
   const handleAttachImage = useCallback(async () => {
     if (referenceImages.length >= MAX_REFERENCE_IMAGES) return;
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      quality: 0.7,
-      base64: true,
-      exif: false,
-      allowsMultipleSelection: true,
-      selectionLimit: MAX_REFERENCE_IMAGES - referenceImages.length,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        quality: 0.7,
+        base64: true,
+        exif: false,
+        allowsMultipleSelection: true,
+        selectionLimit: MAX_REFERENCE_IMAGES - referenceImages.length,
+      });
 
-    if (result.canceled || !result.assets) return;
+      if (result.canceled || !result.assets) return;
 
-    for (const asset of result.assets) {
-      if (referenceImages.length >= MAX_REFERENCE_IMAGES) break;
-      if (!asset.base64) continue;
-      const mimeType = asset.mimeType ?? "image/jpeg";
-      addImage(asset.base64, mimeType);
+      for (const asset of result.assets) {
+        if (referenceImages.length >= MAX_REFERENCE_IMAGES) break;
+        if (!asset.base64) continue;
+        const mimeType = asset.mimeType ?? "image/jpeg";
+        addImage(asset.base64, mimeType);
+      }
+    } catch {
+      failGeneration("Failed to attach image from library.");
     }
-  }, [referenceImages, addImage]);
+  }, [referenceImages, addImage, failGeneration]);
 
   const handleLoadYodaPreset = useCallback(() => {
     setPrompt(DEFAULT_YODA_PROMPT);

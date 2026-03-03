@@ -15,6 +15,7 @@ jest.mock("../../hooks/useSecureStorage", () => ({
   getCortexApiKey: jest.fn(),
   setCortexApiKey: jest.fn(),
   deleteCortexApiKey: jest.fn(),
+  getEffectiveApiKey: jest.fn(),
 }));
 
 import { signIn, signOut, fetchApiKey } from "../../features/auth/authClient";
@@ -43,7 +44,7 @@ describe("authStore", () => {
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
   });
 
-  describe("signIn", () => {
+  describe("login", () => {
     it("signs in and stores session + fetches API key", async () => {
       mockSignIn.mockResolvedValueOnce({
         token: "tok-123",
@@ -93,26 +94,129 @@ describe("authStore", () => {
 
       expect(useAuthStore.getState().isLoading).toBe(false);
     });
+
+    it("does not crash when setCortexApiKey throws", async () => {
+      mockSignIn.mockResolvedValueOnce({
+        token: "tok-123",
+        user: { id: "u1", email: "demo@kaosmaps.com", name: "Demo" },
+      });
+      mockFetchApiKey.mockResolvedValueOnce("AIza-test");
+      mockSetCortexApiKey.mockRejectedValueOnce(new Error("SecureStore failure"));
+
+      // Should NOT throw — the auth flow should succeed even if key storage fails
+      await useAuthStore.getState().login("demo@kaosmaps.com", "password");
+
+      const state = useAuthStore.getState();
+      expect(state.isAuthenticated).toBe(true);
+      expect(state.error).toBeNull();
+    });
+
+    it("does not crash when fetchApiKey throws", async () => {
+      mockSignIn.mockResolvedValueOnce({
+        token: "tok-123",
+        user: { id: "u1", email: "demo@kaosmaps.com", name: "Demo" },
+      });
+      mockFetchApiKey.mockRejectedValueOnce(new Error("Network error"));
+
+      await useAuthStore.getState().login("demo@kaosmaps.com", "password");
+
+      const state = useAuthStore.getState();
+      expect(state.isAuthenticated).toBe(true);
+      expect(state.error).toBeNull();
+    });
+
+    it("does not store key when fetchApiKey returns null", async () => {
+      mockSignIn.mockResolvedValueOnce({
+        token: "tok-123",
+        user: { id: "u1", email: "demo@kaosmaps.com", name: "Demo" },
+      });
+      mockFetchApiKey.mockResolvedValueOnce(null);
+
+      await useAuthStore.getState().login("demo@kaosmaps.com", "password");
+
+      expect(mockSetCortexApiKey).not.toHaveBeenCalled();
+      expect(useAuthStore.getState().isAuthenticated).toBe(true);
+    });
+
+    it("handles non-Error thrown objects", async () => {
+      mockSignIn.mockRejectedValueOnce("string error");
+
+      await useAuthStore.getState().login("a@b.com", "pw");
+
+      expect(useAuthStore.getState().error).toBe("Sign-in failed");
+    });
   });
 
-  describe("signOut", () => {
-    it("clears session on sign-out", async () => {
-      // First sign in
+  describe("logout", () => {
+    beforeEach(async () => {
       mockSignIn.mockResolvedValueOnce({
         token: "tok-123",
         user: { id: "u1", email: "demo@kaosmaps.com" },
       });
       mockFetchApiKey.mockResolvedValueOnce("AIza-test");
       await useAuthStore.getState().login("demo@kaosmaps.com", "password");
+      jest.clearAllMocks();
+    });
 
-      // Then sign out
+    it("clears session on sign-out", async () => {
       mockSignOut.mockResolvedValueOnce(undefined);
+
       await useAuthStore.getState().logout();
 
       const state = useAuthStore.getState();
       expect(state.session).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(mockDeleteCortexApiKey).toHaveBeenCalled();
+    });
+
+    it("clears session even when signOut API call fails", async () => {
+      mockSignOut.mockRejectedValueOnce(new Error("Network error"));
+
+      await useAuthStore.getState().logout();
+
+      const state = useAuthStore.getState();
+      expect(state.session).toBeNull();
+      expect(state.isAuthenticated).toBe(false);
+    });
+
+    it("does not crash when deleteCortexApiKey throws", async () => {
+      mockSignOut.mockResolvedValueOnce(undefined);
+      mockDeleteCortexApiKey.mockRejectedValueOnce(new Error("SecureStore failure"));
+
+      await useAuthStore.getState().logout();
+
+      const state = useAuthStore.getState();
+      expect(state.session).toBeNull();
+      expect(state.isAuthenticated).toBe(false);
+    });
+
+    it("clears session even when no prior session exists", async () => {
+      useAuthStore.getState().reset();
+
+      await useAuthStore.getState().logout();
+
+      const state = useAuthStore.getState();
+      expect(state.session).toBeNull();
+      expect(state.isAuthenticated).toBe(false);
+    });
+  });
+
+  describe("reset", () => {
+    it("restores initial state", async () => {
+      mockSignIn.mockResolvedValueOnce({
+        token: "tok-123",
+        user: { id: "u1", email: "demo@kaosmaps.com" },
+      });
+      mockFetchApiKey.mockResolvedValueOnce(null);
+      await useAuthStore.getState().login("demo@kaosmaps.com", "pw");
+
+      useAuthStore.getState().reset();
+
+      const state = useAuthStore.getState();
+      expect(state.session).toBeNull();
+      expect(state.isAuthenticated).toBe(false);
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBeNull();
     });
   });
 });

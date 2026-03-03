@@ -55,27 +55,39 @@ export default function SettingsScreen() {
   const [loginPassword, setLoginPassword] = useState("");
 
   useEffect(() => {
-    getApiKey().then((key) => {
-      if (key) {
-        setHasApiKey(true);
-        setApiKeyInput(key);
-      }
-    });
+    getApiKey()
+      .then((key) => {
+        if (key) {
+          setHasApiKey(true);
+          setApiKeyInput(key);
+        }
+      })
+      .catch(() => {
+        // SecureStore read failed — leave defaults
+      });
   }, []);
 
   const handleSaveApiKey = useCallback(async () => {
     if (apiKeyInput.trim()) {
-      await setApiKey(apiKeyInput.trim());
-      setHasApiKey(true);
-      Alert.alert("Saved", "API key saved to secure storage.");
+      try {
+        await setApiKey(apiKeyInput.trim());
+        setHasApiKey(true);
+        Alert.alert("Saved", "API key saved to secure storage.");
+      } catch {
+        Alert.alert("Error", "Failed to save API key to secure storage.");
+      }
     }
   }, [apiKeyInput]);
 
   const handleDeleteApiKey = useCallback(async () => {
-    await deleteApiKey();
-    setApiKeyInput("");
-    setHasApiKey(false);
-    Alert.alert("Removed", "API key removed from secure storage.");
+    try {
+      await deleteApiKey();
+      setApiKeyInput("");
+      setHasApiKey(false);
+      Alert.alert("Removed", "API key removed from secure storage.");
+    } catch {
+      Alert.alert("Error", "Failed to remove API key.");
+    }
   }, []);
 
   const handleLogin = useCallback(async () => {

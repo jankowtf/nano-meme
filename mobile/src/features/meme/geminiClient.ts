@@ -99,7 +99,12 @@ export class GeminiClient {
       throw new GeminiAPIError(message, status, response.status);
     }
 
-    const data = (await response.json()) as GenerateContentResponse;
+    let data: GenerateContentResponse;
+    try {
+      data = (await response.json()) as GenerateContentResponse;
+    } catch {
+      throw new Error("Failed to parse API response as JSON");
+    }
     const image = parseImageFromResponse(data);
 
     if (!image) {

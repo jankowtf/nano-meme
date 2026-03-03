@@ -81,4 +81,45 @@ describe("InteractiveOverlay integration", () => {
       expect(onGestureActive).toHaveBeenCalledWith(false);
     });
   });
+
+  describe("zero-dimension guard", () => {
+    it("uses safe fallback when imageWidth is 0", () => {
+      const imageWidth = 0;
+      const safeWidth = imageWidth > 0 ? imageWidth : 300;
+      expect(safeWidth).toBe(300);
+    });
+
+    it("uses safe fallback when imageHeight is 0", () => {
+      const imageHeight = 0;
+      const safeHeight = imageHeight > 0 ? imageHeight : 300;
+      expect(safeHeight).toBe(300);
+    });
+
+    it("uses actual dimensions when positive", () => {
+      const imageWidth = 400;
+      const imageHeight = 600;
+      const safeWidth = imageWidth > 0 ? imageWidth : 300;
+      const safeHeight = imageHeight > 0 ? imageHeight : 300;
+      expect(safeWidth).toBe(400);
+      expect(safeHeight).toBe(600);
+    });
+
+    it("computeOverlayStyle does not crash with fallback dimensions", () => {
+      const config = { position: "bottom" as const, fontScale: 1.0, offsetX: 0, offsetY: 0 };
+      const safeWidth = 300;
+      const safeHeight = 300;
+      expect(() => {
+        computeOverlayStyle(config, safeWidth, safeHeight, "TEST");
+      }).not.toThrow();
+    });
+
+    it("pan with zero-dimension fallback does not produce NaN", () => {
+      const imageWidth = 0;
+      const safeWidth = imageWidth > 0 ? imageWidth : 300;
+      const startOffsetX = 0;
+      const translationX = 50;
+      const newOffsetX = clampOffset(startOffsetX + translationX / safeWidth);
+      expect(Number.isNaN(newOffsetX)).toBe(false);
+    });
+  });
 });

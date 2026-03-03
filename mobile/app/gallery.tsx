@@ -33,7 +33,13 @@ function MemeCard({ item }: { item: MemeHistoryItem }) {
             {item.overlayText || "No overlay"}
           </Text>
           <Text style={styles.cardDate}>
-            {new Date(item.createdAt).toLocaleDateString()}
+            {(() => {
+              try {
+                return new Date(item.createdAt).toLocaleDateString();
+              } catch {
+                return "Unknown date";
+              }
+            })()}
           </Text>
         </View>
         <View style={styles.cardActions}>

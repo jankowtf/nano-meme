@@ -26,7 +26,13 @@ export async function generateAndSaveMeme(
   // Save the base64 image to local filesystem (expo-file-system v55 API)
   const filename = `meme_${Date.now()}.png`;
   const file = new File(Paths.document, filename);
-  file.write(result.imageData, { encoding: "base64" });
+  try {
+    file.write(result.imageData, { encoding: "base64" });
+  } catch (writeError) {
+    throw new Error(
+      `Failed to save image: ${writeError instanceof Error ? writeError.message : "Storage write failed"}`,
+    );
+  }
 
   return {
     imageUri: file.uri,
